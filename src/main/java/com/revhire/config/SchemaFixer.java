@@ -33,6 +33,16 @@ public class SchemaFixer {
                 stmt.execute("ALTER TABLE job_seekers ADD COLUMN resume_text TEXT");
             }
 
+            // Fix Users table (security questions)
+            if (!columnExists(conn, "users", "security_question")) {
+                System.out.println("Adding missing column: security_question to users");
+                stmt.execute("ALTER TABLE users ADD COLUMN security_question VARCHAR(255)");
+            }
+            if (!columnExists(conn, "users", "security_answer")) {
+                System.out.println("Adding missing column: security_answer to users");
+                stmt.execute("ALTER TABLE users ADD COLUMN security_answer VARCHAR(255)");
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

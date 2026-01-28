@@ -42,7 +42,8 @@ public class SeekerMenu {
             System.out.println("3. Search Jobs");
             System.out.println("4. My Applications");
             System.out.println("5. Notifications");
-            System.out.println("6. Logout");
+            System.out.println("6. Resume Management");
+            System.out.println("7. Logout");
 
             int choice = InputHelper.readInt("Enter choice");
 
@@ -63,10 +64,22 @@ public class SeekerMenu {
                     viewNotifications();
                     break;
                 case 6:
+                    manageResume();
+                    break;
+                case 7:
                     return;
                 default:
                     System.out.println("Invalid choice.");
             }
+        }
+    }
+
+    private void manageResume() {
+        Optional<com.revhire.model.JobSeeker> seekerOpt = userService.getJobSeekerProfile(user.getId());
+        if (seekerOpt.isPresent()) {
+            new ResumeMenu(seekerOpt.get().getId()).start();
+        } else {
+            System.out.println("Please create your basic profile first.");
         }
     }
 

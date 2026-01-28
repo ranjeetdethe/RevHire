@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     role ENUM('SEEKER', 'EMPLOYER') NOT NULL,
+    security_question VARCHAR(255),
+    security_answer VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -75,4 +77,54 @@ CREATE TABLE IF NOT EXISTS applications (
     FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE,
     FOREIGN KEY (seeker_id) REFERENCES job_seekers(id) ON DELETE CASCADE,
     UNIQUE(job_id, seeker_id) 
+);
+
+-- 6. Resumes Table
+CREATE TABLE IF NOT EXISTS resumes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    job_seeker_id INT UNIQUE NOT NULL,
+    summary TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (job_seeker_id) REFERENCES job_seekers(id) ON DELETE CASCADE
+);
+
+-- 7. Resume Education Table
+CREATE TABLE IF NOT EXISTS resume_education (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    resume_id INT NOT NULL,
+    degree VARCHAR(100),
+    institution VARCHAR(100),
+    year INT,
+    grade VARCHAR(20),
+    FOREIGN KEY (resume_id) REFERENCES resumes(id) ON DELETE CASCADE
+);
+
+-- 8. Resume Experience Table
+CREATE TABLE IF NOT EXISTS resume_experience (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    resume_id INT NOT NULL,
+    company VARCHAR(100),
+    role VARCHAR(100),
+    duration VARCHAR(50), -- e.g. "2020-2022" or "2 years"
+    description TEXT,
+    FOREIGN KEY (resume_id) REFERENCES resumes(id) ON DELETE CASCADE
+);
+
+-- 9. Resume Projects Table
+CREATE TABLE IF NOT EXISTS resume_projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    resume_id INT NOT NULL,
+    title VARCHAR(100),
+    description TEXT,
+    technologies VARCHAR(255),
+    FOREIGN KEY (resume_id) REFERENCES resumes(id) ON DELETE CASCADE
+);
+
+-- 10. Resume Skills Table
+CREATE TABLE IF NOT EXISTS resume_skills (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    resume_id INT NOT NULL,
+    skill_name VARCHAR(50),
+    proficiency VARCHAR(20), -- Beginner, Intermediate, Expert
+    FOREIGN KEY (resume_id) REFERENCES resumes(id) ON DELETE CASCADE
 );

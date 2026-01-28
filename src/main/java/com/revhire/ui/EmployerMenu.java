@@ -24,6 +24,7 @@ public class EmployerMenu {
     private final JobService jobService;
     private final ApplicationService applicationService;
     private final NotificationService notificationService;
+    private final com.revhire.service.ResumeService resumeService; // Added
     private Employer currentEmployer;
 
     public EmployerMenu(User user, UserService userService) {
@@ -32,6 +33,7 @@ public class EmployerMenu {
         this.jobService = new JobServiceImpl();
         this.applicationService = new ApplicationServiceImpl();
         this.notificationService = new NotificationServiceImpl();
+        this.resumeService = new com.revhire.service.impl.ResumeServiceImpl(); // Init
         this.currentEmployer = userService.getEmployerProfile(user.getId()).orElse(null);
     }
 
@@ -205,28 +207,13 @@ public class EmployerMenu {
 
         System.out.println("\n--- Applications ---");
         for (Application app : apps) {
-            // Need seeker name
-            Optional<JobSeeker> seeker = userService.getJobSeekerProfile(app.getSeekerId()); // Note: seekerId in
-                                                                                             // Application is seeker_id
-                                                                                             // from job_seeker table,
-                                                                                             // but getJobSeekerProfile
-                                                                                             // uses userId?
-            // Actually getJobSeekerProfile(int userId) - my implementation expects userId.
-            // But Application stores seeker_id (primary key of job_seekers).
-            // This is a mismatch in my previous Service implementation or DAO usage.
-            // Let's check UserDAOImpl.findJobSeekerByUserId. It selects where user_id = ?.
-            // But Application has seeker_id.
-
-            // To fix this without major refactor:
-            // I need a service method `getJobSeekerById(int seekerId)`.
-            // For now, I will display ID.
-
             System.out.println(
                     "App ID: " + app.getId() + " | Seeker ID: " + app.getSeekerId() + " | Status: " + app.getStatus());
         }
 
         String input = InputHelper.readString("Enter Application ID to process, 'B' for bulk, or 0 to go back");
         if (input.equalsIgnoreCase("B")) {
+            // Bulk logic remains same
             String idsStr = InputHelper.readString("Enter Application IDs (comma separated)");
             String statusStr = InputHelper.readString("Shortlist (s) or Reject (r)?");
             Application.ApplicationStatus status = statusStr.equalsIgnoreCase("s")
@@ -239,7 +226,6 @@ public class EmployerMenu {
                     try {
                         int id = Integer.parseInt(idStr.trim());
                         applicationService.updateApplicationStatus(id, status);
-                        // Notify seeker?
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid ID: " + idStr);
                     }
@@ -252,7 +238,13 @@ public class EmployerMenu {
             try {
                 int appId = Integer.parseInt(input);
                 if (appId != 0) {
-                    processSingleApplication(appId);
+                    // Find app in list to get seeker ID safely
+                    Optional<Application> appOpt = apps.stream().filter(a -> a.getId() == appId).findFirst();
+                    if (appOpt.isPresent()) {
+                        processSingleApplication(appOpt.get());
+                    } else {
+                        System.out.println("Application not found in this list.");
+                    }
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input.");
@@ -260,14 +252,76 @@ public class EmployerMenu {
         }
     }
 
-    private void processSingleApplication(int appId) {
-        String choice = InputHelper.readString("Shortlist (s) or Reject (r)?");
-        if (choice.equalsIgnoreCase("s")) {
-            applicationService.updateApplicationStatus(appId, Application.ApplicationStatus.SHORTLISTED);
-            System.out.println("Marked as Shortlisted.");
-        } else if (choice.equalsIgnoreCase("r")) {
-            applicationService.updateApplicationStatus(appId, Application.ApplicationStatus.REJECTED);
-            System.out.println("Marked as Rejected.");
+    private void processSingleApplication(Application app) {
+        while (true) {
+            System.out.println("\n--- Process Application #" + app.getId() + " ---");
+            System.out.println("1. View Resume");
+            System.out.println("2. Shortlist");
+            System.out.println("3. Reject");
+            System.out.println("4. Cancel / Back");
+
+            int choice = InputHelper.readInt("Choice");
+
+            if (choice == 1) {
+                printResume(app.getSeekerId());
+            } else if (choice == 2) {
+                applicationService.updateApplicationStatus(app.getId(), Application.ApplicationStatus.SHORTLISTED);
+                System.out.println("Marked as Shortlisted.");
+                return;
+            } else if (choice == 3) {
+                applicationService.updateApplicationStatus(app.getId(), Application.ApplicationStatus.REJECTED);
+                System.out.println("Marked as Rejected.");
+                return;
+            } else if (choice == 4) {
+                return;
+            } else {
+                System.out.println("Invalid choice.");
+            }
         }
+    }
+
+    private void printResume(int seekerId) {
+        com.revhire.model.Resume resume = resumeService.getResumeBySeekerId(seekerId);
+        if (resume == null) {
+            System.out.println("No structured resume available for this candidate.");
+            return;
+        }
+
+        System.out.println("\n================ RESUME ================");
+        System.out.println("Summary: " + (resume.getSummary() != null ? resume.getSummary() : "N/A"));
+
+        System.out.println("\n--- Education ---");
+        if (resume.getEducationList().isEmpty())
+            System.out.println("No education added.");
+        for (com.revhire.model.ResumeEducation edu : resume.getEducationList()) {
+            System.out.printf("- %s in %s at %s (%d) - Grade: %s%n",
+                    edu.getDegree(), edu.getDegree(), edu.getInstitution(), edu.getYear(), edu.getGrade());
+        }
+
+        System.out.println("\n--- Experience ---");
+        if (resume.getExperienceList().isEmpty())
+            System.out.println("No experience added.");
+        for (com.revhire.model.ResumeExperience exp : resume.getExperienceList()) {
+            System.out.printf("- %s at %s (%s)%n  %s%n",
+                    exp.getRole(), exp.getCompany(), exp.getDuration(), exp.getDescription());
+        }
+
+        System.out.println("\n--- Projects ---");
+        if (resume.getProjectList().isEmpty())
+            System.out.println("No projects added.");
+        for (com.revhire.model.ResumeProject proj : resume.getProjectList()) {
+            System.out.printf("- %s: %s%n  Tech: %s%n",
+                    proj.getTitle(), proj.getDescription(), proj.getTechnologies());
+        }
+
+        System.out.println("\n--- Skills ---");
+        if (resume.getSkillList().isEmpty())
+            System.out.println("No skills added.");
+        for (com.revhire.model.ResumeSkill skill : resume.getSkillList()) {
+            System.out.printf("- %s (%s)%n",
+                    skill.getSkillName(), skill.getProficiency());
+        }
+        System.out.println("========================================");
+        InputHelper.readString("Press Enter to continue...");
     }
 }
