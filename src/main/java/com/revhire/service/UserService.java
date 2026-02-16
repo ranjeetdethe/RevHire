@@ -26,4 +26,8 @@ public interface UserService {
     boolean updateJobSeekerProfile(JobSeeker seeker);
 
     boolean updateEmployerProfile(Employer employer);
+
+    java.util.List<User> getAllUsers();
+
+    Optional<User> getUserById(int id);
 }

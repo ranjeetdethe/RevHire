@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:replace="~{fragments :: head(${job.title})}"></title>
+</head>
+
+<body>
+
+    <!-- Header Fragment -->
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <main class="container">
+        <!-- Job Header -->
+        <div class="job-detail-header">
+            <h1 th:text="${job.title}">Senior Software Engineer</h1>
+            <!-- Placeholder for company logo/name if not available -->
+            <p>RevHire Partner • <span th:text="${job.location}">San Francisco, CA</span></p>
+            <div class="job-meta">
+                <span class="badge badge-remote" th:if="${job.location.toLowerCase().contains('remote')}">Remote</span>
+                <span class="badge badge-onsite"
+                    th:unless="${job.location.toLowerCase().contains('remote')}">On-site</span>
+                <span class="badge" th:text="${job.status}">Open</span>
+            </div>
+        </div>
+
+        <!-- Job Content -->
+        <div class="job-detail-content">
+            <div class="job-description">
+                <h3>About this Role</h3>
+                <p>We are seeking a talented and driven <span th:text="${job.title}"></span> to join our team.</p>
+                <div th:utext="${job.description}">Detailed job description goes here.</div>
+
+                <h3>Requirements</h3>
+                <ul>
+                    <li>Experience with modern web technologies.</li>
+                    <li>Strong problem-solving skills.</li>
+                    <li>Ability to work in a collaborative environment.</li>
+                </ul>
+
+                <h3>What We Offer</h3>
+                <ul>
+                    <li>Competitive salary and benefits.</li>
+                    <li>Flexible work hours.</li>
+                    <li>Opportunity for growth.</li>
+                </ul>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar-card">
+                <div class="card">
+                    <h3>Apply for this position</h3>
+                    <p>Interested in this role? Start your application now.</p>
+                    <a href="/resume/upload" class="btn btn-primary btn-block">Apply Now</a>
+                    <br><br>
+                    <a href="/jobs" class="btn btn-secondary btn-block">Back to Jobs</a>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer Fragment -->
+    <footer th:replace="~{fragments :: footer}"></footer>
+
+</body>
+
+</html>

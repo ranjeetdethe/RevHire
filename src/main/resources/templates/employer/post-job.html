@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:replace="~{fragments :: head('Post a Job')}"></title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <div class="container py-8 max-w-3xl mx-auto">
+        <div class="card p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Post a New Job</h1>
+            <p class="text-gray-600 mb-8">Fill in the details below to attract the best candidates</p>
+
+            <form th:action="@{/employer/jobs}" th:object="${jobDTO}" method="post">
+                <div class="form-group mb-6">
+                    <label for="title" class="form-label block text-gray-700 text-sm font-bold mb-2">
+                        Job Title *
+                    </label>
+                    <input type="text" id="title" th:field="*{title}"
+                        class="form-control w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        placeholder="e.g. Senior Software Engineer" required>
+                    <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-red-600 text-sm mt-1"></p>
+                </div>
+
+                <div class="form-group mb-6">
+                    <label for="description" class="form-label block text-gray-700 text-sm font-bold mb-2">
+                        Job Description *
+                    </label>
+                    <textarea id="description" th:field="*{description}" rows="6"
+                        class="form-control w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        placeholder="Describe the role, responsibilities, and requirements..." required></textarea>
+                    <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
+                        class="text-red-600 text-sm mt-1"></p>
+                    <span class="text-gray-500 text-xs">Minimum 10 characters</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="form-group">
+                        <label for="location" class="form-label block text-gray-700 text-sm font-bold mb-2">
+                            Location *
+                        </label>
+                        <input type="text" id="location" th:field="*{location}"
+                            class="form-control w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            placeholder="e.g. San Francisco, CA" required>
+                        <p th:if="${#fields.hasErrors('location')}" th:errors="*{location}"
+                            class="text-red-600 text-sm mt-1"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experienceRequired" class="form-label block text-gray-700 text-sm font-bold mb-2">
+                            Experience Required (years) *
+                        </label>
+                        <input type="number" id="experienceRequired" th:field="*{experienceRequired}" min="0"
+                            class="form-control w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            placeholder="0" required>
+                        <p th:if="${#fields.hasErrors('experienceRequired')}" th:errors="*{experienceRequired}"
+                            class="text-red-600 text-sm mt-1"></p>
+                    </div>
+                </div>
+
+                <div class="form-group mb-8">
+                    <label for="salaryRange" class="form-label block text-gray-700 text-sm font-bold mb-2">
+                        Salary Range *
+                    </label>
+                    <input type="text" id="salaryRange" th:field="*{salaryRange}"
+                        class="form-control w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        placeholder="e.g. $80,000 - $120,000" required>
+                    <p th:if="${#fields.hasErrors('salaryRange')}" th:errors="*{salaryRange}"
+                        class="text-red-600 text-sm mt-1"></p>
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="btn btn-primary px-8 py-3">
+                        <i class="fas fa-check mr-2"></i>Post Job
+                    </button>
+                    <a href="/employer/dashboard" class="btn btn-secondary px-8 py-3">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments :: footer}"></footer>
+</body>
+
+</html>

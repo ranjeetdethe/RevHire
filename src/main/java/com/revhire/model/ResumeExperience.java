@@ -5,7 +5,7 @@ public class ResumeExperience {
     private int resumeId;
     private String company;
     private String role;
-    private String duration; // e.g. "2020-2022"
+    private String duration; 
     private String description;
 
     public ResumeExperience() {

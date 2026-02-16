@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments :: head('Home')}"></head>
+
+<body>
+
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero bg-light py-5">
+            <div class="container text-center py-5">
+                <h1 class="display-4 fw-bold mb-3">Find Your Dream Job Today</h1>
+                <p class="lead text-muted mb-5">Connecting thousands of job seekers with top employers.</p>
+
+                <form action="/jobs" method="get" class="search-form max-w-lg mx-auto">
+                    <div class="input-group shadow-lg p-2 bg-white rounded">
+                        <span class="input-group-text bg-white border-0"><i class="fas fa-search text-muted"></i></span>
+                        <input type="text" name="keyword" class="form-control border-0"
+                            placeholder="Job title, skills, or company">
+
+                        <span class="input-group-text bg-white border-0"><i
+                                class="fas fa-map-marker-alt text-muted"></i></span>
+                        <input type="text" name="location" class="form-control border-0"
+                            placeholder="City, state, or zip">
+
+                        <button type="submit" class="btn btn-primary px-4 fw-bold">Search Jobs</button>
+                    </div>
+                </form>
+
+                <div class="mt-4 small text-muted">
+                    <span class="fw-bold text-dark">Trending:</span> Java, Spring Boot, React, AWS, Data Science
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="py-5 bg-white">
+            <div class="container">
+                <div class="row text-center g-4">
+                    <div class="col-6 col-md-3">
+                        <h3 class="display-5 fw-bold text-primary">10k+</h3>
+                        <p class="text-muted">Live Jobs</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h3 class="display-5 fw-bold text-primary">500+</h3>
+                        <p class="text-muted">Companies</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h3 class="display-5 fw-bold text-primary">12k+</h3>
+                        <p class="text-muted">Candidates</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h3 class="display-5 fw-bold text-primary">5k+</h3>
+                        <p class="text-muted">Hired</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Jobs Section -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center mb-5 fw-bold">Featured Jobs</h2>
+                <div class="row g-4">
+                    <!-- Static Featured Jobs -->
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm hover-shadow transition">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="https://via.placeholder.com/48" alt="Logo" class="rounded me-3">
+                                    <div>
+                                        <h5 class="card-title mb-0"><a href="#"
+                                                class="text-decoration-none text-dark">Senior Java Developer</a></h5>
+                                        <small class="text-muted">TechCorp Inc.</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted small mb-3">
+                                    <span><i class="fas fa-map-marker-alt me-1"></i> New York, NY</span>
+                                    <span><i class="fas fa-briefcase me-1"></i> 5-7 Years</span>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i
+                                            class="fas fa-dollar-sign me-1"></i>$120k - $150k</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge rounded-pill bg-info text-dark">Remote</span>
+                                    <a href="/login" class="btn btn-outline-primary btn-sm">Apply Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm hover-shadow transition">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="https://via.placeholder.com/48" alt="Logo" class="rounded me-3">
+                                    <div>
+                                        <h5 class="card-title mb-0"><a href="#"
+                                                class="text-decoration-none text-dark">Frontend Engineer</a></h5>
+                                        <small class="text-muted">Creative Solutions</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted small mb-3">
+                                    <span><i class="fas fa-map-marker-alt me-1"></i> San Francisco</span>
+                                    <span><i class="fas fa-briefcase me-1"></i> 3-5 Years</span>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i
+                                            class="fas fa-dollar-sign me-1"></i>$100k - $130k</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge rounded-pill bg-secondary text-white">On-site</span>
+                                    <a href="/login" class="btn btn-outline-primary btn-sm">Apply Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm hover-shadow transition">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="https://via.placeholder.com/48" alt="Logo" class="rounded me-3">
+                                    <div>
+                                        <h5 class="card-title mb-0"><a href="#"
+                                                class="text-decoration-none text-dark">DevOps Engineer</a></h5>
+                                        <small class="text-muted">Cloud Systems</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted small mb-3">
+                                    <span><i class="fas fa-map-marker-alt me-1"></i> Austin, TX</span>
+                                    <span><i class="fas fa-briefcase me-1"></i> 2-4 Years</span>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i
+                                            class="fas fa-dollar-sign me-1"></i>$90k - $110k</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge rounded-pill bg-warning text-dark">Hybrid</span>
+                                    <a href="/login" class="btn btn-outline-primary btn-sm">Apply Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5">
+                    <a href="/jobs" class="btn btn-primary btn-lg">View All Jobs <i
+                            class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-5 bg-dark text-white text-center">
+            <div class="container py-4">
+                <h2 class="mb-3 fw-bold">Ready to start your career?</h2>
+                <p class="text-white-50 mb-4 col-md-8 mx-auto lead">Join thousands of job seekers and employers on
+                    RevHire. Create your profile today and get hired fast.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/register?role=JOB_SEEKER" class="btn btn-light btn-lg text-primary fw-bold">I'm a Job
+                        Seeker</a>
+                    <a href="/register?role=EMPLOYER" class="btn btn-outline-light btn-lg fw-bold">I'm an Employer</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer th:replace="~{fragments :: footer}"></footer>
+
+</body>
+
+</html>

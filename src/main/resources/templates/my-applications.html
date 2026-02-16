@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: head('My Applications')}"></head>
+
+<body>
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <main class="container py-5">
+        <h2 class="fw-bold mb-4">My Applications</h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Job Title</th>
+                                <th>Company</th>
+                                <th>Applied Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="app : ${applications}">
+                                <td class="ps-4">
+                                    <a th:href="@{'/jobs/' + ${app.job.id}}"
+                                        class="fw-bold text-decoration-none text-dark" th:text="${app.job.title}">Job
+                                        Title</a>
+                                </td>
+                                <td th:text="${app.job.employer.companyName}">Company</td>
+                                <td th:text="${#dates.format(app.appliedAt, 'MMM dd, yyyy')}">Date</td>
+                                <td>
+                                    <span class="badge rounded-pill"
+                                        th:classappend="${app.status.name() == 'APPLIED' ? 'bg-info' : 
+                                                            (app.status.name() == 'SHORTLISTED' ? 'bg-success' : 
+                                                            (app.status.name() == 'REJECTED' ? 'bg-danger' : 
+                                                            (app.status.name() == 'WITHDRAWN' ? 'bg-secondary' : 'bg-warning text-dark')))}"
+                                        th:text="${app.status}">STATUS</span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                        th:if="${app.status.name() == 'APPLIED' || app.status.name() == 'UNDER_REVIEW'}"
+                                        data-bs-toggle="modal" th:data-bs-target="'#withdrawModal' + ${app.id}">
+                                        Withdraw
+                                    </button>
+
+                                    <!-- Withdraw Modal -->
+                                    <div class="modal fade" th:id="'withdrawModal' + ${app.id}" tabindex="-1"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Withdraw Application</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <form th:action="@{'/applications/' + ${app.id} + '/withdraw'}"
+                                                    method="post">
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to withdraw your application for
+                                                            <strong>[[${app.job.title}]]</strong>?</p>
+                                                        <div class="mb-3">
+                                                            <label for="reason" class="form-label">Reason
+                                                                (Optional)</label>
+                                                            <input type="text" class="form-control" name="reason"
+                                                                placeholder="e.g., Found another job">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-danger">Withdraw</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(applications)}">
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    You haven't applied to any jobs yet. <a href="/jobs">Browse Jobs</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments :: footer}"></footer>
+</body>
+
+</html>

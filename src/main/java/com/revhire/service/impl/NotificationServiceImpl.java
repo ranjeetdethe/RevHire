@@ -1,41 +1,58 @@
 package com.revhire.service.impl;
 
-import com.revhire.dao.NotificationDAO;
-import com.revhire.dao.impl.NotificationDAOImpl;
 import com.revhire.model.Notification;
+import com.revhire.repository.NotificationRepository;
 import com.revhire.service.NotificationService;
-import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@Transactional
 public class NotificationServiceImpl implements NotificationService {
 
-    private final NotificationDAO notificationDAO;
+    private final NotificationRepository notificationRepository;
 
-    public NotificationServiceImpl() {
-        this.notificationDAO = new NotificationDAOImpl();
-    }
-
-    public NotificationServiceImpl(NotificationDAO notificationDAO) {
-        this.notificationDAO = notificationDAO;
+    public NotificationServiceImpl(NotificationRepository notificationRepository) {
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
-    public void sendNotification(int userId, String message) {
+    public void createNotification(int userId, String message) {
         Notification notification = new Notification(userId, message);
-        notificationDAO.createNotification(notification);
+        notificationRepository.save(notification);
     }
 
     @Override
     public List<Notification> getUserNotifications(int userId) {
-        return notificationDAO.findByUserId(userId);
+        return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId);
+    }
+
+    @Override
+    public long getUnreadCount(int userId) {
+        return notificationRepository.countByUserIdAndIsReadFalse(userId);
     }
 
     @Override
     public void markAsRead(int notificationId) {
-        notificationDAO.markAsRead(notificationId);
+        Optional<Notification> notification = notificationRepository.findById(notificationId);
+        if (notification.isPresent()) {
+            Notification n = notification.get();
+            n.setRead(true);
+            notificationRepository.save(n);
+        }
     }
 
     @Override
-    public int getUnreadCount(int userId) {
-        return notificationDAO.getUnreadCount(userId);
+    public void markAllAsRead(int userId) {
+        List<Notification> notifications = notificationRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        for (Notification n : notifications) {
+            if (!n.isRead()) {
+                n.setRead(true);
+                notificationRepository.save(n);
+            }
+        }
     }
 }

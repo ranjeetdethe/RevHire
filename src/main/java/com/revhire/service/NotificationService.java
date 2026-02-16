@@ -4,11 +4,13 @@ import com.revhire.model.Notification;
 import java.util.List;
 
 public interface NotificationService {
-    void sendNotification(int userId, String message);
+    void createNotification(int userId, String message);
 
     List<Notification> getUserNotifications(int userId);
 
+    long getUnreadCount(int userId);
+
     void markAsRead(int notificationId);
 
-    int getUnreadCount(int userId);
+    void markAllAsRead(int userId);
 }

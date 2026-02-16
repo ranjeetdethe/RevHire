@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:replace="~{fragments :: head('Upload Resume')}"></title>
+</head>
+
+<body>
+
+    <!-- Header Fragment -->
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <main class="container">
+        <h1>Upload Your Resume</h1>
+        <p>Get noticed by top employers by keeping your resume up to date.</p>
+
+        <div th:if="${message}" class="alert alert-info">
+            <h2 th:text="${message}">Message</h2>
+        </div>
+
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+            <form method="POST" enctype="multipart/form-data" action="/resume/upload">
+
+                <div class="form-group">
+                    <label for="seekerId" class="form-label">Job Seeker ID</label>
+                    <input type="number" id="seekerId" name="seekerId" th:value="${seekerId}" class="form-control"
+                        placeholder="Enter your ID" required />
+                    <small class="text-muted">For demo purposes, enter your ID manually.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="file" class="form-label">Select Resume (PDF, DOCX)</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="file" name="file" accept=".pdf,.docx,.doc" class="form-control-file" />
+                        <p>Drag and drop or click to browse</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">Upload Resume</button>
+                    <a href="/jobs" class="btn btn-secondary btn-block">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <hr style="margin: 3rem 0; border: 0; border-top: 1px solid #E5E7EB;" />
+
+        <div th:if="${resume != null and resume.fileName != null}" class="card"
+            style="max-width: 600px; margin: 0 auto; text-align: center;">
+            <h3>Your Current Resume</h3>
+            <p>Filename: <strong th:text="${resume.fileName}">File Name</strong></p>
+            <a th:href="@{'/resume/view/' + ${resume.jobSeekerId}}" target="_blank"
+                class="btn btn-outline">View/Download Resume</a>
+        </div>
+
+    </main>
+
+    <!-- Footer Fragment -->
+    <footer th:replace="~{fragments :: footer}"></footer>
+
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:replace="~{fragments :: head('Find Jobs')}"></title>
+</head>
+
+<body>
+
+    <!-- Header Fragment -->
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <main class="container">
+        <h1>Find Your Next Opportunity</h1>
+        <p>Explore thousands of job listings from top companies.</p>
+
+        <!-- Search Bar (Optional Enhancement) -->
+        <div class="search-bar" style="margin-bottom: 2rem;">
+            <!-- Placeholder for search form -->
+        </div>
+
+        <div class="job-grid">
+            <div th:each="job : ${jobs}" class="card job-card">
+                <div class="job-header">
+                    <h2 class="job-title" th:text="${job.title}">Senior Software Engineer</h2>
+                    <!-- Placeholder company name if not in model, or use a default -->
+                    <span class="job-company">RevHire Partner</span>
+                </div>
+
+                <div class="job-meta">
+                    <span class="badge badge-remote"
+                        th:if="${job.location.toLowerCase().contains('remote')}">Remote</span>
+                    <span class="badge badge-onsite"
+                        th:unless="${job.location.toLowerCase().contains('remote')}">On-site</span>
+                    <span><i class="fas fa-map-marker-alt"></i> <span th:text="${job.location}">New York,
+                            NY</span></span>
+                </div>
+
+                <p th:text="${#strings.abbreviate(job.description, 100)}">Job description snippet...</p>
+
+                <a th:href="@{/jobs/{id}(id=${job.id})}" class="btn btn-outline btn-sm">View Details</a>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(jobs)}" class="empty-state">
+            <p>No jobs found at the moment. Please check back later.</p>
+        </div>
+    </main>
+
+    <!-- Footer Fragment -->
+    <footer th:replace="~{fragments :: footer}"></footer>
+
+</body>
+
+</html>

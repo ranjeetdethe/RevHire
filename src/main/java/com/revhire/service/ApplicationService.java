@@ -1,19 +1,31 @@
 package com.revhire.service;
 
+import com.revhire.dto.DashboardStats;
 import com.revhire.model.Application;
 import java.util.List;
+import java.util.Map;
 
 public interface ApplicationService {
-    Application applyJob(int jobId, int seekerId);
+    void applyJob(int jobId, int seekerId);
+
+    void applyJob(int jobId, int seekerId, String coverLetter);
 
     List<Application> getApplicationsByJob(int jobId);
 
-    List<Application> getApplicationsBySeeker(int seekerId);
+    List<Application> getApplicationsByUserId(int userId);
+
+    // Dashboard statistics
+    DashboardStats getApplicationStatsByUserId(int userId);
 
     // New features
     boolean withdrawApplication(int applicationId);
 
-    java.util.Map<String, Integer> getJobStatistics(int jobId);
+    boolean withdrawApplication(int applicationId, String reason);
 
-    boolean updateApplicationStatus(int applicationId, Application.ApplicationStatus status);
+    Map<String, Integer> getJobStatistics(int jobId);
+
+    boolean updateApplicationStatus(int applicationId, int employerId, Application.ApplicationStatus status);
+
+    boolean updateApplicationStatus(int applicationId, int employerId, Application.ApplicationStatus status,
+            String notes);
 }

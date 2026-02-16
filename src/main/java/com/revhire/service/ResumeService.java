@@ -1,28 +1,14 @@
 package com.revhire.service;
 
-import com.revhire.model.*;
-import java.util.Optional;
+import com.revhire.model.Resume;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 
 public interface ResumeService {
-    Resume getResumeBySeekerId(int jobSeekerId);
+    Resume getResumeByUserId(int userId);
 
-    Resume createResume(int jobSeekerId, String summary);
+    void saveResumeFile(int userId, MultipartFile file) throws IOException;
 
-    boolean updateSummary(int jobSeekerId, String summary);
-
-    boolean addEducation(int jobSeekerId, ResumeEducation education);
-
-    boolean deleteEducation(int jobSeekerId, int educationId);
-
-    boolean addExperience(int jobSeekerId, ResumeExperience experience);
-
-    boolean deleteExperience(int jobSeekerId, int experienceId);
-
-    boolean addProject(int jobSeekerId, ResumeProject project);
-
-    boolean deleteProject(int jobSeekerId, int projectId);
-
-    boolean addSkill(int jobSeekerId, ResumeSkill skill);
-
-    boolean deleteSkill(int jobSeekerId, int skillId);
+    // Remaining methods can be kept or refactored later
+    // For now we focus on the file upload requirement
 }

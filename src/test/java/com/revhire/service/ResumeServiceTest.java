@@ -1,130 +1,73 @@
 package com.revhire.service;
 
-import com.revhire.dao.ResumeDAO;
+import com.revhire.model.JobSeeker;
 import com.revhire.model.Resume;
-import com.revhire.model.ResumeEducation;
+import com.revhire.repository.JobSeekerRepository;
+import com.revhire.repository.ResumeRepository;
 import com.revhire.service.impl.ResumeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-class ResumeServiceTest {
-    private ResumeService resumeService;
-    private FakeResumeDAO fakeDAO;
+@ExtendWith(MockitoExtension.class)
+public class ResumeServiceTest {
+
+    @Mock
+    private ResumeRepository resumeRepository;
+
+    @Mock
+    private JobSeekerRepository jobSeekerRepository;
+
+    @InjectMocks
+    private ResumeServiceImpl resumeService;
+
+    private JobSeeker jobSeeker;
 
     @BeforeEach
-    void setUp() {
-        fakeDAO = new FakeResumeDAO();
-        resumeService = new ResumeServiceImpl(fakeDAO);
+    public void setUp() {
+        jobSeeker = new JobSeeker();
+        jobSeeker.setId(100);
+        com.revhire.model.User user = new com.revhire.model.User();
+        user.setId(5);
+        jobSeeker.setUser(user);
     }
 
     @Test
-    void testCreateResume_Success() {
-        Resume result = resumeService.createResume(1, "Test Summary");
+    public void testGetResumeByUserId_Success() {
+        when(jobSeekerRepository.findByUser_Id(5)).thenReturn(Optional.of(jobSeeker));
+
+        Resume resume = new Resume();
+        resume.setJobSeekerId(100);
+        when(resumeRepository.findByJobSeekerId(100)).thenReturn(Optional.of(resume));
+
+        Resume result = resumeService.getResumeByUserId(5);
         assertNotNull(result);
-        assertEquals(1, result.getJobSeekerId());
-        assertEquals("Test Summary", result.getSummary());
+        assertEquals(100, result.getJobSeekerId());
     }
 
     @Test
-    void testGetResumeBySeekerId_Found() {
-        fakeDAO.createResume(new Resume(1, 1, "Existing"));
-        Resume result = resumeService.getResumeBySeekerId(1);
-        assertNotNull(result);
-        assertEquals("Existing", result.getSummary());
-    }
+    public void testSaveResumeFile_Success() throws IOException {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getBytes()).thenReturn(new byte[] { 1, 2, 3 });
+        when(file.getOriginalFilename()).thenReturn("test.pdf");
+        when(file.getContentType()).thenReturn("application/pdf");
 
-    @Test
-    void testAddEducation_ResumeExists() {
-        fakeDAO.createResume(new Resume(1, 1, "Summary"));
-        boolean result = resumeService.addEducation(1, new ResumeEducation("BS", "Uni", 2020, "A"));
-        assertTrue(result);
-    }
+        when(jobSeekerRepository.findByUser_Id(5)).thenReturn(Optional.of(jobSeeker));
+        when(resumeRepository.findByJobSeekerId(100)).thenReturn(Optional.empty()); // No existing resume
 
-    @Test
-    void testAddEducation_NoResume() {
-        boolean result = resumeService.addEducation(99, new ResumeEducation("BS", "Uni", 2020, "A"));
-        assertFalse(result);
-    }
+        assertDoesNotThrow(() -> resumeService.saveResumeFile(5, file));
 
-    // --- Fake DAO ---
-    static class FakeResumeDAO implements ResumeDAO {
-        private Resume resume;
-
-        @Override
-        public Resume createResume(Resume r) {
-            r.setId(1);
-            this.resume = r;
-            return r;
-        }
-
-        @Override
-        public Optional<Resume> getResumeBySeekerId(int jobSeekerId) {
-            if (resume != null && resume.getJobSeekerId() == jobSeekerId) {
-                return Optional.of(resume);
-            }
-            return Optional.empty();
-        }
-
-        @Override
-        public boolean updateSummary(int resumeId, String summary) {
-            if (resume != null && resume.getId() == resumeId) {
-                resume.setSummary(summary);
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean deleteResume(int resumeId) {
-            if (resume != null && resume.getId() == resumeId) {
-                resume = null;
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean addEducation(ResumeEducation e) {
-            return true;
-        }
-
-        @Override
-        public boolean deleteEducation(int id) {
-            return true;
-        }
-
-        @Override
-        public boolean addExperience(com.revhire.model.ResumeExperience e) {
-            return true;
-        }
-
-        @Override
-        public boolean deleteExperience(int id) {
-            return true;
-        }
-
-        @Override
-        public boolean addProject(com.revhire.model.ResumeProject p) {
-            return true;
-        }
-
-        @Override
-        public boolean deleteProject(int id) {
-            return true;
-        }
-
-        @Override
-        public boolean addSkill(com.revhire.model.ResumeSkill s) {
-            return true;
-        }
-
-        @Override
-        public boolean deleteSkill(int id) {
-            return true;
-        }
+        verify(resumeRepository, times(1)).save(any(Resume.class));
     }
 }

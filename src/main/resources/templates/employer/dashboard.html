@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: head('Employer Dashboard')}"></head>
+
+<body>
+
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <main class="container py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h2>Employer Dashboard</h2>
+            <a href="/employer/jobs/new" class="btn btn-primary"><i class="fas fa-plus"></i> Post a Job</a>
+        </div>
+
+        <!-- Analytics Section -->
+        <div class="grid grid-cols-2 gap-8 mb-8">
+            <div class="card p-6 shadow-md">
+                <h4 class="mb-4">Job Performance</h4>
+                <div class="relative h-64">
+                    <canvas id="jobChart"></canvas>
+                </div>
+            </div>
+            <div class="card p-6 shadow-md">
+                <h4 class="mb-4">Quick Stats</h4>
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div class="bg-indigo-50 p-4 rounded">
+                        <h3 class="text-3xl font-bold text-indigo-600" th:text="${stats.totalJobs}">0</h3>
+                        <p class="text-gray-600">Total Jobs</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded">
+                        <h3 class="text-3xl font-bold text-green-600" th:text="${stats.activeJobs}">0</h3>
+                        <p class="text-gray-600">Active Jobs</p>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded">
+                        <h3 class="text-3xl font-bold text-yellow-600">0</h3> <!-- Placeholder -->
+                        <p class="text-gray-600">Total Applicants</p>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded">
+                        <h3 class="text-3xl font-bold text-red-600" th:text="${stats.closedJobs}">0</h3>
+                        <p class="text-gray-600">Closed Jobs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Jobs Section -->
+        <div class="card shadow-md p-6">
+            <h4 class="mb-6">Manage Jobs</h4>
+
+            <div th:if="${jobs.empty}"
+                class="text-center py-12 bg-gray-50 rounded border border-dashed border-gray-300">
+                <i class="fas fa-briefcase text-4xl text-gray-400 mb-3"></i>
+                <p class="text-gray-500 mb-4">You haven't posted any jobs yet.</p>
+                <a href="/employer/jobs/new" class="btn btn-primary btn-sm">Post First Job</a>
+            </div>
+
+            <div th:unless="${jobs.empty}" class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="p-4 font-semibold text-gray-600">Job Title</th>
+                            <th class="p-4 font-semibold text-gray-600">Posted Date</th>
+                            <th class="p-4 font-semibold text-gray-600">Status</th>
+                            <th class="p-4 font-semibold text-gray-600">Applications</th>
+                            <th class="p-4 font-semibold text-gray-600">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="job : ${jobs}" class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="p-4 font-medium text-gray-800" th:text="${job.title}">Software Engineer</td>
+                            <td class="p-4 text-gray-500 text-sm"
+                                th:text="${#dates.format(job.createdAt, 'MMM dd, yyyy')}">Jan 01, 2026</td>
+                            <td class="p-4">
+                                <span class="badge"
+                                    th:classappend="${job.status.name() == 'OPEN' ? 'badge-onsite' : 'bg-gray-200 text-gray-600'}"
+                                    th:text="${job.status}">OPEN</span>
+                            </td>
+                            <td class="p-4">
+                                <a th:href="@{'/employer/jobs/' + ${job.id} + '/applications'}"
+                                    class="text-indigo-600 hover:underline font-medium">View Applicants</a>
+                            </td>
+                            <td class="p-4 flex gap-2">
+                                <a th:href="@{'/employer/jobs/edit/' + ${job.id}}"
+                                    class="btn btn-outline btn-sm px-2 py-1" title="Edit"><i
+                                        class="fas fa-edit"></i></a>
+                                <form th:action="@{'/employer/jobs/delete/' + ${job.id}}" method="post" class="inline"
+                                    onsubmit="return confirm('Are you sure?');">
+                                    <button type="submit"
+                                        class="btn btn-outline btn-sm px-2 py-1 text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
+                                        title="Delete"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <footer th:replace="~{fragments :: footer}"></footer>
+
+    <!-- Chart.js Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('jobChart').getContext('2d');
+            var activeJobs = /*[[${stats.activeJobs}]]*/ 0;
+            var closedJobs = /*[[${stats.closedJobs}]]*/ 0;
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Active Jobs', 'Closed Jobs'],
+                    datasets: [{
+                        data: [activeJobs, closedJobs],
+                        backgroundColor: [
+                            '#10B981', // Emerald 500
+                            '#EF4444'  // Red 500
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+        /*]]>*/
+    </script>
+</body>
+
+</html>

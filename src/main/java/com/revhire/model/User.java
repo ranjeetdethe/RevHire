@@ -1,20 +1,42 @@
 package com.revhire.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String firstName;
-    private String lastName;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstName; // Assuming column name is first_name
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName; // Assuming column name is last_name
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String password; // In production, this should be hashed
+
     private String phone;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole role;
 
     public enum UserRole {
-        SEEKER, EMPLOYER
+        JOB_SEEKER, EMPLOYER, ADMIN
     }
 
     // New fields for forgot password feature
+    @Column(name = "security_question")
     private String securityQuestion;
+
+    @Column(name = "security_answer")
     private String securityAnswer;
 
     public User() {

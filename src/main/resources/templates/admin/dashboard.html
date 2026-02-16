@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title th:replace="~{fragments :: head('Admin Dashboard')}"></title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <div class="container py-8">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Administrator Dashboard</h1>
+            <p class="text-gray-600 mt-2">RevHire Platform Orchestration & Oversight</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="card p-6 bg-primary text-white">
+                <h3 class="text-lg font-semibold mb-2">Total Users</h3>
+                <p class="text-4xl font-bold" th:text="${totalUsers}">0</p>
+            </div>
+            <div class="card p-6 bg-secondary text-white">
+                <h3 class="text-lg font-semibold mb-2">Total Jobs</h3>
+                <p class="text-4xl font-bold" th:text="${totalJobs}">0</p>
+            </div>
+            <div class="card p-6 bg-green-500 text-white">
+                <h3 class="text-lg font-semibold mb-2">Reports</h3>
+                <p class="text-4xl font-bold">0</p>
+            </div>
+            <div class="card p-6 bg-yellow-500 text-white">
+                <h3 class="text-lg font-semibold mb-2">Logs</h3>
+                <p class="text-4xl font-bold">OK</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Recent Users -->
+            <div class="card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">Recent Users</h2>
+                    <a href="/admin/users" class="text-primary hover:underline">View All</a>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="text-left py-2 px-2">Name</th>
+                                <th class="text-left py-2 px-2">Email</th>
+                                <th class="text-left py-2 px-2">Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user, iter : ${users}" th:if="${iter.index < 5}" class="border-b">
+                                <td class="py-2 px-2" th:text="${user.firstName + ' ' + user.lastName}">Name</td>
+                                <td class="py-2 px-2" th:text="${user.email}">Email</td>
+                                <td class="py-2 px-2">
+                                    <span class="px-2 py-0.5 rounded-full text-xs"
+                                        th:classappend="${user.role.name() == 'ADMIN' ? 'bg-red-100 text-red-700' : (user.role.name() == 'EMPLOYER' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700')}"
+                                        th:text="${user.role}">Role</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Jobs -->
+            <div class="card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">Recent Jobs</h2>
+                    <a href="/admin/jobs" class="text-primary hover:underline">View All</a>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="text-left py-2 px-2">Title</th>
+                                <th class="text-left py-2 px-2">Location</th>
+                                <th class="text-left py-2 px-2">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="job, iter : ${jobs}" th:if="${iter.index < 5}" class="border-b">
+                                <td class="py-2 px-2" th:text="${job.title}">Title</td>
+                                <td class="py-2 px-2" th:text="${job.location}">Location</td>
+                                <td class="py-2 px-2">
+                                    <span class="px-2 py-0.5 rounded-full text-xs"
+                                        th:classappend="${job.status.name() == 'OPEN' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}"
+                                        th:text="${job.status}">Status</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments :: footer}"></footer>
+</body>
+
+</html>

@@ -1,9 +1,9 @@
 package com.revhire.service;
 
-import java.util.Scanner;
+import com.revhire.model.JobSeeker;
 
 public interface JobSeekerService {
-    void viewProfile(int userId);
+    JobSeeker getProfileByUserId(int userId);
 
-    void updateProfile(int userId, Scanner scanner);
+    JobSeeker updateProfile(JobSeeker jobSeeker);
 }

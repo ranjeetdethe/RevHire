@@ -1,114 +1,63 @@
 package com.revhire.service.impl;
 
-import com.revhire.dao.ResumeDAO;
-import com.revhire.dao.impl.ResumeDAOImpl;
-import com.revhire.model.*;
+import com.revhire.model.JobSeeker;
+import com.revhire.model.Resume;
+import com.revhire.repository.JobSeekerRepository;
+import com.revhire.repository.ResumeRepository;
 import com.revhire.service.ResumeService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
+@Service
+@Transactional
 public class ResumeServiceImpl implements ResumeService {
-    private static final Logger logger = LogManager.getLogger(ResumeServiceImpl.class);
-    private final ResumeDAO resumeDAO;
 
-    public ResumeServiceImpl() {
-        this.resumeDAO = new ResumeDAOImpl();
-    }
+    private final ResumeRepository resumeRepository;
+    private final JobSeekerRepository jobSeekerRepository;
 
-    // For testing
-    public ResumeServiceImpl(ResumeDAO resumeDAO) {
-        this.resumeDAO = resumeDAO;
+    public ResumeServiceImpl(ResumeRepository resumeRepository, JobSeekerRepository jobSeekerRepository) {
+        this.resumeRepository = resumeRepository;
+        this.jobSeekerRepository = jobSeekerRepository;
     }
 
     @Override
-    public Resume getResumeBySeekerId(int jobSeekerId) {
-        return resumeDAO.getResumeBySeekerId(jobSeekerId).orElse(null);
+    public Resume getResumeByUserId(int userId) {
+        Optional<JobSeeker> seekerOpt = jobSeekerRepository.findByUser_Id(userId);
+        return seekerOpt.map(jobSeeker -> resumeRepository.findByJobSeekerId(jobSeeker.getId()).orElse(null))
+                .orElse(null);
     }
 
     @Override
-    public Resume createResume(int jobSeekerId, String summary) {
-        Optional<Resume> existing = resumeDAO.getResumeBySeekerId(jobSeekerId);
-        if (existing.isPresent()) {
-            logger.warn("Resume already exists for seeker ID: {}", jobSeekerId);
-            return existing.get();
+    public void saveResumeFile(int userId, MultipartFile file) throws IOException {
+        Optional<JobSeeker> seekerOpt = jobSeekerRepository.findByUser_Id(userId);
+        if (seekerOpt.isEmpty()) {
+            // In a better architecture, we might auto-create the profile here or throw a
+            // specific exception
+            throw new IllegalArgumentException("Job Seeker profile not found for user ID: " + userId);
         }
-        Resume resume = new Resume();
-        resume.setJobSeekerId(jobSeekerId);
-        resume.setSummary(summary);
-        return resumeDAO.createResume(resume);
-    }
 
-    @Override
-    public boolean updateSummary(int jobSeekerId, String summary) {
-        Optional<Resume> existing = resumeDAO.getResumeBySeekerId(jobSeekerId);
-        if (existing.isPresent()) {
-            return resumeDAO.updateSummary(existing.get().getId(), summary);
+        int jobSeekerId = seekerOpt.get().getId();
+
+        Optional<Resume> existingOpt = resumeRepository.findByJobSeekerId(jobSeekerId);
+        Resume resume;
+        if (existingOpt.isPresent()) {
+            resume = existingOpt.get();
+        } else {
+            resume = new Resume();
+            resume.setJobSeekerId(jobSeekerId);
         }
-        return false;
-    }
 
-    @Override
-    public boolean addEducation(int jobSeekerId, ResumeEducation education) {
-        Optional<Resume> resume = resumeDAO.getResumeBySeekerId(jobSeekerId);
-        if (resume.isPresent()) {
-            education.setResumeId(resume.get().getId());
-            return resumeDAO.addEducation(education);
+        resume.setData(file.getBytes());
+        resume.setFileName(file.getOriginalFilename());
+        resume.setFileType(file.getContentType());
+        if (resume.getSummary() == null) {
+            resume.setSummary("Uploaded Resume: " + file.getOriginalFilename());
         }
-        return false;
-    }
 
-    @Override
-    public boolean deleteEducation(int jobSeekerId, int educationId) {
-        // Technically strict ownership check might be needed here to ensure this
-        // education belongs to this seeker
-        // For simplicity, we trust the flow
-        return resumeDAO.deleteEducation(educationId);
-    }
-
-    @Override
-    public boolean addExperience(int jobSeekerId, ResumeExperience experience) {
-        Optional<Resume> resume = resumeDAO.getResumeBySeekerId(jobSeekerId);
-        if (resume.isPresent()) {
-            experience.setResumeId(resume.get().getId());
-            return resumeDAO.addExperience(experience);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean deleteExperience(int jobSeekerId, int experienceId) {
-        return resumeDAO.deleteExperience(experienceId);
-    }
-
-    @Override
-    public boolean addProject(int jobSeekerId, ResumeProject project) {
-        Optional<Resume> resume = resumeDAO.getResumeBySeekerId(jobSeekerId);
-        if (resume.isPresent()) {
-            project.setResumeId(resume.get().getId());
-            return resumeDAO.addProject(project);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean deleteProject(int jobSeekerId, int projectId) {
-        return resumeDAO.deleteProject(projectId);
-    }
-
-    @Override
-    public boolean addSkill(int jobSeekerId, ResumeSkill skill) {
-        Optional<Resume> resume = resumeDAO.getResumeBySeekerId(jobSeekerId);
-        if (resume.isPresent()) {
-            skill.setResumeId(resume.get().getId());
-            return resumeDAO.addSkill(skill);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean deleteSkill(int jobSeekerId, int skillId) {
-        return resumeDAO.deleteSkill(skillId);
+        resumeRepository.save(resume);
     }
 }

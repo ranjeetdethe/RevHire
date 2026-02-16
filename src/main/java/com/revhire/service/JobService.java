@@ -18,4 +18,8 @@ public interface JobService {
     boolean deleteJob(int id);
 
     List<Job> searchJobs(String keyword);
+
+    List<Job> searchJobs(String keyword, String location);
+
+    List<Job> searchJobs(String keyword, String location, Job.JobType jobType, Integer experience);
 }

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: head('Company Profile')}"></head>
+
+<body>
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center mb-4">
+                    <h2 class="fw-bold mb-0">Company Profile</h2>
+                    <span class="badge bg-primary ms-3">Employer</span>
+                </div>
+
+                <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <form th:action="@{/employer/profile}" method="post" th:object="${profile}">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-light py-3">
+                            <h5 class="mb-0 fw-bold text-primary">Company Information</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <label for="companyName" class="form-label fw-semibold">Company Name</label>
+                                <input type="text" class="form-control" id="companyName" name="companyName"
+                                    th:value="${profile?.companyName}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="location" class="form-label fw-semibold">Headquarters / Location</label>
+                                <input type="text" class="form-control" id="location" name="location"
+                                    th:value="${profile?.location}" placeholder="City, State">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="website" class="form-label fw-semibold">Website</label>
+                                <input type="url" class="form-control" id="website" name="website"
+                                    th:value="${profile?.website}" placeholder="https://example.com">
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="industry" class="form-label fw-semibold">Industry</label>
+                                    <input type="text" class="form-control" id="industry" name="industry"
+                                        th:value="${profile?.industry}" placeholder="Tech, Finance...">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="companySize" class="form-label fw-semibold">Company Size</label>
+                                    <select class="form-select" id="companySize" name="companySize"
+                                        aria-label="Company Size">
+                                        <option value="" disabled selected>Select size</option>
+                                        <option value="1-10" th:selected="${profile?.companySize == '1-10'}">1-10
+                                            Employees</option>
+                                        <option value="11-50" th:selected="${profile?.companySize == '11-50'}">11-50
+                                            Employees</option>
+                                        <option value="51-200" th:selected="${profile?.companySize == '51-200'}">51-200
+                                            Employees</option>
+                                        <option value="201-500" th:selected="${profile?.companySize == '201-500'}">
+                                            201-500 Employees</option>
+                                        <option value="500+" th:selected="${profile?.companySize == '500+'}">500+
+                                            Employees</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="description" class="form-label fw-semibold">Company Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="5"
+                                    th:text="${profile?.description}"
+                                    placeholder="Tell us about your company..."></textarea>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">Update Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments :: footer}"></footer>
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:replace="~{fragments :: head('Login')}"></title>
+</head>
+
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+
+    <div class="card w-100 shadow-lg border-0 rounded-4" style="max-width: 450px;">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <i class="fas fa-user-circle text-primary display-4 mb-3"></i>
+                <h2 class="fw-bold text-dark">Welcome Back</h2>
+                <p class="text-muted">Please sign in to your account</p>
+            </div>
+
+            <!-- Spring Security Default Login Endpoint is /login -->
+            <form th:action="@{/login}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                <!-- Error Message -->
+                <div th:if="${param.error}" class="alert alert-danger d-flex align-items-center" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <div>Invalid email or password. Please try again.</div>
+                </div>
+
+                <!-- Logout Success Message -->
+                <div th:if="${param.logout}" class="alert alert-success d-flex align-items-center" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <div>You have been logged out successfully.</div>
+                </div>
+
+                <!-- Email Field - CRITICAL: name must be 'username' for Spring Security -->
+                <div class="mb-3">
+                    <label for="username" class="form-label fw-bold small text-uppercase text-secondary">Email
+                        Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i
+                                class="fas fa-envelope text-muted"></i></span>
+                        <input type="email" id="username" name="username" class="form-control border-start-0 ps-0"
+                            placeholder="Enter your email" required autofocus>
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="mb-4">
+                    <label for="password"
+                        class="form-label fw-bold small text-uppercase text-secondary">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i
+                                class="fas fa-lock text-muted"></i></span>
+                        <input type="password" id="password" name="password" class="form-control border-start-0 ps-0"
+                            placeholder="Enter your password" required>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                </button>
+            </form>
+
+            <div class="mt-4 text-center">
+                <p class="text-muted small">Don't have an account? <a href="/register"
+                        class="text-primary text-decoration-none fw-bold">Sign Up</a></p>
+                <p class="mt-2"><a href="/" class="text-secondary text-decoration-none small"><i
+                            class="fas fa-arrow-left me-1"></i> Back to Home</a></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -4,7 +4,7 @@ public class ResumeSkill {
     private int id;
     private int resumeId;
     private String skillName;
-    private String proficiency; // Beginner, Intermediate, Expert
+    private String proficiency; 
 
     public ResumeSkill() {
     }

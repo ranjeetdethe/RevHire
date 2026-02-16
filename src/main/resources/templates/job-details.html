@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title th:replace="~{fragments :: head(${job.title})}"></title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <div class="container py-8 max-w-4xl mx-auto">
+        <!-- Success/Error Messages -->
+        <div th:if="${message}" class="mb-6 p-4 bg-green-100 text-green-700 rounded border border-green-200"
+            th:text="${message}"></div>
+        <div th:if="${error}" class="mb-6 p-4 bg-red-100 text-red-700 rounded border border-red-200" th:text="${error}">
+        </div>
+
+        <!-- Job Header -->
+        <div class="card p-8 mb-6">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-3" th:text="${job.title}">Job Title</h1>
+                    <div class="flex items-center gap-6 text-gray-600">
+                        <span class="flex items-center">
+                            <i class="fas fa-building mr-2 text-primary"></i>
+                            <span class="font-semibold" th:text="${job.employer.companyName}">Company</span>
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2 text-primary"></i>
+                            <span th:text="${job.location}">Location</span>
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-clock mr-2 text-primary"></i>
+                            <span>Posted <span
+                                    th:text="${#dates.format(job.createdAt, 'MMM dd, yyyy')}">Date</span></span>
+                        </span>
+                    </div>
+                </div>
+                <div sec:authorize="hasRole('SEEKER')">
+                    <form th:action="@{/applications/apply}" method="post" class="inline">
+                        <input type="hidden" name="jobId" th:value="${job.id}">
+                        <button type="submit" class="btn btn-primary px-8 py-3 text-lg">
+                            <i class="fas fa-paper-plane mr-2"></i>Apply Now
+                        </button>
+                    </form>
+                </div>
+                <div sec:authorize="!isAuthenticated()">
+                    <a href="/login" class="btn btn-primary px-8 py-3 text-lg">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login to Apply
+                    </a>
+                </div>
+            </div>
+
+            <!-- Job Details Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-gray-50 rounded-lg">
+                <div>
+                    <div class="text-gray-600 text-sm mb-1">Experience Required</div>
+                    <div class="font-semibold text-gray-800" th:text="${job.experienceRequired} + ' years'">0 years
+                    </div>
+                </div>
+                <div>
+                    <div class="text-gray-600 text-sm mb-1">Salary Range</div>
+                    <div class="font-semibold text-gray-800" th:text="${job.salaryRange}">$0 - $0</div>
+                </div>
+                <div>
+                    <div class="text-gray-600 text-sm mb-1">Job Type</div>
+                    <div class="font-semibold text-gray-800" th:text="${job.jobType}">Full Time</div>
+                </div>
+                <div>
+                    <div class="text-gray-600 text-sm mb-1">Status</div>
+                    <div>
+                        <span
+                            th:classappend="${job.status.name() == 'OPEN' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}"
+                            class="px-3 py-1 rounded-full text-sm font-semibold" th:text="${job.status}">Open</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-gray-600 text-sm mb-1">Deadline</div>
+                    <div class="font-semibold text-gray-800" th:text="${#dates.format(job.deadline, 'MMM dd, yyyy')}">
+                        Date</div>
+                </div>
+                <div>
+                    <div class="text-gray-600 text-sm mb-1">Openings</div>
+                    <div class="font-semibold text-gray-800" th:text="${job.numberOfOpenings}">1</div>
+                </div>
+                <div>
+                    <div class="text-gray-600 text-sm mb-1">Education</div>
+                    <div class="font-semibold text-gray-800" th:text="${job.educationRequired}">Degree</div>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-indigo-50 rounded-lg border border-indigo-100" th:if="${job.skills}">
+                <h4 class="text-lg font-semibold text-indigo-900 mb-2">Required Skills</h4>
+                <div class="d-flex flex-wrap gap-2">
+                    <span th:each="skill : ${#strings.arraySplit(job.skills, ',')}"
+                        class="badge bg-white text-primary border px-3 py-2 rounded-pill shadow-sm"
+                        th:text="${#strings.trim(skill)}">Skill</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Description -->
+        <div class="card p-8 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Job Description</h2>
+            <div class="text-gray-700 leading-relaxed whitespace-pre-line" th:text="${job.description}">
+                Job description goes here...
+            </div>
+        </div>
+
+        <!-- Company Information -->
+        <div class="card p-8 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">About the Company</h2>
+            <div class="flex items-start gap-4">
+                <div
+                    class="w-16 h-16 bg-primary text-white rounded-lg flex items-center justify-center text-2xl font-bold">
+                    <span th:text="${#strings.substring(job.employer.companyName, 0, 1)}">C</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2" th:text="${job.employer.companyName}">Company
+                        Name</h3>
+                    <p class="text-gray-600" th:text="${job.employer.description ?: 'No description available'}">
+                        Company description...
+                    </p>
+                    <div class="mt-3 text-gray-600">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        <span th:text="${job.location}">Location</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-4 justify-center">
+            <a href="/jobs" class="btn btn-secondary px-8 py-3">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Jobs
+            </a>
+
+            <div sec:authorize="hasRole('JOB_SEEKER')">
+                <form th:action="@{/seeker/saved-jobs/add}" method="post" class="inline">
+                    <input type="hidden" name="jobId" th:value="${job.id}">
+                    <button type="submit" class="btn btn-outline-primary px-8 py-3 me-3">
+                        <i class="far fa-bookmark mr-2"></i>Save Job
+                    </button>
+                </form>
+
+                <button type="button" class="btn btn-primary px-8 py-3" data-bs-toggle="modal"
+                    data-bs-target="#applyModal">
+                    <i class="fas fa-paper-plane mr-2"></i>Apply for this Position
+                </button>
+            </div>
+
+            <div sec:authorize="!isAuthenticated()">
+                <a href="/login" class="btn btn-primary px-8 py-3">Login to Apply</a>
+            </div>
+        </div>
+
+        <!-- Apply Modal -->
+        <div class="modal fade" id="applyModal" tabindex="-1" aria-hidden="true" sec:authorize="hasRole('JOB_SEEKER')">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/applications/apply}" method="post">
+                        <input type="hidden" name="jobId" th:value="${job.id}">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Apply for <span th:text="${job.title}">Job</span></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-gray-600 mb-3">You are applying with your profile and uploaded resume.</p>
+                            <div class="mb-3">
+                                <label for="coverLetter" class="form-label font-semibold">Cover Letter
+                                    (Optional)</label>
+                                <textarea class="form-control" name="coverLetter" rows="5"
+                                    placeholder="Tell us why you are a good fit for this role..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments :: footer}"></footer>
+</body>
+
+</html>

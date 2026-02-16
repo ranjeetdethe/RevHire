@@ -1,18 +1,33 @@
 package com.revhire.model;
 
-import java.sql.Timestamp;
+import jakarta.persistence.*;
+import java.util.Date;
 
+@Entity
+@Table(name = "notifications")
 public class Notification {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "user_id", nullable = false)
     private int userId;
+
+    @Column(nullable = false)
     private String message;
-    private Timestamp createdAt;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
+
+    @Column(name = "is_read")
     private boolean isRead;
 
     public Notification() {
     }
 
-    public Notification(int id, int userId, String message, Timestamp createdAt, boolean isRead) {
+    public Notification(int id, int userId, String message, Date createdAt, boolean isRead) {
         this.id = id;
         this.userId = userId;
         this.message = message;
@@ -24,7 +39,7 @@ public class Notification {
         this.userId = userId;
         this.message = message;
         this.isRead = false;
-        this.createdAt = new Timestamp(System.currentTimeMillis());
+        this.createdAt = new Date();
     }
 
     public int getId() {
@@ -51,11 +66,11 @@ public class Notification {
         this.message = message;
     }
 
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 

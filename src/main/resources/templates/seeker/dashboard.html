@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: head('Seeker Dashboard')}"></head>
+
+<body>
+
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <main class="container py-8">
+        <div class="grid grid-cols-12 gap-6">
+            <!-- Sidebar -->
+            <div class="col-span-3">
+                <div class="card shadow-md p-6">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold text-xl">
+                            <span th:text="${#strings.substring(user.firstName, 0, 1)}">U</span>
+                        </div>
+                        <div>
+                            <h4 th:text="${user.firstName + ' ' + user.lastName}">User Name</h4>
+                            <p class="text-sm text-gray-500">Job Seeker</p>
+                        </div>
+                    </div>
+
+                    <ul class="space-y-2">
+                        <li><a href="/seeker/dashboard"
+                                class="block p-2 rounded bg-indigo-50 text-indigo-700 font-medium"><i
+                                    class="fas fa-columns w-6"></i> Dashboard</a></li>
+                        <li><a href="/seeker/profile" class="block p-2 rounded text-gray-600 hover:bg-gray-50"><i
+                                    class="fas fa-user w-6"></i> My Profile</a></li>
+                        <li><a href="/applications/my-applications"
+                                class="block p-2 rounded text-gray-600 hover:bg-gray-50"><i
+                                    class="fas fa-file-alt w-6"></i> My Applications</a></li>
+                        <li><a href="/saved-jobs" class="block p-2 rounded text-gray-600 hover:bg-gray-50"><i
+                                    class="fas fa-heart w-6"></i> Saved Jobs</a></li>
+                        <li><a href="/resume/upload" class="block p-2 rounded text-gray-600 hover:bg-gray-50"><i
+                                    class="fas fa-upload w-6"></i> Upload Resume</a></li>
+                        <li><a href="/settings" class="block p-2 rounded text-gray-600 hover:bg-gray-50"><i
+                                    class="fas fa-cog w-6"></i> Settings</a></li>
+                    </ul>
+                </div>
+
+                <!-- Profile Completion Widget -->
+                <div class="card shadow-md p-6 mt-6">
+                    <h5 class="mb-4">Profile Completion</h5>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                        <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 70%"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 text-right">70%</p>
+                    <a href="/seeker/profile/edit" class="text-sm text-indigo-600 hover:underline mt-2 block">Complete
+                        Profile</a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-span-9">
+                <h2 class="mb-6">Dashboard Overview</h2>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-4 gap-4 mb-8">
+                    <div class="card p-4 border-l-4 border-indigo-500">
+                        <p class="text-gray-500 text-sm">Total Applications</p>
+                        <h3 class="text-2xl font-bold mt-1" th:text="${stats.totalApplications}">0</h3>
+                    </div>
+                    <div class="card p-4 border-l-4 border-yellow-500">
+                        <p class="text-gray-500 text-sm">Shortlisted</p>
+                        <h3 class="text-2xl font-bold mt-1" th:text="${stats.shortlistedCount}">0</h3>
+                    </div>
+                    <div class="card p-4 border-l-4 border-green-500">
+                        <p class="text-gray-500 text-sm">Interviews</p>
+                        <h3 class="text-2xl font-bold mt-1">0</h3> <!-- Placeholder -->
+                    </div>
+                    <div class="card p-4 border-l-4 border-red-500">
+                        <p class="text-gray-500 text-sm">Rejected</p>
+                        <h3 class="text-2xl font-bold mt-1" th:text="${stats.rejectedCount}">0</h3>
+                    </div>
+                </div>
+
+                <!-- Recent Applications -->
+                <div class="card shadow-md p-6 mb-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3>Recent Applications</h3>
+                        <a href="/applications/my-applications" class="text-indigo-600 text-sm hover:underline">View
+                            All</a>
+                    </div>
+
+                    <div th:if="${applications.empty}" class="text-center py-8 text-gray-500">
+                        <i class="fas fa-folder-open text-4xl mb-3 block opacity-50"></i>
+                        No applications yet. <a href="/jobs" class="text-indigo-600 hover:underline">Find a job</a> and
+                        apply!
+                    </div>
+
+                    <div th:unless="${applications.empty}" class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="p-3 font-semibold text-gray-600">Job Title</th>
+                                    <th class="p-3 font-semibold text-gray-600">Company</th>
+                                    <th class="p-3 font-semibold text-gray-600">Applied Date</th>
+                                    <th class="p-3 font-semibold text-gray-600">Status</th>
+                                    <th class="p-3 font-semibold text-gray-600">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="app : ${applications}" class="border-b border-gray-100 hover:bg-gray-50">
+                                    <td class="p-3 font-medium text-gray-800" th:text="${app.job.title}">Senior
+                                        Developer</td>
+                                    <td class="p-3 text-gray-600" th:text="${app.job.employer.companyName}">Tech Corp
+                                    </td>
+                                    <td class="p-3 text-gray-500 text-sm"
+                                        th:text="${#dates.format(app.appliedAt, 'MMM dd, yyyy')}">Feb 14, 2026</td>
+                                    <td class="p-3">
+                                        <span class="badge"
+                                            th:classappend="${app.status.name() == 'APPLIED' ? 'bg-blue-100 text-blue-800' : 
+                                                              (app.status.name() == 'SHORTLISTED' ? 'bg-green-100 text-green-800' : 
+                                                              (app.status.name() == 'REJECTED' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'))}"
+                                            th:text="${app.status}">APPLIED</span>
+                                    </td>
+                                    <td class="p-3">
+                                        <a th:href="@{'/jobs/' + ${app.job.id}}"
+                                            class="text-indigo-600 hover:text-indigo-800 mr-2" title="View Job"><i
+                                                class="fas fa-eye"></i></a>
+                                        <!-- Add withdraw form if status is APPLIED -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recommended Jobs (Placeholder) -->
+                <div class="card shadow-md p-6">
+                    <h3 class="mb-4">Recommended For You</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="border rounded p-4 hover:border-indigo-500 transition-colors cursor-pointer">
+                            <h4 class="text-lg font-bold">Java Backend Lead</h4>
+                            <p class="text-sm text-gray-500 mb-2">FinTech Solutions • Remote</p>
+                            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Java</span>
+                            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Spring</span>
+                        </div>
+                        <div class="border rounded p-4 hover:border-indigo-500 transition-colors cursor-pointer">
+                            <h4 class="text-lg font-bold">Full Stack Engineer</h4>
+                            <p class="text-sm text-gray-500 mb-2">HealthPlus • New York</p>
+                            <span class="text-xs bg-gray-100 px-2 py-1 rounded">React</span>
+                            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Node.js</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments :: footer}"></footer>
+
+</body>
+
+</html>

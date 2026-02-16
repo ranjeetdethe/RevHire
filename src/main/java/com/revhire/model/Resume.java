@@ -1,15 +1,40 @@
 package com.revhire.model;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "resumes")
 public class Resume {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "job_seeker_id", unique = true)
     private int jobSeekerId;
+
+    @Column(columnDefinition = "TEXT")
     private String summary;
+
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] data;
+
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "file_type")
+    private String fileType;
+
+    // Transient lists for now as we haven't converted child entities yet
+    @Transient
     private List<ResumeEducation> educationList = new ArrayList<>();
+    @Transient
     private List<ResumeExperience> experienceList = new ArrayList<>();
+    @Transient
     private List<ResumeProject> projectList = new ArrayList<>();
+    @Transient
     private List<ResumeSkill> skillList = new ArrayList<>();
 
     public Resume() {
@@ -43,6 +68,30 @@ public class Resume {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
     }
 
     public List<ResumeEducation> getEducationList() {
@@ -98,11 +147,7 @@ public class Resume {
         return "Resume{" +
                 "id=" + id +
                 ", jobSeekerId=" + jobSeekerId +
-                ", summary='" + summary + '\'' +
-                ", educationList=" + educationList +
-                ", experienceList=" + experienceList +
-                ", projectList=" + projectList +
-                ", skillList=" + skillList +
+                ", fileName='" + fileName + '\'' +
                 '}';
     }
 }

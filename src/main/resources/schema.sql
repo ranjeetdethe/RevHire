@@ -8,7 +8,7 @@
 CREATE DATABASE IF NOT EXISTS revhire_db;
 USE revhire_db;
 
--- 1. Users Table (Enhanced)
+-- 1. Users Table (Core Authentication)
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -16,13 +16,14 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
-    role ENUM('SEEKER', 'EMPLOYER') NOT NULL,
+    role VARCHAR(20) NOT NULL, -- Enum stored as String: JOB_SEEKER, EMPLOYER, ADMIN
     security_question VARCHAR(255),
     security_answer VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_email (email)
 );
 
--- 2. Job Seekers Profile (Extension)
+-- 2. Job Seekers Profile (1-1 with Users)
 CREATE TABLE IF NOT EXISTS job_seekers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNIQUE NOT NULL,
@@ -35,14 +36,7 @@ CREATE TABLE IF NOT EXISTS job_seekers (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Ensure columns exist if table already exists (Idempotent-ish updates)
-ALTER TABLE job_seekers ADD COLUMN education VARCHAR(255);
-ALTER TABLE job_seekers ADD COLUMN experience VARCHAR(255);
-ALTER TABLE job_seekers ADD COLUMN skills VARCHAR(255);
-ALTER TABLE job_seekers ADD COLUMN certifications VARCHAR(255);
-ALTER TABLE job_seekers ADD COLUMN location VARCHAR(255);
-
--- 3. Employers Profile (Extension)
+-- 3. Employers Profile (1-1 with Users)
 CREATE TABLE IF NOT EXISTS employers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNIQUE NOT NULL,
@@ -53,7 +47,7 @@ CREATE TABLE IF NOT EXISTS employers (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 4. Jobs Table
+-- 4. Jobs Table (M-1 with Employers)
 CREATE TABLE IF NOT EXISTS jobs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     employer_id INT NOT NULL,
@@ -64,31 +58,37 @@ CREATE TABLE IF NOT EXISTS jobs (
     salary_range VARCHAR(50), 
     status ENUM('OPEN', 'CLOSED') DEFAULT 'OPEN',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (employer_id) REFERENCES employers(id) ON DELETE CASCADE
+    FOREIGN KEY (employer_id) REFERENCES employers(id) ON DELETE CASCADE,
+    INDEX idx_title (title),
+    INDEX idx_location (location)
 );
 
--- 5. Applications Table
+-- 5. Applications Table (M-M Relationship: Job <-> JobSeeker)
 CREATE TABLE IF NOT EXISTS applications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     job_id INT NOT NULL,
-    seeker_id INT NOT NULL,
+    seeker_id INT NOT NULL, -- Refers to job_seekers.id, NOT users.id
     status ENUM('APPLIED', 'SHORTLISTED', 'REJECTED', 'WITHDRAWN') DEFAULT 'APPLIED',
     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE,
     FOREIGN KEY (seeker_id) REFERENCES job_seekers(id) ON DELETE CASCADE,
-    UNIQUE(job_id, seeker_id) 
+    UNIQUE(job_id, seeker_id),
+    INDEX idx_job_status (job_id, status)
 );
 
--- 6. Resumes Table
+-- 6. Resumes Table (1-1 with Job Seekers, optional extension)
 CREATE TABLE IF NOT EXISTS resumes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     job_seeker_id INT UNIQUE NOT NULL,
     summary TEXT,
+    file_name VARCHAR(255),
+    file_type VARCHAR(50),
+    data LONGBLOB, -- To store PDF file content directly in DB (simple approach)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (job_seeker_id) REFERENCES job_seekers(id) ON DELETE CASCADE
 );
 
--- 7. Resume Education Table
+-- 7. Resume Details (One-to-Many extensions)
 CREATE TABLE IF NOT EXISTS resume_education (
     id INT AUTO_INCREMENT PRIMARY KEY,
     resume_id INT NOT NULL,
@@ -99,18 +99,16 @@ CREATE TABLE IF NOT EXISTS resume_education (
     FOREIGN KEY (resume_id) REFERENCES resumes(id) ON DELETE CASCADE
 );
 
--- 8. Resume Experience Table
 CREATE TABLE IF NOT EXISTS resume_experience (
     id INT AUTO_INCREMENT PRIMARY KEY,
     resume_id INT NOT NULL,
     company VARCHAR(100),
     role VARCHAR(100),
-    duration VARCHAR(50), -- e.g. "2020-2022" or "2 years"
+    duration VARCHAR(50),
     description TEXT,
     FOREIGN KEY (resume_id) REFERENCES resumes(id) ON DELETE CASCADE
 );
 
--- 9. Resume Projects Table
 CREATE TABLE IF NOT EXISTS resume_projects (
     id INT AUTO_INCREMENT PRIMARY KEY,
     resume_id INT NOT NULL,
@@ -120,11 +118,10 @@ CREATE TABLE IF NOT EXISTS resume_projects (
     FOREIGN KEY (resume_id) REFERENCES resumes(id) ON DELETE CASCADE
 );
 
--- 10. Resume Skills Table
 CREATE TABLE IF NOT EXISTS resume_skills (
     id INT AUTO_INCREMENT PRIMARY KEY,
     resume_id INT NOT NULL,
     skill_name VARCHAR(50),
-    proficiency VARCHAR(20), -- Beginner, Intermediate, Expert
+    proficiency VARCHAR(20),
     FOREIGN KEY (resume_id) REFERENCES resumes(id) ON DELETE CASCADE
 );
