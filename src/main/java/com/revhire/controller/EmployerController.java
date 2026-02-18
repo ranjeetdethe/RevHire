@@ -37,26 +37,26 @@ public class EmployerController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || user.getRole() != User.UserRole.EMPLOYER) {
-            return "redirect:/login"; // Should be handled by Security but extra check
-        }
+    public String dashboard(@AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails, Model model) {
+        if (userDetails == null)
+            return "redirect:/login";
 
-        Optional<Employer> employerOpt = userService.getEmployerProfile(user.getId());
+        // No need to check role manually if SecurityConfig has
+        // .requestMatchers("/employer/**").hasRole("EMPLOYER")
+
+        Optional<Employer> employerOpt = userService.getEmployerProfile(userDetails.getId());
         if (employerOpt.isPresent()) {
             var jobs = jobService.getJobsByEmployer(employerOpt.get().getId());
             model.addAttribute("jobs", jobs);
 
-            // Calculate statistics (avoid lambda expressions in Thymeleaf!)
             com.revhire.dto.DashboardStats stats = new com.revhire.dto.DashboardStats();
             stats.setTotalJobs(jobs.size());
             stats.setActiveJobs(jobs.stream().filter(j -> j.getStatus() == Job.JobStatus.OPEN).count());
             stats.setClosedJobs(jobs.stream().filter(j -> j.getStatus() == Job.JobStatus.CLOSED).count());
             model.addAttribute("stats", stats);
         } else {
-            // Redirect to create profile if needed
-            // For now assume profile created on Registration (UserServiceImpl handles it)
+            // If profile not found, maybe redirect to create profile
+            return "redirect:/employer/profile";
         }
 
         return "employer/dashboard";
@@ -71,18 +71,16 @@ public class EmployerController {
     @PostMapping("/jobs")
     public String postJob(@Valid @ModelAttribute("jobDTO") JobDTO jobDTO,
             BindingResult result,
-            HttpSession session,
+            @AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails,
             Model model) {
         if (result.hasErrors()) {
             return "employer/post-job";
         }
 
-        User user = (User) session.getAttribute("user");
-        Optional<Employer> employerOpt = userService.getEmployerProfile(user.getId());
+        Optional<Employer> employerOpt = userService.getEmployerProfile(userDetails.getId());
 
         if (employerOpt.isEmpty()) {
-            // Handle edge case where profile missing despite being EMPLOYER
-            return "redirect:/employer/profile/create";
+            return "redirect:/employer/profile";
         }
 
         Job job = new Job();
@@ -92,7 +90,7 @@ public class EmployerController {
         job.setSalaryRange(jobDTO.getSalaryRange());
         job.setExperienceRequired(jobDTO.getExperienceRequired());
         job.setEmployer(employerOpt.get());
-        job.setStatus(Job.JobStatus.OPEN); // Default
+        job.setStatus(Job.JobStatus.OPEN);
 
         jobService.postJob(job);
 
@@ -100,15 +98,13 @@ public class EmployerController {
     }
 
     @GetMapping("/jobs/{jobId}/applications")
-    public String viewApplicants(@PathVariable int jobId, HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || user.getRole() != User.UserRole.EMPLOYER) {
-            return "redirect:/login";
-        }
+    public String viewApplicants(@PathVariable int jobId,
+            @AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails,
+            Model model) {
 
         Optional<Job> job = jobService.getJobById(jobId);
         // Verify job ownership
-        if (job.isEmpty() || job.get().getEmployer().getUser().getId() != user.getId()) {
+        if (job.isEmpty() || job.get().getEmployer().getUser().getId() != userDetails.getId()) {
             return "redirect:/employer/dashboard";
         }
 
@@ -122,14 +118,12 @@ public class EmployerController {
     public String updateApplicationStatus(@PathVariable int appId,
             @RequestParam("status") Application.ApplicationStatus status,
             @RequestParam(value = "notes", required = false) String notes,
-            HttpSession session, RedirectAttributes redirectAttributes) {
+            @AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
 
-        User user = (User) session.getAttribute("user");
-        if (user == null || user.getRole() != User.UserRole.EMPLOYER) {
-            return "redirect:/login";
-        }
-
-        if (applicationService.updateApplicationStatus(appId, user.getId(), status, notes)) {
+        // Service should handle ownership check ideally, but we pass employerId to be
+        // safe
+        if (applicationService.updateApplicationStatus(appId, userDetails.getId(), status, notes)) {
             redirectAttributes.addFlashAttribute("message", "Application status updated.");
         } else {
             redirectAttributes.addFlashAttribute("error", "Failed to update status.");
@@ -139,33 +133,28 @@ public class EmployerController {
     }
 
     @GetMapping("/profile")
-    public String viewProfile(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || user.getRole() != User.UserRole.EMPLOYER) {
-            return "redirect:/login";
-        }
-
-        Employer profile = employerService.getProfileByUserId(user.getId());
+    public String viewProfile(@AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails,
+            Model model) {
+        Employer profile = employerService.getProfileByUserId(userDetails.getId());
         model.addAttribute("profile", profile);
-        model.addAttribute("user", user);
+        model.addAttribute("user", userDetails.getUser());
         model.addAttribute("activePage", "profile");
         return "employer/profile";
     }
 
     @PostMapping("/profile")
-    public String updateProfile(@ModelAttribute Employer updatedProfile, HttpSession session,
+    public String updateProfile(@ModelAttribute Employer updatedProfile,
+            @AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails,
             RedirectAttributes redirectAttributes) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || user.getRole() != User.UserRole.EMPLOYER) {
-            return "redirect:/login";
-        }
 
-        Employer existingProfile = employerService.getProfileByUserId(user.getId());
+        Employer existingProfile = employerService.getProfileByUserId(userDetails.getId());
         if (existingProfile == null) {
             existingProfile = new Employer();
-            existingProfile.setUser(user);
+            existingProfile.setUser(userDetails.getUser());
         }
 
+        // Ideally use DTO here to prevent mass assignment, but for now we manually set
+        // fields
         existingProfile.setCompanyName(updatedProfile.getCompanyName());
         existingProfile.setDescription(updatedProfile.getDescription());
         existingProfile.setLocation(updatedProfile.getLocation());
