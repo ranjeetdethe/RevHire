@@ -36,13 +36,14 @@
                         </span>
                     </div>
                 </div>
-                <div sec:authorize="hasRole('SEEKER')">
-                    <form th:action="@{/applications/apply}" method="post" class="inline">
-                        <input type="hidden" name="jobId" th:value="${job.id}">
-                        <button type="submit" class="btn btn-primary px-8 py-3 text-lg">
-                            <i class="fas fa-paper-plane mr-2"></i>Apply Now
-                        </button>
-                    </form>
+                <div sec:authorize="hasRole('JOB_SEEKER')">
+                    <button type="button" th:onclick="'quickApply(' + ${job.id} + ')'"
+                        class="btn btn-primary px-8 py-3 text-lg" id="quickApplyBtn">
+                        <i class="fas fa-paper-plane mr-2"></i>Apply Now
+                    </button>
+                    <div id="quickApplyMessage" class="mt-2 text-success" style="display:none;">
+                        <i class="fas fa-check-circle mr-1"></i> Applied
+                    </div>
                 </div>
                 <div sec:authorize="!isAuthenticated()">
                     <a href="/login" class="btn btn-primary px-8 py-3 text-lg">
@@ -144,9 +145,12 @@
                 </form>
 
                 <button type="button" class="btn btn-primary px-8 py-3" data-bs-toggle="modal"
-                    data-bs-target="#applyModal">
+                    data-bs-target="#applyModal" id="modalOpenBtn">
                     <i class="fas fa-paper-plane mr-2"></i>Apply for this Position
                 </button>
+                <div id="mainApplyMessage" class="mt-2 text-success font-weight-bold" style="display:none;">
+                    <i class="fas fa-check-circle mr-1"></i> Application Submitted
+                </div>
             </div>
 
             <div sec:authorize="!isAuthenticated()">
@@ -158,8 +162,8 @@
         <div class="modal fade" id="applyModal" tabindex="-1" aria-hidden="true" sec:authorize="hasRole('JOB_SEEKER')">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form th:action="@{/applications/apply}" method="post">
-                        <input type="hidden" name="jobId" th:value="${job.id}">
+                    <form id="modalApplyForm" onsubmit="event.preventDefault(); submitModalApplication()">
+                        <input type="hidden" id="modalJobId" name="jobId" th:value="${job.id}">
                         <div class="modal-header">
                             <h5 class="modal-title">Apply for <span th:text="${job.title}">Job</span></h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -169,7 +173,7 @@
                             <div class="mb-3">
                                 <label for="coverLetter" class="form-label font-semibold">Cover Letter
                                     (Optional)</label>
-                                <textarea class="form-control" name="coverLetter" rows="5"
+                                <textarea class="form-control" id="coverLetter" name="coverLetter" rows="5"
                                     placeholder="Tell us why you are a good fit for this role..."></textarea>
                             </div>
                         </div>
@@ -184,6 +188,84 @@
     </div>
 
     <footer th:replace="~{fragments :: footer}"></footer>
+
+    <script>
+        async function applyToJob(jobId, coverLetter = null) {
+            const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+            const body = coverLetter ? JSON.stringify({ coverLetter }) : null;
+            const headers = {
+                'Content-Type': 'application/json',
+                [header]: token
+            };
+
+            try {
+                const response = await fetch(`/api/applications/apply/${jobId}`, {
+                    method: 'POST',
+                    headers: headers,
+                    body: body
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updateUIAsApplied();
+                    // Close modal if open
+                    const modalEl = document.getElementById('applyModal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) {
+                        modal.hide();
+                    }
+                    // Show success message (toast or alert)
+                    alert('Application submitted successfully!');
+                } else {
+                    const errorData = await response.json();
+                    alert('Error: ' + (errorData.error || 'Failed to apply'));
+                }
+            } catch (error) {
+                console.error('Error applying:', error);
+                alert('An error occurred while applying.');
+            }
+        }
+
+        function quickApply(jobId) {
+            if (confirm('Apply to this job with your profile?')) {
+                applyToJob(jobId);
+            }
+        }
+
+        function submitModalApplication() {
+            const jobId = document.getElementById('modalJobId').value;
+            const coverLetter = document.getElementById('coverLetter').value;
+            applyToJob(jobId, coverLetter);
+        }
+
+        function updateUIAsApplied() {
+            // Disable buttons
+            const quickBtn = document.getElementById('quickApplyBtn');
+            if (quickBtn) {
+                quickBtn.disabled = true;
+                quickBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Applied';
+                quickBtn.classList.remove('btn-primary');
+                quickBtn.classList.add('btn-success');
+            }
+
+            const modalBtn = document.getElementById('modalOpenBtn');
+            if (modalBtn) {
+                modalBtn.disabled = true;
+                modalBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Applied';
+                modalBtn.classList.remove('btn-primary');
+                modalBtn.classList.add('btn-success');
+            }
+
+            // Show messages
+            const msg1 = document.getElementById('quickApplyMessage');
+            if (msg1) msg1.style.display = 'block';
+
+            const msg2 = document.getElementById('mainApplyMessage');
+            if (msg2) msg2.style.display = 'block';
+        }
+    </script>
 </body>
 
 </html>

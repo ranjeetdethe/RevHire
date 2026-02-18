@@ -19,14 +19,10 @@
         </div>
 
         <div class="card" style="max-width: 600px; margin: 0 auto;">
-            <form method="POST" enctype="multipart/form-data" action="/resume/upload">
+            <form method="POST" enctype="multipart/form-data" th:action="@{/resume/upload}">
 
-                <div class="form-group">
-                    <label for="seekerId" class="form-label">Job Seeker ID</label>
-                    <input type="number" id="seekerId" name="seekerId" th:value="${seekerId}" class="form-control"
-                        placeholder="Enter your ID" required />
-                    <small class="text-muted">For demo purposes, enter your ID manually.</small>
-                </div>
+                <!-- Job Seeker ID is handled by session/authentication -->
+                <input type="hidden" name="userId" th:value="${seekerId}" />
 
                 <div class="form-group">
                     <label for="file" class="form-label">Select Resume (PDF, DOCX)</label>

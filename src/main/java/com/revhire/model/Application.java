@@ -39,7 +39,7 @@ public class Application {
     private String employerNotes;
 
     public enum ApplicationStatus {
-        APPLIED, UNDER_REVIEW, SHORTLISTED, REJECTED, WITHDRAWN
+        APPLIED, UNDER_REVIEW, SHORTLISTED, REJECTED, WITHDRAWN, HIRED
     }
 
     public Application() {
