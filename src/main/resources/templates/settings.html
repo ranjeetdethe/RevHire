@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: head('Settings')}"></head>
+
+<body>
+    <nav th:replace="~{fragments :: header}"></nav>
+
+    <main class="container-xl py-5">
+        <div class="row g-4">
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-3">
+                <div class="saas-card p-0 overflow-hidden mb-4">
+                    <div class="list-group list-group-flush">
+                        <a href="/seeker/dashboard"
+                            class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 text-slate-600 hover-bg-slate-50"
+                            sec:authorize="hasRole('JOB_SEEKER')">
+                            <i class="fas fa-columns w-5 text-center"></i> Dashboard
+                        </a>
+                        <a href="/employer/dashboard"
+                            class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 text-slate-600 hover-bg-slate-50"
+                            sec:authorize="hasRole('EMPLOYER')">
+                            <i class="fas fa-columns w-5 text-center"></i> Dashboard
+                        </a>
+                        <a href="/settings"
+                            class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 active-nav-item bg-primary-light text-primary fw-medium">
+                            <i class="fas fa-cog w-5 text-center"></i> Account Settings
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-9">
+                <div class="mb-4">
+                    <h2 class="fw-bold text-slate-900 mb-1">Account Settings</h2>
+                    <p class="text-slate-500 m-0">Manage your profile updates and security preferences.</p>
+                </div>
+
+                <!-- General Info -->
+                <div class="saas-card mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                        <div>
+                            <h5 class="fw-bold text-slate-900 mb-1">General Information</h5>
+                            <p class="text-slate-500 text-sm m-0">Basic details about your account.</p>
+                        </div>
+                    </div>
+
+                    <form>
+                        <div class="row g-4">
+                            <div class="col-md-12">
+                                <label class="form-label text-sm fw-medium text-slate-700">Email Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-slate-50 border-end-0 text-slate-400"><i
+                                            class="fas fa-envelope"></i></span>
+                                    <input type="email" class="form-control bg-slate-50 text-slate-500"
+                                        th:value="${user.email}" readonly disabled>
+                                </div>
+                                <div class="form-text text-xs text-slate-400 mt-2">To change your email address, please
+                                    contact support.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-sm fw-medium text-slate-700">First Name</label>
+                                <input type="text" class="form-control bg-slate-50 text-slate-500"
+                                    th:value="${user.firstName}" readonly disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-sm fw-medium text-slate-700">Last Name</label>
+                                <input type="text" class="form-control bg-slate-50 text-slate-500"
+                                    th:value="${user.lastName}" readonly disabled>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Security -->
+                <div class="saas-card mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                        <div>
+                            <h5 class="fw-bold text-slate-900 mb-1">Security</h5>
+                            <p class="text-slate-500 text-sm m-0">Update your password to keep your account safe.</p>
+                        </div>
+                    </div>
+
+                    <form>
+                        <div class="mb-4" style="max-width: 400px;">
+                            <label class="form-label text-sm fw-medium text-slate-700">Current Password</label>
+                            <input type="password" class="form-control" placeholder="••••••••">
+                        </div>
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label text-sm fw-medium text-slate-700">New Password</label>
+                                <input type="password" class="form-control" placeholder="New password">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-sm fw-medium text-slate-700">Confirm New Password</label>
+                                <input type="password" class="form-control" placeholder="Confirm new password">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary fw-bold shadow-sm" disabled>Update Password
+                                (Coming Soon)</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="saas-card border-danger-light bg-red-50">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="fw-bold text-danger mb-1">Delete Account</h5>
+                            <p class="text-danger-dark text-sm m-0 opacity-75">Once you delete your account, there is no
+                                going back. Please be certain.</p>
+                        </div>
+                        <button type="button" class="btn btn-outline-danger fw-bold bg-white" disabled>Delete
+                            Account</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments :: footer}"></footer>
+</body>
+
+</html>

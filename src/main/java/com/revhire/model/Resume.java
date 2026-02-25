@@ -27,6 +27,14 @@ public class Resume {
     @Column(name = "file_type")
     private String fileType;
 
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private java.util.Date createdAt;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private java.util.Date updatedAt;
+
     // Transient lists for now as we haven't converted child entities yet
     @Transient
     private List<ResumeEducation> educationList = new ArrayList<>();
@@ -92,6 +100,22 @@ public class Resume {
 
     public void setFileType(String fileType) {
         this.fileType = fileType;
+    }
+
+    public java.util.Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(java.util.Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public java.util.Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(java.util.Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public List<ResumeEducation> getEducationList() {

@@ -1,41 +1,77 @@
 package com.revhire.exception;
 
+import com.revhire.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleGeneralException(Exception e, Model model) {
-        model.addAttribute("error", "An unexpected error occurred: " + e.getMessage());
-        return "error"; // Needs error.html
-    }
+        // You can define a custom ResourceNotFoundException or use spring's built ins
+        public static class ResourceNotFoundException extends RuntimeException {
+                public ResourceNotFoundException(String message) {
+                        super(message);
+                }
+        }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleDateIntegrityViolation(IllegalArgumentException e, Model model) {
-        model.addAttribute("error", "Invalid Request: " + e.getMessage());
-        return "error";
-    }
+        @ExceptionHandler(ResourceNotFoundException.class)
+        public ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                .body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
 
-    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public String handleAccessDeniedException(org.springframework.security.access.AccessDeniedException e,
-            Model model) {
-        model.addAttribute("error", "Access Denied: You do not have permission to access this resource.");
-        return "error";
-    }
+        public static class UserAlreadyExistsException extends RuntimeException {
+                public UserAlreadyExistsException(String message) {
+                        super(message);
+                }
+        }
 
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
-    public String handleFileUploadException(MaxUploadSizeExceededException e, Model model) {
-        model.addAttribute("error", "File size too large! Please upload a file smaller than 5MB.");
-        return "error";
-    }
+        @ExceptionHandler(UserAlreadyExistsException.class)
+        public ResponseEntity<ApiResponse<Void>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                                .body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
+
+        @ExceptionHandler(AccessDeniedException.class)
+        public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException ex) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                                .body(new ApiResponse<>(false,
+                                                "Access Denied: You do not have permission to access this resource.",
+                                                null));
+        }
+
+        @ExceptionHandler(BadCredentialsException.class)
+        public ResponseEntity<ApiResponse<Void>> handleBadCredentialsException(BadCredentialsException ex) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body(new ApiResponse<>(false, "Invalid username or password", null));
+        }
+
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException ex) {
+                String message = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new ApiResponse<>(false, "Validation Error: " + message, null));
+        }
+
+        @ExceptionHandler(MaxUploadSizeExceededException.class)
+        public ResponseEntity<ApiResponse<Void>> handleMaxUploadSizeExceededException(
+                        MaxUploadSizeExceededException ex) {
+                return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                                .body(new ApiResponse<>(false,
+                                                "File size limit exceeded! Please upload a file smaller than 10MB.",
+                                                null));
+        }
+
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ApiResponse<Void>> handleGlobalException(Exception ex) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(new ApiResponse<>(false, "An unexpected error occurred: " + ex.getMessage(),
+                                                null));
+        }
 }

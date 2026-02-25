@@ -6,102 +6,140 @@
 <body>
     <nav th:replace="~{fragments :: header}"></nav>
 
-    <main class="container py-5">
+    <main class="container-xl py-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <a href="/employer/dashboard" class="text-decoration-none text-muted mb-2 d-block"><i
+                <a href="/employer/dashboard"
+                    class="text-decoration-none text-slate-500 mb-2 d-block hover-text-primary text-sm transition-all"><i
                         class="fas fa-arrow-left me-1"></i> Back to Dashboard</a>
-                <h2 class="fw-bold mb-0">Applicants for <span th:text="${job.title}" class="text-primary">Job
-                        Title</span></h2>
+                <h2 class="fw-bold text-slate-900 mb-0">Applicants for <span th:text="${job.title}"
+                        class="text-primary">Job Title</span></h2>
             </div>
-            <span class="badge bg-secondary" th:text="${#lists.size(applications) + ' Applicants'}">0 Applicants</span>
+
+            <div class="bg-white border rounded px-3 py-2 text-sm fw-medium text-slate-600 shadow-sm">
+                <i class="fas fa-users me-2 text-primary"></i> <span
+                    th:text="${#lists.size(applications) + ' Applicants'}">0 Applicants</span>
+            </div>
         </div>
 
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0 align-middle">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="ps-4">Applicant</th>
-                                <th>Applied Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="app : ${applications}">
-                                <td class="ps-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar bg-light rounded-circle d-flex align-items-center justify-content-center me-3"
-                                            style="width: 48px; height: 48px;">
-                                            <i class="fas fa-user text-secondary"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold"
-                                                th:text="${app.jobSeeker.user.firstName + ' ' + app.jobSeeker.user.lastName}">
-                                                Name</div>
-                                            <div class="small text-muted" th:text="${app.jobSeeker.user.email}">Email
-                                            </div>
+        <div class="saas-card p-0 overflow-hidden">
+            <div th:if="${#lists.isEmpty(applications)}" class="text-center py-5">
+                <div class="bg-slate-50 rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
+                    style="width: 80px; height: 80px;">
+                    <i class="fas fa-user-friends text-slate-300 fa-2x"></i>
+                </div>
+                <h4 class="fw-bold text-slate-900">No applicants yet</h4>
+                <p class="text-slate-500 mb-0">Share your job posting to attract candidates.</p>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(applications)}" class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-slate-500 text-uppercase text-xs fw-semibold">
+                        <tr>
+                            <th class="ps-4 py-3 border-0">Candidate</th>
+                            <th class="py-3 border-0">Applied Date</th>
+                            <th class="py-3 border-0">Current Status</th>
+                            <th class="py-3 border-0 text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="app : ${applications}">
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center py-2">
+                                    <div class="avatar bg-primary-light text-primary fw-bold rounded-circle d-flex align-items-center justify-content-center me-3"
+                                        style="width: 48px; height: 48px; font-size: 1.2rem;">
+                                        <span
+                                            th:if="${app.jobSeeker != null and app.jobSeeker.user != null and app.jobSeeker.user.firstName != null and app.jobSeeker.user.firstName.length() > 0}"
+                                            th:text="${#strings.substring(app.jobSeeker.user.firstName, 0, 1)}">U</span>
+                                        <span
+                                            th:unless="${app.jobSeeker != null and app.jobSeeker.user != null and app.jobSeeker.user.firstName != null and app.jobSeeker.user.firstName.length() > 0}">U</span>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-slate-900"
+                                            th:text="${app.jobSeeker != null and app.jobSeeker.user != null ? app.jobSeeker.user.firstName + ' ' + app.jobSeeker.user.lastName : 'Unknown'}">
+                                            Name</div>
+                                        <div class="text-sm text-slate-500"
+                                            th:text="${app.jobSeeker != null and app.jobSeeker.user != null ? app.jobSeeker.user.email : 'N/A'}">
+                                            user@example.com
                                         </div>
                                     </div>
-                                </td>
-                                <td th:text="${#dates.format(app.appliedAt, 'MMM dd, yyyy')}">Date</td>
-                                <td>
-                                    <span class="badge rounded-pill"
-                                        th:classappend="${app.status.name() == 'APPLIED' ? 'bg-info' : 
-                                                            (app.status.name() == 'SHORTLISTED' ? 'bg-success' : 
-                                                            (app.status.name() == 'REJECTED' ? 'bg-danger' : 
-                                                            (app.status.name() == 'UNDER_REVIEW' ? 'bg-warning text-dark' : 'bg-secondary')))}"
-                                        th:text="${app.status}">STATUS</span>
-                                </td>
-                                <td>
+                                </div>
+                            </td>
+                            <td class="text-slate-600 text-sm">
+                                <i class="far fa-calendar-alt me-2 text-slate-400"></i>
+                                <span th:if="${app.appliedAt != null}"
+                                    th:text="${#dates.format(app.appliedAt, 'MMM dd, yyyy')}">Feb 14, 2026</span>
+                                <span th:unless="${app.appliedAt != null}">Not stated</span>
+                            </td>
+                            <td>
+                                <span class="tag border"
+                                    th:classappend="${app.status.name() == 'APPLIED' ? 'tag-soft text-primary bg-primary-light border-primary-light' : 
+                                                      (app.status.name() == 'SHORTLISTED' ? 'tag-success' : 
+                                                      (app.status.name() == 'REJECTED' ? 'tag-soft text-danger bg-red-50 border-red-100' : 
+                                                      (app.status.name() == 'UNDER_REVIEW' ? 'tag-soft text-warning bg-warning-light border-warning-light' : 'tag-soft')))}"
+                                    th:text="${app.status}">STATUS</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a th:if="${app.jobSeeker != null and app.jobSeeker.user != null}"
+                                        th:href="@{'/resume/view/' + ${app.jobSeeker.user.id}}" target="_blank"
+                                        class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2"
+                                        title="View Resume">
+                                        <i class="fas fa-file-alt"></i> Resume
+                                    </a>
+
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle"
+                                        <button type="button"
+                                            class="btn btn-primary btn-sm dropdown-toggle fw-bold shadow-sm"
                                             data-bs-toggle="dropdown" aria-expanded="false">
                                             Update Status
                                         </button>
-                                        <ul class="dropdown-menu">
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-lg">
                                             <li>
-                                                <form th:action="@{'/employer/applications/' + ${app.id} + '/status'}"
-                                                    method="post">
-                                                    <input type="hidden" name="status" value="SHORTLISTED">
-                                                    <button type="submit" class="dropdown-item text-success"><i
-                                                            class="fas fa-check me-2"></i>Shortlist</button>
-                                                </form>
+                                                <h6
+                                                    class="dropdown-header text-uppercase text-xs fw-bold text-slate-400">
+                                                    Move Candidate To...</h6>
                                             </li>
                                             <li>
                                                 <form th:action="@{'/employer/applications/' + ${app.id} + '/status'}"
                                                     method="post">
-                                                    <input type="hidden" name="status" value="REJECTED">
-                                                    <button type="submit" class="dropdown-item text-danger"><i
-                                                            class="fas fa-times me-2"></i>Reject</button>
+                                                    <input type="hidden" name="status" value="SHORTLISTED">
+                                                    <button type="submit"
+                                                        class="dropdown-item d-flex align-items-center gap-2 py-2 hover-bg-success-light">
+                                                        <i class="fas fa-check text-success w-4"></i> Shortlist
+                                                    </button>
                                                 </form>
                                             </li>
                                             <li>
                                                 <form th:action="@{'/employer/applications/' + ${app.id} + '/status'}"
                                                     method="post">
                                                     <input type="hidden" name="status" value="UNDER_REVIEW">
-                                                    <button type="submit" class="dropdown-item"><i
-                                                            class="fas fa-eye me-2"></i>Under Review</button>
+                                                    <button type="submit"
+                                                        class="dropdown-item d-flex align-items-center gap-2 py-2 hover-bg-warning-light">
+                                                        <i class="fas fa-eye text-warning w-4"></i> Under Review
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <form th:action="@{'/employer/applications/' + ${app.id} + '/status'}"
+                                                    method="post">
+                                                    <input type="hidden" name="status" value="REJECTED">
+                                                    <button type="submit"
+                                                        class="dropdown-item d-flex align-items-center gap-2 py-2 hover-bg-red-50 text-danger">
+                                                        <i class="fas fa-times w-4"></i> Reject
+                                                    </button>
                                                 </form>
                                             </li>
                                         </ul>
                                     </div>
-                                    <a th:href="@{'/resume/view/' + ${app.jobSeeker.user.id}}" target="_blank"
-                                        class="btn btn-outline-secondary btn-sm ms-2" title="View Resume">
-                                        <i class="fas fa-file-alt"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr th:if="${#lists.isEmpty(applications)}">
-                                <td colspan="4" class="text-center py-5 text-muted">
-                                    No applications recieved yet.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>

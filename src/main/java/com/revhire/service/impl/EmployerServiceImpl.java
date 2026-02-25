@@ -22,6 +22,7 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
+    @SuppressWarnings("null")
     public Employer updateProfile(Employer employer) {
         return employerRepository.save(employer);
     }

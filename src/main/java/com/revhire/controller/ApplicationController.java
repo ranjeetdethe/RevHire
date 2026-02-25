@@ -3,7 +3,6 @@ package com.revhire.controller;
 import com.revhire.model.Application;
 import com.revhire.model.User;
 import com.revhire.service.ApplicationService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,15 +23,15 @@ public class ApplicationController {
     @PostMapping("/apply")
     public String applyForJob(@RequestParam("jobId") int jobId,
             @RequestParam(value = "coverLetter", required = false) String coverLetter,
-            HttpSession session,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails,
             RedirectAttributes redirectAttributes) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || user.getRole() != User.UserRole.JOB_SEEKER) {
+
+        if (userDetails == null || userDetails.getUser().getRole() != User.UserRole.JOB_SEEKER) {
             return "redirect:/login"; // Or handle unauthorized access
         }
 
         try {
-            applicationService.applyJob(jobId, user.getId(), coverLetter);
+            applicationService.applyJob(jobId, userDetails.getId(), coverLetter);
             redirectAttributes.addFlashAttribute("message", "Successfully applied for the job!");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -44,13 +43,14 @@ public class ApplicationController {
     }
 
     @GetMapping("/my-applications")
-    public String viewMyApplications(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || user.getRole() != User.UserRole.JOB_SEEKER) {
+    public String viewMyApplications(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails,
+            Model model) {
+        if (userDetails == null || userDetails.getUser().getRole() != User.UserRole.JOB_SEEKER) {
             return "redirect:/login";
         }
 
-        List<Application> applications = applicationService.getApplicationsByUserId(user.getId());
+        List<Application> applications = applicationService.getApplicationsByUserId(userDetails.getId());
         model.addAttribute("applications", applications);
         return "my-applications";
     }
@@ -58,9 +58,10 @@ public class ApplicationController {
     @PostMapping("/{appId}/withdraw")
     public String withdrawApplication(@PathVariable int appId,
             @RequestParam(value = "reason", required = false) String reason,
-            HttpSession session, RedirectAttributes redirectAttributes) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || user.getRole() != User.UserRole.JOB_SEEKER) {
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+
+        if (userDetails == null || userDetails.getUser().getRole() != User.UserRole.JOB_SEEKER) {
             return "redirect:/login";
         }
 

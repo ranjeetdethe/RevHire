@@ -22,6 +22,7 @@ public class JobSeekerServiceImpl implements JobSeekerService {
     }
 
     @Override
+    @SuppressWarnings("null")
     public JobSeeker updateProfile(JobSeeker jobSeeker) {
         return jobSeekerRepository.save(jobSeeker);
     }

@@ -7,93 +7,152 @@
 
     <nav th:replace="~{fragments :: header}"></nav>
 
-    <main class="container py-8">
-        <div class="flex justify-between items-center mb-8">
-            <h2>Employer Dashboard</h2>
-            <a href="/employer/jobs/new" class="btn btn-primary"><i class="fas fa-plus"></i> Post a Job</a>
+    <main class="container-xl py-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="fw-bold text-slate-900 mb-1">Dashboard</h2>
+                <p class="text-slate-500 m-0">Welcome back! Here's what's happening today.</p>
+            </div>
+            <a href="/employer/jobs/new" class="btn btn-primary px-4 shadow-sm">
+                <i class="fas fa-plus me-2"></i> Post New Job
+            </a>
         </div>
 
-        <!-- Analytics Section -->
-        <div class="grid grid-cols-2 gap-8 mb-8">
-            <div class="card p-6 shadow-md">
-                <h4 class="mb-4">Job Performance</h4>
-                <div class="relative h-64">
-                    <canvas id="jobChart"></canvas>
-                </div>
-            </div>
-            <div class="card p-6 shadow-md">
-                <h4 class="mb-4">Quick Stats</h4>
-                <div class="grid grid-cols-2 gap-4 text-center">
-                    <div class="bg-indigo-50 p-4 rounded">
-                        <h3 class="text-3xl font-bold text-indigo-600" th:text="${stats.totalJobs}">0</h3>
-                        <p class="text-gray-600">Total Jobs</p>
+        <!-- Quick Stats -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="stat-card h-100">
+                    <div class="stat-icon bg-primary-light text-primary">
+                        <i class="fas fa-briefcase"></i>
                     </div>
-                    <div class="bg-green-50 p-4 rounded">
-                        <h3 class="text-3xl font-bold text-green-600" th:text="${stats.activeJobs}">0</h3>
-                        <p class="text-gray-600">Active Jobs</p>
-                    </div>
-                    <div class="bg-yellow-50 p-4 rounded">
-                        <h3 class="text-3xl font-bold text-yellow-600">0</h3> <!-- Placeholder -->
-                        <p class="text-gray-600">Total Applicants</p>
-                    </div>
-                    <div class="bg-red-50 p-4 rounded">
-                        <h3 class="text-3xl font-bold text-red-600" th:text="${stats.closedJobs}">0</h3>
-                        <p class="text-gray-600">Closed Jobs</p>
+                    <div>
+                        <div class="stat-value" th:text="${stats.totalJobs}">0</div>
+                        <div class="stat-label">Total Jobs</div>
                     </div>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="stat-card h-100">
+                    <div class="stat-icon bg-success-light text-success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value" th:text="${stats.activeJobs}">0</div>
+                        <div class="stat-label">Active Jobs</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card h-100">
+                    <div class="stat-icon bg-warning-light text-warning">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value">0</div> <!-- Placeholder -->
+                        <div class="stat-label">Total Applicants</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card h-100">
+                    <div class="stat-icon bg-red-50 text-danger">
+                        <i class="fas fa-archive"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value" th:text="${stats.closedJobs}">0</div>
+                        <div class="stat-label">Closed Jobs</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Manage Jobs Section -->
-        <div class="card shadow-md p-6">
-            <h4 class="mb-6">Manage Jobs</h4>
-
-            <div th:if="${jobs.empty}"
-                class="text-center py-12 bg-gray-50 rounded border border-dashed border-gray-300">
-                <i class="fas fa-briefcase text-4xl text-gray-400 mb-3"></i>
-                <p class="text-gray-500 mb-4">You haven't posted any jobs yet.</p>
-                <a href="/employer/jobs/new" class="btn btn-primary btn-sm">Post First Job</a>
+        <div class="row g-4">
+            <!-- Analytics Chart -->
+            <div class="col-lg-4">
+                <div class="saas-card h-100">
+                    <h5 class="fw-bold mb-4">Job Performance</h5>
+                    <div class="position-relative" style="height: 250px;">
+                        <canvas id="jobChart"></canvas>
+                    </div>
+                </div>
             </div>
 
-            <div th:unless="${jobs.empty}" class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 border-b border-gray-200">
-                        <tr>
-                            <th class="p-4 font-semibold text-gray-600">Job Title</th>
-                            <th class="p-4 font-semibold text-gray-600">Posted Date</th>
-                            <th class="p-4 font-semibold text-gray-600">Status</th>
-                            <th class="p-4 font-semibold text-gray-600">Applications</th>
-                            <th class="p-4 font-semibold text-gray-600">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="job : ${jobs}" class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                            <td class="p-4 font-medium text-gray-800" th:text="${job.title}">Software Engineer</td>
-                            <td class="p-4 text-gray-500 text-sm"
-                                th:text="${#dates.format(job.createdAt, 'MMM dd, yyyy')}">Jan 01, 2026</td>
-                            <td class="p-4">
-                                <span class="badge"
-                                    th:classappend="${job.status.name() == 'OPEN' ? 'badge-onsite' : 'bg-gray-200 text-gray-600'}"
-                                    th:text="${job.status}">OPEN</span>
-                            </td>
-                            <td class="p-4">
-                                <a th:href="@{'/employer/jobs/' + ${job.id} + '/applications'}"
-                                    class="text-indigo-600 hover:underline font-medium">View Applicants</a>
-                            </td>
-                            <td class="p-4 flex gap-2">
-                                <a th:href="@{'/employer/jobs/edit/' + ${job.id}}"
-                                    class="btn btn-outline btn-sm px-2 py-1" title="Edit"><i
-                                        class="fas fa-edit"></i></a>
-                                <form th:action="@{'/employer/jobs/delete/' + ${job.id}}" method="post" class="inline"
-                                    onsubmit="return confirm('Are you sure?');">
-                                    <button type="submit"
-                                        class="btn btn-outline btn-sm px-2 py-1 text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
-                                        title="Delete"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Manage Jobs Table -->
+            <div class="col-lg-8">
+                <div class="saas-card h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold m-0">Recent Job Postings</h5>
+                        <a href="#" class="text-sm text-primary fw-medium">View All</a>
+                    </div>
+
+                    <div th:if="${jobs.empty}" class="text-center py-5">
+                        <div class="bg-slate-50 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width: 64px; height: 64px;">
+                            <i class="fas fa-folder-open text-slate-300 fa-2x"></i>
+                        </div>
+                        <h6 class="fw-bold text-slate-700">No jobs posted</h6>
+                        <p class="text-slate-500 text-sm mb-3">Get started by creating your first job posting.</p>
+                        <a href="/employer/jobs/new" class="btn btn-outline-primary btn-sm">Create Job</a>
+                    </div>
+
+                    <div th:unless="${jobs.empty}" class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="bg-light text-slate-500 text-uppercase text-xs">
+                                <tr>
+                                    <th class="border-0 py-3 ps-3 rounded-start">Title</th>
+                                    <th class="border-0 py-3">Posted</th>
+                                    <th class="border-0 py-3">Status</th>
+                                    <th class="border-0 py-3 text-end pe-3 rounded-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="job : ${jobs}">
+                                    <td class="ps-3">
+                                        <div class="fw-semibold text-slate-800" th:text="${job.title}">Title</div>
+                                        <div class="text-xs text-slate-400" th:text="${job.location}">Location</div>
+                                    </td>
+                                    <td class="text-slate-600 text-sm"
+                                        th:text="${#dates.format(job.createdAt, 'MMM dd')}">Jan 01</td>
+                                    <td>
+                                        <span class="tag"
+                                            th:classappend="${job.status.name() == 'OPEN' ? 'tag-success' : 'tag-soft'}"
+                                            th:text="${job.status}">OPEN</span>
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        <a th:href="@{'/employer/jobs/' + ${job.id} + '/applications'}"
+                                            class="btn btn-sm btn-link text-primary text-decoration-none">
+                                            Applicants
+                                        </a>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-icon text-slate-400 hover-text-primary"
+                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                                <li>
+                                                    <a class="dropdown-item d-flex align-items-center gap-2 py-2"
+                                                        th:href="@{'/employer/jobs/' + ${job.id} + '/edit'}">
+                                                        <i class="fas fa-edit text-slate-400 w-4"></i> Edit Job
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <form th:action="@{'/employer/jobs/' + ${job.id} + '/close'}"
+                                                        method="post"
+                                                        onsubmit="return confirm('Are you sure you want to close this job? Candidates will no longer be able to apply.');">
+                                                        <button type="submit"
+                                                            class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger">
+                                                            <i class="fas fa-times-circle w-4"></i> Close Job
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -113,24 +172,21 @@
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Active Jobs', 'Closed Jobs'],
+                    labels: ['Active', 'Closed'],
                     datasets: [{
                         data: [activeJobs, closedJobs],
-                        backgroundColor: [
-                            '#10B981', // Emerald 500
-                            '#EF4444'  // Red 500
-                        ],
-                        borderWidth: 0
+                        backgroundColor: ['#10b981', '#ef4444'],
+                        borderWidth: 0,
+                        hoverOffset: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
+                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
+                    },
+                    cutout: '75%'
                 }
             });
         });

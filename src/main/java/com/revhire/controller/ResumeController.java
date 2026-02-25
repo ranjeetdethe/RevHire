@@ -17,6 +17,7 @@ import java.io.IOException;
 
 @Controller
 @RequestMapping("/resume")
+@SuppressWarnings("null")
 public class ResumeController {
 
     private final ResumeService resumeService;
@@ -95,11 +96,11 @@ public class ResumeController {
     }
 
     @GetMapping("/view/{seekerId}")
-    public ResponseEntity<byte[]> getResumeFile(@PathVariable("seekerId") int seekerId) {
+    public Object getResumeFile(@PathVariable("seekerId") int seekerId) {
         Resume resume = resumeService.getResumeByUserId(seekerId);
 
         if (resume == null || resume.getData() == null) {
-            return ResponseEntity.notFound().build();
+            return "resume-not-found";
         }
 
         return ResponseEntity.ok()

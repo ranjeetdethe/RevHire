@@ -8,108 +8,93 @@
 <body>
     <nav th:replace="~{fragments :: header}"></nav>
 
-    <div class="container py-5">
-        <div class="mb-5 text-center">
-            <h1 class="display-4 fw-bold">Browse Jobs</h1>
-            <p class="lead text-muted">Discover your next career opportunity</p>
-        </div>
+    <div class="search-hero">
+        <div class="container-xl">
+            <h1 class="display-5 fw-bold mb-3">Find your next dream job</h1>
+            <p class="text-white-50 text-lg mb-4">Browse thousands of job openings from top companies</p>
 
-        <!-- Search and Filter Section -->
-        <div class="card shadow-sm border-0 mb-4 bg-light">
-            <div class="card-body p-4">
-                <form th:action="@{/jobs}" method="get" class="row g-3">
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0"><i
-                                    class="fas fa-search text-muted"></i></span>
-                            <input type="text" name="keyword" th:value="${keyword}" class="form-control border-start-0"
-                                placeholder="Job title, skills, or company">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0"><i
-                                    class="fas fa-map-marker-alt text-muted"></i></span>
-                            <input type="text" name="location" th:value="${location}"
-                                class="form-control border-start-0" placeholder="City, State">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <select name="jobType" class="form-select">
-                            <option value="">All Types</option>
-                            <option th:each="type : ${jobTypes}" th:value="${type}" th:text="${type}"
-                                th:selected="${type == jobType}">Type</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="number" name="experience" th:value="${experience}" class="form-control"
-                            placeholder="Max Exp (Yrs)">
-                    </div>
-                    <div class="col-md-1 d-grid">
-                        <button type="submit" class="btn btn-primary fw-bold"><i class="fas fa-search"></i></button>
-                    </div>
-                </form>
+            <form th:action="@{/jobs}" method="get" class="search-box">
+                <i class="fas fa-search text-slate-400 mt-3 ms-3"></i>
+                <input type="text" name="keyword" th:value="${keyword}" class="search-input"
+                    placeholder="Job title, keywords, or company">
+
+                <div class="d-none d-md-block border-start my-2"></div>
+
+                <i class="fas fa-map-marker-alt text-slate-400 mt-3 ms-3 d-none d-md-block"></i>
+                <input type="text" name="location" th:value="${location}" class="search-input d-none d-md-block"
+                    placeholder="Location">
+
+                <button type="submit" class="btn btn-primary px-4 py-2 m-1 fw-bold rounded-lg shadow-sm">Search</button>
+            </form>
+
+            <!-- Quick Filters -->
+            <div class="mt-4 d-flex justify-content-center gap-2 flex-wrap">
+                <a href="/jobs?jobType=FULL_TIME"
+                    class="tag tag-soft bg-white-10 text-white border-0 hover-bg-white hover-text-primary transition-all">Full
+                    Time</a>
+                <a href="/jobs?jobType=REMOTE"
+                    class="tag tag-soft bg-white-10 text-white border-0 hover-bg-white hover-text-primary transition-all">Remote</a>
+                <a href="/jobs?experience=0"
+                    class="tag tag-soft bg-white-10 text-white border-0 hover-bg-white hover-text-primary transition-all">Entry
+                    Level</a>
             </div>
         </div>
+    </div>
 
-        <!-- Job Listings -->
-        <div th:if="${jobs == null or jobs.isEmpty()}" class="text-center py-5">
-            <div class="mb-3">
-                <i class="fas fa-briefcase fa-4x text-muted opacity-25"></i>
+    <div class="container-xl pb-5">
+        <!-- Job Listings Grid -->
+        <div th:if="${jobs == null or jobs.isEmpty()}" class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-search"></i>
             </div>
-            <h3 class="fw-bold text-secondary">No Jobs Found</h3>
-            <p class="text-muted">Try adjusting your search criteria or check back later for new opportunities</p>
+            <h3 class="fw-bold text-slate-800">No jobs found</h3>
+            <p class="text-slate-500 max-w-md mx-auto">We couldn't find any matches for your search. Try adjusting
+                keywords or location.</p>
+            <a href="/jobs" class="btn btn-secondary mt-3">Clear Filters</a>
         </div>
 
-        <div class="d-flex flex-column gap-3">
-            <div th:each="job : ${jobs}" class="card border-0 shadow-sm hover-shadow transition">
-                <div class="card-body p-4">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <h4 class="card-title fw-bold mb-1">
-                                <a th:href="@{/jobs/{id}(id=${job.id})}"
-                                    class="text-decoration-none text-dark stretched-link" th:text="${job.title}">Job
-                                    Title</a>
-                            </h4>
-                            <div class="d-flex flex-wrap gap-3 text-muted small mb-3">
-                                <span><i class="fas fa-building me-1"></i> <span
-                                        th:text="${job.employer.companyName}">Company</span></span>
-                                <span><i class="fas fa-map-marker-alt me-1"></i> <span
-                                        th:text="${job.location}">Location</span></span>
-                                <span><i class="fas fa-clock me-1"></i> <span
-                                        th:text="${job.jobType}">Type</span></span>
-                                <span><i class="fas fa-briefcase me-1"></i> <span
-                                        th:text="${job.experienceRequired} + ' years'">Exp</span></span>
-                            </div>
-                            <p class="card-text text-secondary mb-3"
-                                th:text="${#strings.abbreviate(job.description, 150)}">Description...</p>
-
-                            <div class="d-flex flex-wrap gap-3 align-items-center">
-                                <span class="badge bg-light text-dark border"><i
-                                        class="fas fa-dollar-sign me-1"></i><span
-                                        th:text="${job.salaryRange}">Salary</span></span>
-                                <span th:if="${job.status.name() == 'OPEN'}"
-                                    class="badge bg-success-subtle text-success border border-success-subtle">Hiring</span>
-                                <small class="text-muted"><i class="far fa-clock me-1"></i> Posted <span
-                                        th:text="${#dates.format(job.createdAt, 'MMM dd, yyyy')}">Date</span></small>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                            <img src="https://via.placeholder.com/64" alt="Company Logo"
-                                class="rounded mb-3 d-none d-md-inline-block">
-                            <div class="d-grid d-md-block">
-                                <a th:href="@{/jobs/{id}(id=${job.id})}"
-                                    class="btn btn-outline-primary btn-sm px-4">View Details</a>
-                            </div>
-                        </div>
+        <div class="d-grid grid-cols-3 gap-4" th:if="${jobs != null and !jobs.isEmpty()}">
+            <div th:each="job : ${jobs}" class="job-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="job-logo">
+                        <span th:text="${#strings.substring(job.employer.companyName, 0, 1)}">C</span>
                     </div>
+                    <form th:action="@{/seeker/saved-jobs/add}" method="post" sec:authorize="hasRole('JOB_SEEKER')">
+                        <input type="hidden" name="jobId" th:value="${job.id}">
+                        <button type="submit" class="btn btn-sm btn-link text-slate-400 hover-text-primary p-0">
+                            <i class="far fa-bookmark fa-lg"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="mb-3">
+                    <a th:href="@{/jobs/{id}(id=${job.id})}" class="job-title stretched-link"
+                        th:text="${job.title}">Senior Developer</a>
+                    <div class="job-company">
+                        <span th:text="${job.employer.companyName}">Tech Corp</span>
+                        <span>•</span>
+                        <span th:text="${job.location}">San Francisco</span>
+                    </div>
+                </div>
+
+                <div class="job-tags">
+                    <span class="tag tag-soft" th:text="${job.jobType}">Full Time</span>
+                    <span class="tag tag-success" th:if="${job.status.name() == 'OPEN'}">Hiring</span>
+                    <span class="tag tag-soft" th:text="${job.salaryRange}">$100k</span>
+                </div>
+
+                <div class="job-footer">
+                    <span class="text-xs" th:text="'Posted ' + ${#dates.format(job.createdAt, 'MMM dd')}">Posted Feb
+                        12</span>
+                    <span class="text-primary fw-medium text-sm">View Details <i
+                            class="fas fa-arrow-right ms-1 text-xs"></i></span>
                 </div>
             </div>
         </div>
 
-        <!-- Pagination (future enhancement) -->
-        <div th:if="${jobs != null and !jobs.isEmpty()}" class="mt-5 text-center text-muted small">
-            <p>Showing <span th:text="${jobs.size()}">0</span> jobs</p>
+        <!-- Pagination Placeholder -->
+        <div th:if="${jobs != null and !jobs.isEmpty()}" class="mt-5 text-center">
+            <button class="btn btn-secondary">Load More Jobs</button>
         </div>
     </div>
 

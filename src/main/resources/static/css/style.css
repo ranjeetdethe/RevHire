@@ -1,212 +1,480 @@
-/* Modern CSS Reset & Variables */
+/* =========================================
+   AURA JOBS - PREMIUM SAAS DESIGN SYSTEM
+   ========================================= */
+
+/* 1. VARIABLES & RESET */
 :root {
-    --primary: #4F46E5;
+    /* Brand Colors - Indigo/Violet Theme */
+    --primary: #6366f1;
+    /* Indigo 500 */
+    --primary-hover: #4f46e5;
     /* Indigo 600 */
-    --primary-hover: #4338CA;
-    /* Indigo 700 */
-    --secondary: #64748B;
-    /* Slate 500 */
-    --success: #10B981;
-    /* Emerald 500 */
-    --danger: #EF4444;
-    /* Red 500 */
-    --warning: #F59E0B;
-    /* Amber 500 */
-    --info: #3B82F6;
-    /* Blue 500 */
+    --primary-light: #e0e7ff;
+    /* Indigo 100 */
+    --primary-dark: #3730a3;
+    /* Indigo 800 */
 
-    --bg-body: #F8FAFC;
-    /* Slate 50 */
-    --bg-surface: #FFFFFF;
-    --bg-card: #FFFFFF;
+    /* Neutral Scale (Slate) */
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
 
-    --text-main: #1E293B;
-    /* Slate 800 */
-    --text-muted: #64748B;
-    /* Slate 500 */
+    /* Semantic Colors */
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
 
-    --border-color: #E2E8F0;
-    /* Slate 200 */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    /* Surfaces */
+    --bg-body: var(--slate-50);
+    --bg-card: #ffffff;
+    --border-color: var(--slate-200);
+
+    /* Typography */
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+    /* Shadows - Soft & Diffused */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
-    --radius-sm: 0.375rem;
+    /* Radius */
     --radius-md: 0.5rem;
+    /* 8px */
     --radius-lg: 0.75rem;
-
-    --transition-base: all 0.2s ease-in-out;
+    /* 12px */
+    --radius-xl: 1rem;
+    /* 16px */
+    --radius-2xl: 1.5rem;
+    /* 24px */
 }
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-sans);
     background-color: var(--bg-body);
-    color: var(--text-main);
+    color: var(--slate-800);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
 }
 
-/* Typography */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+a {
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+/* 2. TYPOGRAPHY UTILITIES */
+.font-sans {
+    font-family: var(--font-sans);
+}
+
+.fw-bold {
     font-weight: 700;
-    color: var(--text-main);
-    letter-spacing: -0.025em;
 }
 
-/* Cards */
-.card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition-base);
+.fw-semibold {
+    font-weight: 600;
 }
 
-.card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-/* Buttons */
-.btn {
+.fw-medium {
     font-weight: 500;
+}
+
+.text-xs {
+    font-size: 0.75rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.text-base {
+    font-size: 1rem;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+}
+
+.text-3xl {
+    font-size: 1.875rem;
+}
+
+.text-slate-500 {
+    color: var(--slate-500) !important;
+}
+
+.text-slate-600 {
+    color: var(--slate-600) !important;
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+/* 3. COMPONENT: BUTTONS */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.625rem 1.25rem;
+    font-weight: 500;
     border-radius: var(--radius-md);
-    transition: var(--transition-base);
-    letter-spacing: 0.01em;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
 }
 
 .btn-primary {
     background-color: var(--primary);
-    border-color: var(--primary);
-    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+    color: white;
+    box-shadow: 0 1px 2px rgba(99, 102, 241, 0.5);
 }
 
 .btn-primary:hover {
     background-color: var(--primary-hover);
-    border-color: var(--primary-hover);
-    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(99, 102, 241, 0.4);
 }
 
-.btn-outline-primary {
-    color: var(--primary);
-    border-color: var(--primary);
-    background: transparent;
+.btn-secondary {
+    background-color: white;
+    border-color: var(--slate-200);
+    color: var(--slate-700);
 }
 
-.btn-outline-primary:hover {
-    background-color: var(--primary);
-    color: #fff;
+.btn-secondary:hover {
+    background-color: var(--slate-50);
+    border-color: var(--slate-300);
+    color: var(--slate-900);
 }
 
-/* Navbar */
-.navbar {
-    background-color: rgba(255, 255, 255, 0.9) !important;
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border-color);
+.btn-soft-primary {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
 }
 
-.navbar-brand {
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    color: var(--primary) !important;
+.btn-soft-primary:hover {
+    background-color: #c7d2fe;
+    /* Indigo 200 */
+}
+
+/* 4. COMPONENT: CARDS & CONTAINERS */
+.saas-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.saas-card:hover {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-md);
+}
+
+.container-xl {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* 5. NAVBAR (Glassmorphism) */
+.glass-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--slate-200);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .nav-link {
+    color: var(--slate-600) !important;
     font-weight: 500;
-    color: var(--text-muted) !important;
-    transition: color 0.15s;
+    padding: 0.5rem 1rem !important;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
 }
 
 .nav-link:hover,
 .nav-link.active {
     color: var(--primary) !important;
+    background-color: var(--slate-50);
 }
 
-/* Inputs */
-.form-control {
+/* 6. COMPONENT: JOB CARD (The Star of the Show) */
+.job-card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.job-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-light);
+}
+
+.job-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--slate-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--slate-500);
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.job-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--slate-900);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.job-title:hover {
+    color: var(--primary);
+}
+
+.job-company {
+    color: var(--slate-500);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.job-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tag {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.tag-soft {
+    background: var(--slate-100);
+    color: var(--slate-600);
+}
+
+.tag-primary {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.tag-success {
+    background: var(--success-light);
+    color: #065f46;
+}
+
+.job-footer {
+    padding-top: 1rem;
+    margin-top: auto;
+    border-top: 1px solid var(--slate-100);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    color: var(--slate-500);
+}
+
+/* 7. COMPONENT: SEARCH HERO */
+.search-hero {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    padding: 4rem 0;
+    color: white;
+    border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.search-box {
+    background: white;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    display: flex;
+    gap: 0.5rem;
+    max-width: 800px;
+    margin: 2rem auto 0;
+}
+
+.search-input {
+    border: none;
+    padding: 1rem;
+    flex: 1;
+    border-radius: 0.75rem;
+    outline: none;
+    font-size: 1rem;
+}
+
+.search-input:focus {
+    background: var(--slate-50);
+}
+
+/* 8. DASHBOARD COMPONENTS */
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius-xl);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
-    transition: var(--transition-base);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
-.form-control:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
 }
 
-/* Utilities */
-.text-primary {
-    color: var(--primary) !important;
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--slate-900);
 }
 
-.bg-primary {
-    background-color: var(--primary) !important;
+.stat-label {
+    color: var(--slate-500);
+    font-size: 0.875rem;
 }
 
-.shadow-hover:hover {
-    box-shadow: var(--shadow-lg) !important;
+/* 9. UTILITIES FOR TAILWIND REPLACEMENT */
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.gap-3 {
+    gap: 0.75rem;
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.p-4 {
+    padding: 1rem;
+}
+
+.p-6 {
+    padding: 1.5rem;
+}
+
+.p-8 {
+    padding: 2rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
 }
 
 .rounded-xl {
-    border-radius: 1rem !important;
+    border-radius: var(--radius-xl);
 }
 
-/* Custom Badge */
-.badge {
-    padding: 0.35em 0.65em;
-    font-weight: 600;
-    border-radius: var(--radius-sm);
+.shadow-sm {
+    box-shadow: var(--shadow-sm);
 }
 
-/* Empty State */
-.empty-state {
+.bg-white {
+    background-color: white;
+}
+
+.text-center {
     text-align: center;
-    padding: 4rem 2rem;
 }
 
-.empty-state-icon {
-    font-size: 3rem;
-    color: var(--text-muted);
-    margin-bottom: 1.5rem;
-    opacity: 0.5;
+.d-flex {
+    display: flex;
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+/* Grid System Override */
+.grid-cols-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.grid-cols-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+
+    .grid-cols-2,
+    .grid-cols-3 {
+        grid-template-columns: 1fr;
     }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in {
-    animation: fadeIn 0.4s ease-out forwards;
-}
-
-/* Modal */
-.modal-content {
-    border: none;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-}
-
-.modal-header {
-    border-bottom: 1px solid var(--border-color);
-}
-
-.modal-footer {
-    border-top: 1px solid var(--border-color);
 }

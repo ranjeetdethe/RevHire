@@ -14,12 +14,16 @@ public class JobSeeker {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @Column(name = "resume_text")
+    @Column(name = "resume_text", columnDefinition = "TEXT")
     private String resumeText;
 
+    @Column(columnDefinition = "TEXT")
     private String education;
+    @Column(columnDefinition = "TEXT")
     private String experience;
+    @Column(columnDefinition = "TEXT")
     private String skills;
+    @Column(columnDefinition = "TEXT")
     private String certifications;
     private String location;
 

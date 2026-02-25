@@ -13,8 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * Core service implementation for User Management.
+ * Handles registration, authentication, and profile management for AuraJobs.
+ */
 @Service
 @Transactional
+@SuppressWarnings("null")
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -33,31 +38,44 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerUser(String firstName, String lastName, String email, String password, String phone,
             User.UserRole role, String securityQuestion, String securityAnswer) {
+
+        // Check for existing user to prevent duplicates
         if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("Email already in use.");
+            throw new com.revhire.exception.GlobalExceptionHandler.UserAlreadyExistsException("Email already in use.");
         }
 
+        // Encrypt password using BCrypt via SecurityConfig
         String encodedPassword = passwordEncoder.encode(password);
 
+        // Build new user entity with enhanced security fields
         User newUser = new User(firstName, lastName, email, encodedPassword, phone, role);
         newUser.setSecurityQuestion(securityQuestion);
         newUser.setSecurityAnswer(securityAnswer);
 
+        // Persist user to generating ID
         User savedUser = userRepository.save(newUser);
 
-        // Create corresponding profile
+        // Initialize role-specific profile (AuraJobs Logic)
+        initializeUserProfile(savedUser, role);
+
+        return savedUser;
+    }
+
+    /**
+     * Helper method to initialize empty profiles based on role.
+     * Keeps the registration logic clean and extensible.
+     */
+    private void initializeUserProfile(User user, User.UserRole role) {
         if (role == User.UserRole.JOB_SEEKER) {
             JobSeeker seeker = new JobSeeker();
-            seeker.setUser(savedUser);
+            seeker.setUser(user);
             jobSeekerRepository.save(seeker);
         } else if (role == User.UserRole.EMPLOYER) {
             Employer employer = new Employer();
-            employer.setUser(savedUser);
-            employer.setCompanyName("Pending Update");
+            employer.setUser(user);
+            employer.setCompanyName("Pending Update"); // Placeholder for AuraJobs validation
             employerRepository.save(employer);
         }
-
-        return savedUser;
     }
 
     @Override
@@ -70,6 +88,11 @@ public class UserServiceImpl implements UserService {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override

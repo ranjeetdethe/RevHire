@@ -7,147 +7,190 @@
 
     <nav th:replace="~{fragments :: header}"></nav>
 
-    <main class="container py-8">
-        <div class="grid grid-cols-12 gap-6">
-            <!-- Sidebar -->
-            <div class="col-span-3">
-                <div class="card shadow-md p-6">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold text-xl">
+    <main class="container-xl py-5">
+        <div class="row g-4">
+
+            <!-- LEFT SIDEBAR -->
+            <div class="col-lg-3">
+                <!-- User Profile Card -->
+                <div class="saas-card mb-4 text-center">
+                    <div class="position-relative d-inline-block mb-3">
+                        <div class="bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                            style="width: 80px; height: 80px; font-size: 2rem;">
                             <span th:text="${#strings.substring(user.firstName, 0, 1)}">U</span>
                         </div>
-                        <div>
-                            <h4 th:text="${user.firstName + ' ' + user.lastName}">User Name</h4>
-                            <p class="text-sm text-gray-500">Job Seeker</p>
-                        </div>
+                        <span
+                            class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-2"></span>
                     </div>
 
-                    <ul class="space-y-2">
-                        <li><a href="/seeker/dashboard"
-                                class="block p-2 rounded bg-indigo-50 text-indigo-700 font-medium"><i
-                                    class="fas fa-columns w-6"></i> Dashboard</a></li>
-                        <li><a href="/seeker/profile" class="block p-2 rounded text-gray-600 hover:bg-gray-50"><i
-                                    class="fas fa-user w-6"></i> My Profile</a></li>
-                        <li><a href="/applications/my-applications"
-                                class="block p-2 rounded text-gray-600 hover:bg-gray-50"><i
-                                    class="fas fa-file-alt w-6"></i> My Applications</a></li>
-                        <li><a href="/saved-jobs" class="block p-2 rounded text-gray-600 hover:bg-gray-50"><i
-                                    class="fas fa-heart w-6"></i> Saved Jobs</a></li>
-                        <li><a href="/resume/upload" class="block p-2 rounded text-gray-600 hover:bg-gray-50"><i
-                                    class="fas fa-upload w-6"></i> Upload Resume</a></li>
-                        <li><a href="/settings" class="block p-2 rounded text-gray-600 hover:bg-gray-50"><i
-                                    class="fas fa-cog w-6"></i> Settings</a></li>
-                    </ul>
+                    <h5 class="fw-bold text-slate-900 mb-1" th:text="${user.firstName + ' ' + user.lastName}">User Name
+                    </h5>
+                    <p class="text-slate-500 text-sm mb-3">Software Engineer</p>
+
+                    <div class="d-grid">
+                        <a href="/seeker/profile" class="btn btn-outline-secondary btn-sm">Edit Profile</a>
+                    </div>
+                </div>
+
+                <!-- Navigation Menu -->
+                <div class="saas-card mb-4 p-0 overflow-hidden">
+                    <div class="list-group list-group-flush">
+                        <a href="/seeker/dashboard"
+                            class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 active-nav-item bg-primary-light text-primary fw-medium">
+                            <i class="fas fa-columns w-5 text-center"></i> Dashboard
+                        </a>
+                        <a href="/applications/my-applications"
+                            class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 text-slate-600 hover-bg-slate-50">
+                            <i class="fas fa-file-alt w-5 text-center"></i> Applications
+                        </a>
+                        <a href="/seeker/saved-jobs"
+                            class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 text-slate-600 hover-bg-slate-50">
+                            <i class="fas fa-bookmark w-5 text-center"></i> Saved Jobs
+                        </a>
+                        <a href="/resume/upload"
+                            class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 text-slate-600 hover-bg-slate-50">
+                            <i class="fas fa-cloud-upload-alt w-5 text-center"></i> Resume
+                        </a>
+                        <a href="/settings"
+                            class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 text-slate-600 hover-bg-slate-50">
+                            <i class="fas fa-cog w-5 text-center"></i> Settings
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Profile Completion Widget -->
-                <div class="card shadow-md p-6 mt-6">
-                    <h5 class="mb-4">Profile Completion</h5>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                        <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 70%"></div>
+                <div class="saas-card bg-slate-900 text-white border-0">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold text-sm">Profile Strength</span>
+                        <span class="text-primary-light text-sm fw-bold">70%</span>
                     </div>
-                    <p class="text-sm text-gray-500 text-right">70%</p>
-                    <a href="/seeker/profile/edit" class="text-sm text-indigo-600 hover:underline mt-2 block">Complete
-                        Profile</a>
+                    <div class="progress bg-white-10 mb-3" style="height: 6px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="70"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-3">Complete your profile to appear in more searches.</p>
+                    <a href="/seeker/profile" class="text-sm text-primary-light fw-medium text-decoration-none">Complete
+                        now <i class="fas fa-arrow-right text-xs ms-1"></i></a>
                 </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="col-span-9">
-                <h2 class="mb-6">Dashboard Overview</h2>
+            <!-- MAIN CONTENT -->
+            <div class="col-lg-9">
+                <div class="mb-4">
+                    <h2 class="fw-bold text-slate-900">Dashboard</h2>
+                    <p class="text-slate-500">Track your job search progress.</p>
+                </div>
 
                 <!-- Stats Grid -->
-                <div class="grid grid-cols-4 gap-4 mb-8">
-                    <div class="card p-4 border-l-4 border-indigo-500">
-                        <p class="text-gray-500 text-sm">Total Applications</p>
-                        <h3 class="text-2xl font-bold mt-1" th:text="${stats.totalApplications}">0</h3>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card h-100 flex-column align-items-start p-4">
+                            <div class="d-flex justify-content-between w-100 mb-3">
+                                <span class="text-slate-500 text-sm fw-medium">Applied</span>
+                                <div class="bg-primary-light text-primary rounded p-1"><i
+                                        class="fas fa-paper-plane text-xs"></i></div>
+                            </div>
+                            <h2 class="fw-bold text-slate-900 mb-0" th:text="${stats.totalApplications}">0</h2>
+                        </div>
                     </div>
-                    <div class="card p-4 border-l-4 border-yellow-500">
-                        <p class="text-gray-500 text-sm">Shortlisted</p>
-                        <h3 class="text-2xl font-bold mt-1" th:text="${stats.shortlistedCount}">0</h3>
+                    <div class="col-md-3">
+                        <div class="stat-card h-100 flex-column align-items-start p-4">
+                            <div class="d-flex justify-content-between w-100 mb-3">
+                                <span class="text-slate-500 text-sm fw-medium">Shortlisted</span>
+                                <div class="bg-warning-light text-warning rounded p-1"><i
+                                        class="fas fa-star text-xs"></i></div>
+                            </div>
+                            <h2 class="fw-bold text-slate-900 mb-0" th:text="${stats.shortlistedCount}">0</h2>
+                        </div>
                     </div>
-                    <div class="card p-4 border-l-4 border-green-500">
-                        <p class="text-gray-500 text-sm">Interviews</p>
-                        <h3 class="text-2xl font-bold mt-1">0</h3> <!-- Placeholder -->
+                    <div class="col-md-3">
+                        <div class="stat-card h-100 flex-column align-items-start p-4">
+                            <div class="d-flex justify-content-between w-100 mb-3">
+                                <span class="text-slate-500 text-sm fw-medium">Interviews</span>
+                                <div class="bg-success-light text-success rounded p-1"><i
+                                        class="fas fa-calendar-check text-xs"></i></div>
+                            </div>
+                            <h2 class="fw-bold text-slate-900 mb-0">0</h2> <!-- Placeholder -->
+                        </div>
                     </div>
-                    <div class="card p-4 border-l-4 border-red-500">
-                        <p class="text-gray-500 text-sm">Rejected</p>
-                        <h3 class="text-2xl font-bold mt-1" th:text="${stats.rejectedCount}">0</h3>
+                    <div class="col-md-3">
+                        <div class="stat-card h-100 flex-column align-items-start p-4">
+                            <div class="d-flex justify-content-between w-100 mb-3">
+                                <span class="text-slate-500 text-sm fw-medium">Rejected</span>
+                                <div class="bg-red-50 text-danger rounded p-1"><i
+                                        class="fas fa-times-circle text-xs"></i></div>
+                            </div>
+                            <h2 class="fw-bold text-slate-900 mb-0" th:text="${stats.rejectedCount}">0</h2>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Recent Applications -->
-                <div class="card shadow-md p-6 mb-8">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3>Recent Applications</h3>
-                        <a href="/applications/my-applications" class="text-indigo-600 text-sm hover:underline">View
-                            All</a>
+                <!-- Recent Applications Table -->
+                <div class="saas-card mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold m-0">Recent Applications</h5>
+                        <a href="/applications/my-applications"
+                            class="text-sm text-primary fw-medium text-decoration-none">View All</a>
                     </div>
 
-                    <div th:if="${applications.empty}" class="text-center py-8 text-gray-500">
-                        <i class="fas fa-folder-open text-4xl mb-3 block opacity-50"></i>
-                        No applications yet. <a href="/jobs" class="text-indigo-600 hover:underline">Find a job</a> and
-                        apply!
+                    <div th:if="${applications.empty}" class="text-center py-5">
+                        <div class="bg-slate-50 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width: 64px; height: 64px;">
+                            <i class="fas fa-file-alt text-slate-300 fa-2x"></i>
+                        </div>
+                        <h6 class="fw-bold text-slate-700">No applications yet</h6>
+                        <p class="text-slate-500 text-sm mb-3">Start applying to jobs to track your progress here.</p>
+                        <a href="/jobs" class="btn btn-primary btn-sm">Find Jobs</a>
                     </div>
 
-                    <div th:unless="${applications.empty}" class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-gray-200">
-                                    <th class="p-3 font-semibold text-gray-600">Job Title</th>
-                                    <th class="p-3 font-semibold text-gray-600">Company</th>
-                                    <th class="p-3 font-semibold text-gray-600">Applied Date</th>
-                                    <th class="p-3 font-semibold text-gray-600">Status</th>
-                                    <th class="p-3 font-semibold text-gray-600">Action</th>
+                    <div th:unless="${applications.empty}" class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="bg-light text-slate-500 text-uppercase text-xs">
+                                <tr>
+                                    <th class="border-0 py-3 ps-3 rounded-start">Role / Company</th>
+                                    <th class="border-0 py-3">Applied Date</th>
+                                    <th class="border-0 py-3">Status</th>
+                                    <th class="border-0 py-3 text-end pe-3 rounded-end">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="app : ${applications}" class="border-b border-gray-100 hover:bg-gray-50">
-                                    <td class="p-3 font-medium text-gray-800" th:text="${app.job.title}">Senior
-                                        Developer</td>
-                                    <td class="p-3 text-gray-600" th:text="${app.job.employer.companyName}">Tech Corp
+                                <tr th:each="app : ${applications}">
+                                    <td class="ps-3">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="bg-white border rounded d-flex align-items-center justify-content-center"
+                                                style="width: 40px; height: 40px;">
+                                                <span class="fw-bold text-slate-500 text-sm"
+                                                    th:text="${#strings.substring(app.job.employer.companyName, 0, 1)}">C</span>
+                                            </div>
+                                            <div>
+                                                <a th:href="@{'/jobs/' + ${app.job.id}}"
+                                                    class="fw-semibold text-slate-800 text-decoration-none hover-text-primary"
+                                                    th:text="${app.job.title}">Senior Developer</a>
+                                                <div class="text-xs text-slate-500"
+                                                    th:text="${app.job.employer.companyName}">Tech Corp</div>
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td class="p-3 text-gray-500 text-sm"
+                                    <td class="text-slate-600 text-sm"
                                         th:text="${#dates.format(app.appliedAt, 'MMM dd, yyyy')}">Feb 14, 2026</td>
-                                    <td class="p-3">
-                                        <span class="badge"
-                                            th:classappend="${app.status.name() == 'APPLIED' ? 'bg-blue-100 text-blue-800' : 
-                                                              (app.status.name() == 'SHORTLISTED' ? 'bg-green-100 text-green-800' : 
-                                                              (app.status.name() == 'REJECTED' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'))}"
+                                    <td>
+                                        <span class="tag border"
+                                            th:classappend="${app.status.name() == 'APPLIED' ? 'tag-soft text-primary bg-primary-light border-primary-light' : 
+                                                                (app.status.name() == 'SHORTLISTED' ? 'tag-success' : 
+                                                                (app.status.name() == 'REJECTED' ? 'tag-soft text-danger bg-red-50 border-red-100' : 'tag-soft'))}"
                                             th:text="${app.status}">APPLIED</span>
                                     </td>
-                                    <td class="p-3">
+                                    <td class="text-end pe-3">
                                         <a th:href="@{'/jobs/' + ${app.job.id}}"
-                                            class="text-indigo-600 hover:text-indigo-800 mr-2" title="View Job"><i
-                                                class="fas fa-eye"></i></a>
-                                        <!-- Add withdraw form if status is APPLIED -->
+                                            class="btn btn-sm btn-outline-secondary">
+                                            View Job
+                                        </a>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-
-                <!-- Recommended Jobs (Placeholder) -->
-                <div class="card shadow-md p-6">
-                    <h3 class="mb-4">Recommended For You</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="border rounded p-4 hover:border-indigo-500 transition-colors cursor-pointer">
-                            <h4 class="text-lg font-bold">Java Backend Lead</h4>
-                            <p class="text-sm text-gray-500 mb-2">FinTech Solutions • Remote</p>
-                            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Java</span>
-                            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Spring</span>
-                        </div>
-                        <div class="border rounded p-4 hover:border-indigo-500 transition-colors cursor-pointer">
-                            <h4 class="text-lg font-bold">Full Stack Engineer</h4>
-                            <p class="text-sm text-gray-500 mb-2">HealthPlus • New York</p>
-                            <span class="text-xs bg-gray-100 px-2 py-1 rounded">React</span>
-                            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Node.js</span>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </main>

@@ -9,7 +9,10 @@ import java.util.Collections;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final User user;
+    private User user;
+
+    public CustomUserDetails() {
+    }
 
     public CustomUserDetails(User user) {
         this.user = user;
@@ -17,6 +20,10 @@ public class CustomUserDetails implements UserDetails {
 
     public User getUser() {
         return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getId() {

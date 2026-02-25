@@ -9,6 +9,5 @@ public interface ResumeService {
 
     void saveResumeFile(int userId, MultipartFile file) throws IOException;
 
-    // Remaining methods can be kept or refactored later
-    // For now we focus on the file upload requirement
+    boolean deleteResume(int userId);
 }

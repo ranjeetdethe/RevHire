@@ -14,6 +14,8 @@ public interface UserService {
 
     Optional<User> login(String email, String password);
 
+    Optional<User> findByEmail(String email);
+
     // Kept for additional profile data if needed, but primary data is now in User
     void createJobSeekerProfile(JobSeeker seeker);
 

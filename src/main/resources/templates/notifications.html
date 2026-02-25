@@ -48,15 +48,17 @@
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 const id = this.getAttribute('data-id');
-                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                const csrfMeta = document.querySelector('meta[name="_csrf"]');
+                const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+
+                const headers = { 'Content-Type': 'application/json' };
+                if (csrfMeta && csrfHeaderMeta) {
+                    headers[csrfHeaderMeta.getAttribute('content')] = csrfMeta.getAttribute('content');
+                }
 
                 fetch(`/notifications/mark-read/${id}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        [csrfHeader]: csrfToken
-                    }
+                    headers: headers
                 }).then(response => {
                     if (response.ok) {
                         location.reload();

@@ -3,14 +3,14 @@ package com.revhire.controller;
 import com.revhire.dto.JobDTO;
 import com.revhire.model.Employer;
 import com.revhire.model.Job;
-import com.revhire.model.User;
 import com.revhire.model.Application;
 import com.revhire.service.ApplicationService;
 import com.revhire.service.JobService;
 import com.revhire.service.UserService;
 import com.revhire.service.EmployerService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -166,5 +166,78 @@ public class EmployerController {
 
         redirectAttributes.addFlashAttribute("message", "Profile updated successfully!");
         return "redirect:/employer/profile";
+    }
+
+    @PostMapping("/jobs/{id}/close")
+    public String closeJob(@PathVariable int id,
+            @AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+
+        Optional<Job> jobOpt = jobService.getJobById(id);
+        if (jobOpt.isEmpty() || jobOpt.get().getEmployer().getUser().getId() != userDetails.getId()) {
+            redirectAttributes.addFlashAttribute("error", "Unauthorized access or Job not found.");
+            return "redirect:/employer/dashboard";
+        }
+
+        Job job = jobOpt.get();
+        job.setStatus(Job.JobStatus.CLOSED);
+        jobService.updateJob(job);
+
+        redirectAttributes.addFlashAttribute("message", "Job closed successfully.");
+        return "redirect:/employer/dashboard";
+    }
+
+    @GetMapping("/jobs/{id}/edit")
+    public String showEditJobForm(@PathVariable int id,
+            @AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails,
+            Model model, RedirectAttributes redirectAttributes) {
+
+        Optional<Job> jobOpt = jobService.getJobById(id);
+        if (jobOpt.isEmpty() || jobOpt.get().getEmployer().getUser().getId() != userDetails.getId()) {
+            redirectAttributes.addFlashAttribute("error", "Unauthorized access or Job not found.");
+            return "redirect:/employer/dashboard";
+        }
+
+        Job job = jobOpt.get();
+        JobDTO jobDTO = new JobDTO();
+        jobDTO.setTitle(job.getTitle());
+        jobDTO.setDescription(job.getDescription());
+        jobDTO.setLocation(job.getLocation());
+        jobDTO.setSalaryRange(job.getSalaryRange());
+        jobDTO.setExperienceRequired(job.getExperienceRequired());
+
+        model.addAttribute("jobDTO", jobDTO);
+        model.addAttribute("jobId", id);
+        return "employer/edit-job";
+    }
+
+    @PostMapping("/jobs/{id}/edit")
+    public String processEditJob(@PathVariable int id,
+            @Valid @ModelAttribute("jobDTO") JobDTO jobDTO,
+            BindingResult result,
+            @AuthenticationPrincipal com.revhire.security.CustomUserDetails userDetails,
+            Model model, RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("jobId", id);
+            return "employer/edit-job";
+        }
+
+        Optional<Job> jobOpt = jobService.getJobById(id);
+        if (jobOpt.isEmpty() || jobOpt.get().getEmployer().getUser().getId() != userDetails.getId()) {
+            return "redirect:/employer/dashboard";
+        }
+
+        Job job = jobOpt.get();
+        job.setTitle(jobDTO.getTitle());
+        job.setDescription(jobDTO.getDescription());
+        job.setLocation(jobDTO.getLocation());
+        job.setSalaryRange(jobDTO.getSalaryRange());
+        job.setExperienceRequired(jobDTO.getExperienceRequired());
+
+        jobService.updateJob(job);
+
+        redirectAttributes.addFlashAttribute("message", "Job updated successfully.");
+        return "redirect:/employer/dashboard";
     }
 }

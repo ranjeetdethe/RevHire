@@ -11,3 +11,23 @@ out/
 
 # OS files
 .DS_Store
+# Logs
+*.log
+*.txt
+thread_dump*
+boot_*
+out*
+my*
+login*
+result*
+build*
+
+# IDE
+.idea/
+.vscode/
+
+# Maven
+target/
+
+# Node
+node_modules/

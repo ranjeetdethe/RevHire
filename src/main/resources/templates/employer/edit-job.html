@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments :: head('Post a Job')}"></head>
+<head th:replace="~{fragments :: head('Edit Job')}"></head>
 
 <body>
     <nav th:replace="~{fragments :: header}"></nav>
@@ -13,13 +13,13 @@
                     <a href="/employer/dashboard" class="btn btn-outline-secondary btn-sm me-3"><i
                             class="fas fa-arrow-left"></i></a>
                     <div>
-                        <h2 class="fw-bold text-slate-900 mb-1">Post a New Job</h2>
-                        <p class="text-slate-500 m-0">Reach thousands of qualified candidates.</p>
+                        <h2 class="fw-bold text-slate-900 mb-1">Edit Job</h2>
+                        <p class="text-slate-500 m-0">Update your job posting details.</p>
                     </div>
                 </div>
 
                 <div class="saas-card p-5">
-                    <form th:action="@{/employer/jobs}" th:object="${jobDTO}" method="post">
+                    <form th:action="@{'/employer/jobs/' + ${jobId} + '/edit'}" th:object="${jobDTO}" method="post">
 
                         <!-- Section 1: Job Basics -->
                         <div class="mb-5">
@@ -97,8 +97,8 @@
 
                         <div class="d-flex justify-content-end gap-3 pt-4 border-top">
                             <a href="/employer/dashboard" class="btn btn-secondary px-4 py-2 fw-bold">Cancel</a>
-                            <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow-lg">Post Job for
-                                Free</button>
+                            <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow-lg">Update
+                                Job</button>
                         </div>
                     </form>
                 </div>

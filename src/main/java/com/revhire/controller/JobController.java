@@ -24,41 +24,56 @@ public class JobController {
         this.jobService = jobService;
     }
 
+    /**
+     * Handles search requests for jobs with multiple filter criteria.
+     * Uses AuraJobs search engine logic.
+     */
     @GetMapping
-    public String getAllJobs(@RequestParam(value = "keyword", required = false) String keyword,
+    public String discoverJobs(@RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "location", required = false) String location,
             @RequestParam(value = "jobType", required = false) Job.JobType jobType,
             @RequestParam(value = "experience", required = false) Integer experience,
-            Model model) {
+            Model uiModel) {
 
-        List<Job> jobs;
-        if ((keyword != null && !keyword.trim().isEmpty()) ||
+        List<Job> jobResults;
+
+        // Check if any filters are applied
+        boolean isFiltering = (keyword != null && !keyword.trim().isEmpty()) ||
                 (location != null && !location.trim().isEmpty()) ||
-                jobType != null || experience != null) {
+                jobType != null || experience != null;
 
-            jobs = jobService.searchJobs(keyword, location, jobType, experience);
+        if (isFiltering) {
+            // Apply advanced search filters
+            jobResults = jobService.searchJobs(keyword, location, jobType, experience);
 
-            model.addAttribute("keyword", keyword);
-            model.addAttribute("location", location);
-            model.addAttribute("jobType", jobType);
-            model.addAttribute("experience", experience);
+            // Persist filter state to UI
+            uiModel.addAttribute("keyword", keyword);
+            uiModel.addAttribute("location", location);
+            uiModel.addAttribute("jobType", jobType);
+            uiModel.addAttribute("experience", experience);
         } else {
-            jobs = jobService.getAllJobs();
+            // Default view: Show all open positions
+            jobResults = jobService.getAllJobs();
         }
-        model.addAttribute("jobs", jobs);
-        model.addAttribute("jobTypes", Job.JobType.values());
-        model.addAttribute("activePage", "jobs");
+
+        uiModel.addAttribute("jobs", jobResults);
+        uiModel.addAttribute("jobTypes", Job.JobType.values());
+        uiModel.addAttribute("activePage", "jobs");
         return "jobs";
     }
 
     @GetMapping("/{id}")
-    public String getJobById(@PathVariable("id") int id, Model model) {
-        Optional<Job> job = jobService.getJobById(id);
-        if (job.isPresent()) {
-            model.addAttribute("job", job.get());
+    public String viewJobDetails(@PathVariable("id") int id, Model model) {
+        Optional<Job> jobMatch = jobService.getJobById(id);
+
+        if (jobMatch.isPresent()) {
+            model.addAttribute("job", jobMatch.get());
+            // Record view stats could go here in future AuraJobs update
             return "job-details";
         }
-        model.addAttribute("error", "Job not found");
+
+        // Handle 404 case
+        model.addAttribute("error", "The requested job posting is no longer available.");
         return "error";
     }
 }

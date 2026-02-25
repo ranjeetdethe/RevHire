@@ -8,162 +8,225 @@
     <nav th:replace="~{fragments :: header}"></nav>
 
     <main>
-        <!-- Hero Section -->
-        <section class="hero bg-light py-5">
-            <div class="container text-center py-5">
-                <h1 class="display-4 fw-bold mb-3">Find Your Dream Job Today</h1>
-                <p class="lead text-muted mb-5">Connecting thousands of job seekers with top employers.</p>
+        <!-- Modern Hero Section -->
+        <section class="position-relative overflow-hidden pt-5 pb-5">
+            <div class="container-xl position-relative z-index-1">
+                <div class="row align-items-center g-5 py-5">
+                    <div class="col-lg-6 text-center text-lg-start">
+                        <div
+                            class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary-light text-primary text-sm fw-bold mb-4">
+                            <span class="badge bg-primary text-white rounded-pill px-2">New</span>
+                            <span>Platform 4.0 is live</span>
+                        </div>
+                        <h1 class="display-3 fw-bold text-slate-900 mb-4 lh-sm">
+                            Unlock your true <br>
+                            <span class="text-primary position-relative">career potential</span>
+                        </h1>
+                        <p class="lead text-slate-500 mb-5 pe-lg-5">
+                            Connect with 500+ top-tier companies. RevHire is the modern way to find jobs, track
+                            applications, and get hired faster.
+                        </p>
+                        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+                            <a href="/jobs" class="btn btn-primary btn-lg shadow-lg px-5 py-3 rounded-xl fw-bold">Browse
+                                Jobs</a>
+                            <a href="/register?role=EMPLOYER"
+                                class="btn btn-secondary btn-lg px-5 py-3 rounded-xl fw-bold">Post a Job</a>
+                        </div>
 
-                <form action="/jobs" method="get" class="search-form max-w-lg mx-auto">
-                    <div class="input-group shadow-lg p-2 bg-white rounded">
-                        <span class="input-group-text bg-white border-0"><i class="fas fa-search text-muted"></i></span>
-                        <input type="text" name="keyword" class="form-control border-0"
-                            placeholder="Job title, skills, or company">
-
-                        <span class="input-group-text bg-white border-0"><i
-                                class="fas fa-map-marker-alt text-muted"></i></span>
-                        <input type="text" name="location" class="form-control border-0"
-                            placeholder="City, state, or zip">
-
-                        <button type="submit" class="btn btn-primary px-4 fw-bold">Search Jobs</button>
+                        <div
+                            class="mt-5 d-flex align-items-center gap-4 text-slate-400 justify-content-center justify-content-lg-start">
+                            <span class="d-flex align-items-center gap-2"><i
+                                    class="fas fa-check-circle text-success"></i> Verified Jobs</span>
+                            <span class="d-flex align-items-center gap-2"><i
+                                    class="fas fa-check-circle text-success"></i> Secure Apply</span>
+                        </div>
                     </div>
-                </form>
+                    <div class="col-lg-6 position-relative">
+                        <div class="position-absolute top-0 start-50 translate-middle pointer-events-none opacity-50 blur-3xl"
+                            style="width: 600px; height: 600px; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(255,255,255,0) 70%); z-index: -1;">
+                        </div>
+                        <!-- Hero Image / Illustration Placeholder -->
+                        <div
+                            class="saas-card p-4 rotate-2 shadow-2xl ms-lg-5 position-relative bg-white border border-slate-100 rounded-2xl">
+                            <div class="d-flex justify-content-between align-items-start mb-4">
+                                <div class="d-flex gap-3">
+                                    <div class="bg-primary rounded-xl d-flex align-items-center justify-content-center text-white"
+                                        style="width: 56px; height: 56px; font-size: 1.5rem;">
+                                        <i class="fab fa-google"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="fw-bold mb-1">Senior Product Designer</h5>
+                                        <div class="text-slate-500 text-sm">Google • Mountain View, CA</div>
+                                    </div>
+                                </div>
+                                <span class="tag tag-soft">Full Time</span>
+                            </div>
+                            <div class="d-flex gap-2 mb-4">
+                                <span class="tag tag-soft bg-slate-50 border">UI/UX</span>
+                                <span class="tag tag-soft bg-slate-50 border">Figma</span>
+                                <span class="tag tag-soft bg-slate-50 border">Prototyping</span>
+                            </div>
+                            <div
+                                class="d-flex justify-content-between align-items-center pt-3 border-top border-slate-100">
+                                <div class="fw-bold text-slate-800">$140k - $180k</div>
+                                <button class="btn btn-primary btn-sm px-4">Apply Now</button>
+                            </div>
 
-                <div class="mt-4 small text-muted">
-                    <span class="fw-bold text-dark">Trending:</span> Java, Spring Boot, React, AWS, Data Science
+                            <!-- Floating Card -->
+                            <div class="saas-card p-3 position-absolute top-100 start-0 translate-middle-y shadow-lg border border-white"
+                                style="width: 200px; transform: translateX(-30px) rotate(-5deg);">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-success rounded-circle d-flex align-items-center justify-content-center text-white"
+                                        style="width: 40px; height: 40px;">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-slate-800">You're Hired!</div>
+                                        <div class="text-xs text-slate-500">Just now</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Stats Section -->
-        <section class="py-5 bg-white">
-            <div class="container">
-                <div class="row text-center g-4">
+        <!-- Stats Section (Grid) -->
+        <section class="py-5 bg-white border-top border-bottom border-slate-100">
+            <div class="container-xl">
+                <div class="row g-4 text-center">
                     <div class="col-6 col-md-3">
-                        <h3 class="display-5 fw-bold text-primary">10k+</h3>
-                        <p class="text-muted">Live Jobs</p>
+                        <h2 class="display-5 fw-bold text-primary mb-1">10k+</h2>
+                        <p class="text-slate-500 font-medium">Active Jobs</p>
                     </div>
                     <div class="col-6 col-md-3">
-                        <h3 class="display-5 fw-bold text-primary">500+</h3>
-                        <p class="text-muted">Companies</p>
+                        <h2 class="display-5 fw-bold text-primary mb-1">500+</h2>
+                        <p class="text-slate-500 font-medium">Companies</p>
                     </div>
                     <div class="col-6 col-md-3">
-                        <h3 class="display-5 fw-bold text-primary">12k+</h3>
-                        <p class="text-muted">Candidates</p>
+                        <h2 class="display-5 fw-bold text-primary mb-1">12k+</h2>
+                        <p class="text-slate-500 font-medium">Candidates</p>
                     </div>
                     <div class="col-6 col-md-3">
-                        <h3 class="display-5 fw-bold text-primary">5k+</h3>
-                        <p class="text-muted">Hired</p>
+                        <h2 class="display-5 fw-bold text-primary mb-1">5k+</h2>
+                        <p class="text-slate-500 font-medium">Succesful Hires</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Featured Jobs Section -->
-        <section class="py-5 bg-light">
-            <div class="container">
-                <h2 class="text-center mb-5 fw-bold">Featured Jobs</h2>
-                <div class="row g-4">
-                    <!-- Static Featured Jobs -->
-                    <div class="col-md-4">
-                        <div class="card h-100 shadow-sm hover-shadow transition">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-3">
-                                    <img src="https://via.placeholder.com/48" alt="Logo" class="rounded me-3">
-                                    <div>
-                                        <h5 class="card-title mb-0"><a href="#"
-                                                class="text-decoration-none text-dark">Senior Java Developer</a></h5>
-                                        <small class="text-muted">TechCorp Inc.</small>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between text-muted small mb-3">
-                                    <span><i class="fas fa-map-marker-alt me-1"></i> New York, NY</span>
-                                    <span><i class="fas fa-briefcase me-1"></i> 5-7 Years</span>
-                                </div>
-                                <div class="mb-3">
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i
-                                            class="fas fa-dollar-sign me-1"></i>$120k - $150k</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge rounded-pill bg-info text-dark">Remote</span>
-                                    <a href="/login" class="btn btn-outline-primary btn-sm">Apply Now</a>
-                                </div>
+        <section class="py-5 bg-slate-50">
+            <div class="container-xl py-5">
+                <div class="text-center mb-5 max-w-2xl mx-auto">
+                    <h2 class="display-6 fw-bold text-slate-900 mb-3">Featured Opportunities</h2>
+                    <p class="text-slate-500 text-lg">Hand-picked jobs from top employers to help you get started.</p>
+                </div>
+
+                <div class="d-grid grid-cols-3 gap-4">
+                    <!-- Static Featured Jobs (Using .job-card component) -->
+                    <div class="job-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="job-logo text-primary bg-primary-light">
+                                <i class="fab fa-aws"></i>
                             </div>
+                            <span class="tag tag-soft text-xs">Featured</span>
+                        </div>
+                        <div class="mb-3">
+                            <a href="#" class="job-title stretched-link">Cloud Solutions Architect</a>
+                            <div class="job-company">
+                                <span>Amazon</span>
+                                <span>•</span>
+                                <span>Seattle, WA</span>
+                            </div>
+                        </div>
+                        <div class="job-tags">
+                            <span class="tag tag-soft">Full Time</span>
+                            <span class="tag tag-soft">$150k+</span>
+                        </div>
+                        <div class="job-footer">
+                            <span class="text-xs">Posted 2 days ago</span>
+                            <span class="text-primary fw-medium text-sm">View Details <i
+                                    class="fas fa-arrow-right ms-1 text-xs"></i></span>
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card h-100 shadow-sm hover-shadow transition">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-3">
-                                    <img src="https://via.placeholder.com/48" alt="Logo" class="rounded me-3">
-                                    <div>
-                                        <h5 class="card-title mb-0"><a href="#"
-                                                class="text-decoration-none text-dark">Frontend Engineer</a></h5>
-                                        <small class="text-muted">Creative Solutions</small>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between text-muted small mb-3">
-                                    <span><i class="fas fa-map-marker-alt me-1"></i> San Francisco</span>
-                                    <span><i class="fas fa-briefcase me-1"></i> 3-5 Years</span>
-                                </div>
-                                <div class="mb-3">
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i
-                                            class="fas fa-dollar-sign me-1"></i>$100k - $130k</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge rounded-pill bg-secondary text-white">On-site</span>
-                                    <a href="/login" class="btn btn-outline-primary btn-sm">Apply Now</a>
-                                </div>
+                    <div class="job-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="job-logo text-danger bg-danger-light">
+                                <i class="fab fa-airbnb"></i>
                             </div>
+                            <span class="tag tag-soft text-xs">Urgent</span>
+                        </div>
+                        <div class="mb-3">
+                            <a href="#" class="job-title stretched-link">Senior Frontend Engineer</a>
+                            <div class="job-company">
+                                <span>Airbnb</span>
+                                <span>•</span>
+                                <span>Remote</span>
+                            </div>
+                        </div>
+                        <div class="job-tags">
+                            <span class="tag tag-soft">Remote</span>
+                            <span class="tag tag-soft">$130k - $160k</span>
+                        </div>
+                        <div class="job-footer">
+                            <span class="text-xs">Posted 5 hours ago</span>
+                            <span class="text-primary fw-medium text-sm">View Details <i
+                                    class="fas fa-arrow-right ms-1 text-xs"></i></span>
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card h-100 shadow-sm hover-shadow transition">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-3">
-                                    <img src="https://via.placeholder.com/48" alt="Logo" class="rounded me-3">
-                                    <div>
-                                        <h5 class="card-title mb-0"><a href="#"
-                                                class="text-decoration-none text-dark">DevOps Engineer</a></h5>
-                                        <small class="text-muted">Cloud Systems</small>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between text-muted small mb-3">
-                                    <span><i class="fas fa-map-marker-alt me-1"></i> Austin, TX</span>
-                                    <span><i class="fas fa-briefcase me-1"></i> 2-4 Years</span>
-                                </div>
-                                <div class="mb-3">
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i
-                                            class="fas fa-dollar-sign me-1"></i>$90k - $110k</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge rounded-pill bg-warning text-dark">Hybrid</span>
-                                    <a href="/login" class="btn btn-outline-primary btn-sm">Apply Now</a>
-                                </div>
+                    <div class="job-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="job-logo text-info bg-info-light">
+                                <i class="fab fa-twitter"></i>
                             </div>
+                            <span class="tag tag-soft text-xs">New</span>
+                        </div>
+                        <div class="mb-3">
+                            <a href="#" class="job-title stretched-link">Product Manager</a>
+                            <div class="job-company">
+                                <span>Twitter</span>
+                                <span>•</span>
+                                <span>San Francisco</span>
+                            </div>
+                        </div>
+                        <div class="job-tags">
+                            <span class="tag tag-soft">Onsite</span>
+                            <span class="tag tag-soft">$140k</span>
+                        </div>
+                        <div class="job-footer">
+                            <span class="text-xs">Posted just now</span>
+                            <span class="text-primary fw-medium text-sm">View Details <i
+                                    class="fas fa-arrow-right ms-1 text-xs"></i></span>
                         </div>
                     </div>
                 </div>
 
                 <div class="text-center mt-5">
-                    <a href="/jobs" class="btn btn-primary btn-lg">View All Jobs <i
+                    <a href="/jobs" class="btn btn-outline-primary px-5 py-3 rounded-xl fw-bold">View All Jobs <i
                             class="fas fa-arrow-right ms-2"></i></a>
                 </div>
             </div>
         </section>
 
         <!-- CTA Section -->
-        <section class="py-5 bg-dark text-white text-center">
-            <div class="container py-4">
-                <h2 class="mb-3 fw-bold">Ready to start your career?</h2>
-                <p class="text-white-50 mb-4 col-md-8 mx-auto lead">Join thousands of job seekers and employers on
-                    RevHire. Create your profile today and get hired fast.</p>
+        <section class="py-5 bg-slate-900 text-white position-relative overflow-hidden">
+            <div class="position-absolute top-0 end-0 translate-middle-x opacity-25"
+                style="width: 400px; height: 400px; background: radial-gradient(circle, rgba(99,102,241,0.5) 0%, rgba(255,255,255,0) 70%); border-radius: 50%;">
+            </div>
+            <div class="container-xl py-5 position-relative z-index-1 text-center">
+                <h2 class="display-5 fw-bold mb-4">Ready to accelerate your career?</h2>
+                <p class="text-slate-400 mb-5 col-md-8 mx-auto text-lg">Join thousands of professionals finding their
+                    dream jobs on RevHire. Create your profile today and get discovered.</p>
                 <div class="d-flex justify-content-center gap-3">
-                    <a href="/register?role=JOB_SEEKER" class="btn btn-light btn-lg text-primary fw-bold">I'm a Job
-                        Seeker</a>
-                    <a href="/register?role=EMPLOYER" class="btn btn-outline-light btn-lg fw-bold">I'm an Employer</a>
+                    <a href="/register?role=JOB_SEEKER"
+                        class="btn btn-primary btn-lg px-5 py-3 rounded-xl shadow-lg hover-scale">Get Started Now</a>
+                    <a href="/register?role=EMPLOYER"
+                        class="btn btn-outline-light btn-lg px-5 py-3 rounded-xl text-white border-slate-600 hover-border-white">Hire
+                        Talent</a>
                 </div>
             </div>
         </section>

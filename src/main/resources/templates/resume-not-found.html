@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: head('Resume Not Found')}"></head>
+
+<body>
+    <div class="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+        <div class="text-center p-5 bg-white shadow rounded" style="max-width: 500px;">
+            <div class="mb-4">
+                <div class="bg-slate-50 d-inline-flex align-items-center justify-content-center rounded-circle"
+                    style="width: 80px; height: 80px;">
+                    <i class="fas fa-file-excel text-slate-300 fa-3x"></i>
+                </div>
+            </div>
+            <h3 class="fw-bold text-slate-900 mb-2">Resume Not Available</h3>
+            <p class="text-slate-500 mb-4">This candidate has not uploaded a resume, or the file is missing from our
+                records.</p>
+            <button onclick="window.close()" class="btn btn-primary px-4 fw-bold">Close Window</button>
+        </div>
+    </div>
+</body>
+
+</html>

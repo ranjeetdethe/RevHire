@@ -6,97 +6,144 @@
 <body>
     <nav th:replace="~{fragments :: header}"></nav>
 
-    <main class="container py-5">
-        <div class="row justify-content-center">
+    <main class="container-xl py-5">
+        <div class="row g-4">
+
+            <!-- Sidebar: Personal Info -->
+            <div class="col-lg-4">
+                <div class="saas-card text-center mb-4">
+                    <div class="position-relative d-inline-block mb-3">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                            style="width: 100px; height: 100px; font-size: 2.5rem;">
+                            <span th:text="${#strings.substring(user.firstName, 0, 1)}">U</span>
+                        </div>
+                        <span
+                            class="position-absolute bottom-0 end-0 bg-white p-1 rounded-circle shadow-sm border cursor-pointer">
+                            <i class="fas fa-camera text-slate-500"></i>
+                        </span>
+                    </div>
+
+                    <h4 class="fw-bold text-slate-900 mb-1" th:text="${user.firstName + ' ' + user.lastName}">User Name
+                    </h4>
+                    <span class="tag tag-soft">Job Seeker</span>
+
+                    <hr class="my-4 text-slate-200">
+
+                    <ul class="list-unstyled text-start m-0 d-flex flex-column gap-3">
+                        <li class="d-flex align-items-center gap-3">
+                            <div class="bg-slate-50 p-2 rounded text-slate-400"><i class="fas fa-envelope"></i></div>
+                            <div>
+                                <div class="text-xs text-slate-400 text-uppercase fw-bold">Email</div>
+                                <div class="text-sm fw-medium text-slate-700 text-truncate" style="max-width: 200px;"
+                                    th:text="${user.email}">user@example.com</div>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-center gap-3">
+                            <div class="bg-slate-50 p-2 rounded text-slate-400"><i class="fas fa-phone"></i></div>
+                            <div>
+                                <div class="text-xs text-slate-400 text-uppercase fw-bold">Phone</div>
+                                <div class="text-sm fw-medium text-slate-700" th:text="${user.phone ?: 'Not provided'}">
+                                    +123456789</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="saas-card">
+                    <h6 class="fw-bold mb-3">Resume Status</h6>
+                    <div th:if="${profile?.resumeText}" class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-success-light text-success rounded p-2"><i class="fas fa-file-alt"></i></div>
+                        <div>
+                            <div class="fw-bold text-sm text-slate-800">Resume Uploaded</div>
+                            <div class="text-xs text-slate-500">Visible to employers</div>
+                        </div>
+                    </div>
+                    <div th:unless="${profile?.resumeText}" class="alert alert-warning text-xs p-2 d-flex gap-2">
+                        <i class="fas fa-exclamation-triangle mt-1"></i>
+                        <span>No resume uploaded. Employers may skip your profile.</span>
+                    </div>
+                    <a href="/resume/upload" class="btn btn-outline-primary btn-sm w-100">Update Resume</a>
+                </div>
+            </div>
+
+            <!-- Main Content: Professional Details -->
             <div class="col-lg-8">
-                <div class="d-flex align-items-center mb-4">
-                    <h2 class="fw-bold mb-0">My Profile</h2>
-                    <span class="badge bg-primary ms-3">Job Seeker</span>
-                </div>
-
-                <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
-                    <span th:text="${message}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-light py-3">
-                        <h5 class="mb-0 fw-bold text-secondary">Account Information</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label text-muted">First Name</label>
-                                <input type="text" class="form-control" th:value="${user.firstName}" readonly disabled>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-muted">Last Name</label>
-                                <input type="text" class="form-control" th:value="${user.lastName}" readonly disabled>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-muted">Email</label>
-                                <input type="text" class="form-control" th:value="${user.email}" readonly disabled>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-muted">Phone</label>
-                                <input type="text" class="form-control" th:value="${user.phone}" readonly disabled>
-                            </div>
+                <div class="saas-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                        <div>
+                            <h4 class="fw-bold text-slate-900 mb-1">Professional Profile</h4>
+                            <p class="text-slate-500 text-sm m-0">Showcase your skills and experience to recruiters.</p>
                         </div>
                     </div>
-                </div>
 
-                <form th:action="@{/seeker/profile}" method="post" th:object="${profile}">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-light py-3">
-                            <h5 class="mb-0 fw-bold text-primary">Professional Details</h5>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="mb-3">
-                                <label for="location" class="form-label fw-semibold">Current Location</label>
-                                <input type="text" class="form-control" id="location" name="location"
-                                    th:value="${profile?.location}" placeholder="City, State">
+                    <div th:if="${message}"
+                        class="alert alert-success d-flex align-items-center mb-4 rounded-lg text-sm" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span th:text="${message}"></span>
+                    </div>
+
+                    <form th:action="@{/seeker/profile}" method="post" th:object="${profile}">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label for="location" class="form-label text-sm fw-medium text-slate-700">Current
+                                    Location</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0 text-slate-400"><i
+                                            class="fas fa-map-marker-alt"></i></span>
+                                    <input type="text" class="form-control border-start-0 ps-0" id="location"
+                                        name="location" th:value="${profile?.location}" placeholder="City, State">
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="skills" class="form-label fw-semibold">Skills</label>
+                            <div class="col-md-12">
+                                <label for="skills" class="form-label text-sm fw-medium text-slate-700">Skills</label>
                                 <input type="text" class="form-control" id="skills" name="skills"
-                                    th:value="${profile?.skills}" placeholder="Java, Spring Boot, React...">
-                                <div class="form-text">Separate skills with commas.</div>
+                                    th:value="${profile?.skills}"
+                                    placeholder="e.g. Java, Spring Boot, React, SQL (Comma separated)">
+                                <div class="form-text text-xs text-slate-400">These will appear as tags on your profile.
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="experience" class="form-label fw-semibold">Experience</label>
-                                <textarea class="form-control" id="experience" name="experience" rows="3"
+                            <div class="col-12">
+                                <label for="experience" class="form-label text-sm fw-medium text-slate-700">Work
+                                    Experience</label>
+                                <textarea class="form-control" id="experience" name="experience" rows="4"
                                     th:text="${profile?.experience}"
-                                    placeholder="Summarize your work experience..."></textarea>
+                                    placeholder="Describe your relevant work history..."></textarea>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="education" class="form-label fw-semibold">Education</label>
+                            <div class="col-12">
+                                <label for="education"
+                                    class="form-label text-sm fw-medium text-slate-700">Education</label>
                                 <textarea class="form-control" id="education" name="education" rows="3"
                                     th:text="${profile?.education}"
-                                    placeholder="Degree, University, Year..."></textarea>
+                                    placeholder="List your degrees and universities..."></textarea>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="certifications" class="form-label fw-semibold">Certifications</label>
+                            <div class="col-12">
+                                <label for="certifications"
+                                    class="form-label text-sm fw-medium text-slate-700">Certifications</label>
                                 <textarea class="form-control" id="certifications" name="certifications" rows="2"
-                                    th:text="${profile?.certifications}" placeholder="AWS Certified, PMP..."></textarea>
+                                    th:text="${profile?.certifications}"
+                                    placeholder="Any professional certifications..."></textarea>
                             </div>
 
-                            <div class="mb-4">
-                                <label for="resumeText" class="form-label fw-semibold">Resume Text / Summary</label>
-                                <textarea class="form-control" id="resumeText" name="resumeText" rows="6"
-                                    th:text="${profile?.resumeText}"
-                                    placeholder="Paste your resume text or write a professional summary..."></textarea>
+                            <div class="col-12">
+                                <label for="resumeText" class="form-label text-sm fw-medium text-slate-700">Professional
+                                    Summary</label>
+                                <textarea class="form-control bg-slate-50 border-slate-200" id="resumeText"
+                                    name="resumeText" rows="5" th:text="${profile?.resumeText}"
+                                    placeholder="Write a brief summary about yourself..."></textarea>
                             </div>
 
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">Save Changes</button>
+                            <div class="col-12 mt-4 pt-3 border-top d-flex justify-content-end gap-3">
+                                <button type="button" class="btn btn-secondary px-4">Cancel</button>
+                                <button type="submit" class="btn btn-primary px-4 py-2 fw-bold shadow-sm">Save
+                                    Profile</button>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </main>
