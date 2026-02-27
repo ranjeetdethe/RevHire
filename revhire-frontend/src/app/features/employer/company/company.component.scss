@@ -1,0 +1,33 @@
+.glass-card {
+    transition: all var(--transition-normal);
+}
+
+.form-control-custom,
+.form-select-custom {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    &:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.15);
+        background-color: #ffffff;
+    }
+}
+
+.transition-all {
+    transition: all 0.2s ease-in-out;
+}
+
+textarea.form-control-custom {
+    resize: vertical;
+    font-family: var(--font-primary), sans-serif;
+}
+
+// Ensure right pane inputs are properly matched
+.form-select-custom,
+.input-group-text,
+input[type="url"] {
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}

@@ -1,0 +1,90 @@
+<div class="home-container" style="font-family: var(--font-body);">
+    <!-- Hero Section -->
+    <header class="hero-section text-center position-relative py-5">
+        <div class="container position-relative z-1">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 animate__animated animate__fadeInUp">
+                    <h1 class="display-4 fw-bold mb-4 font-heading text-dark">
+                        Find Your <span class="text-primary">Dream Job</span> Today
+                    </h1>
+                    <p class="lead text-muted mb-5">
+                        Connect with top employers, discover endless career opportunities, and take the next step
+                        towards your professional goals.
+                    </p>
+
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                        <a routerLink="/auth/register"
+                            class="btn btn-primary-custom btn-lg font-heading rounded-pill px-5 shadow-lg">Get
+                            Started</a>
+                        <a routerLink="/auth/login"
+                            class="btn btn-outline-dark btn-lg font-heading rounded-pill px-5">Login</a>
+                    </div>
+
+                    <div class="mt-5 d-flex justify-content-center gap-4 text-muted small fw-medium">
+                        <span><i class="bi bi-check-circle-fill text-success me-1"></i> Over 50k+ Jobs</span>
+                        <span><i class="bi bi-check-circle-fill text-success me-1"></i> 10k+ Employers</span>
+                        <span><i class="bi bi-check-circle-fill text-success me-1"></i> 100% Free for Seekers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Background Decorative Element -->
+        <div class="hero-bg-blob"></div>
+    </header>
+
+    <!-- Popular Categories -->
+    <section class="py-5 bg-white">
+        <div class="container pb-4">
+            <h2 class="text-center fw-bold mb-5 font-heading">Popular Job Categories</h2>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6" *ngFor="let cat of jobCategories">
+                    <div
+                        class="glass-card p-4 text-center h-100 flex-column d-flex align-items-center justify-content-center cat-card">
+                        <div class="icon-circle bg-primary bg-opacity-10 text-primary mb-3 mx-auto">
+                            <i class="bi {{cat.icon}} fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold mb-1">{{cat.name}}</h5>
+                        <span class="badge bg-light text-dark rounded-pill">{{cat.count}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works Section -->
+    <section class="py-5 bg-light">
+        <div class="container py-4">
+            <h2 class="text-center fw-bold mb-5 font-heading">How RevHire Works</h2>
+            <div class="row g-4 position-relative">
+                <div class="col-lg-3 col-md-6 text-center" *ngFor="let step of howItWorks; let i = index">
+                    <div class="step-card h-100 p-4 position-relative z-1">
+                        <div
+                            class="step-number bg-primary text-white fw-bold rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center shadow-sm">
+                            {{i+1}}
+                        </div>
+                        <h4 class="fw-semibold mb-3">{{step.title}}</h4>
+                        <p class="text-muted">{{step.description}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta-section py-5 text-center text-white position-relative overflow-hidden">
+        <div class="container position-relative z-1 py-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 animate__animated animate__zoomIn">
+                    <h2 class="fw-bold mb-3 font-heading display-5">Ready to hire top talent?</h2>
+                    <p class="lead mb-4 opacity-75">Join thousands of companies using RevHire to find their next
+                        superstar employees quickly and efficiently.</p>
+                    <a routerLink="/auth/register"
+                        class="btn btn-light btn-lg text-primary fw-bold rounded-pill px-5 shadow-sm">Post a Job For
+                        Free</a>
+                </div>
+            </div>
+        </div>
+        <div class="cta-overlay position-absolute top-0 start-0 w-100 h-100 bg-primary opacity-75"></div>
+        <div class="cta-bg-pattern position-absolute top-0 start-0 w-100 h-100"></div>
+    </section>
+</div>

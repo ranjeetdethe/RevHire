@@ -1,0 +1,239 @@
+<div class="container-fluid py-4 min-vh-100 bg-light">
+    <div class="row g-4 position-relative">
+
+        <!-- Left Column: Filters Sidebar -->
+        <div class="col-lg-3">
+            <div class="glass-card p-4 rounded-4 sticky-top mb-4 shadow-sm border" style="top: 80px; z-index: 10;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0 font-heading"><i class="bi bi-funnel-fill text-primary me-2"></i> Filters
+                    </h5>
+                    <button class="btn btn-link text-decoration-none text-muted p-0 small fw-medium custom-link-hover"
+                        (click)="clearFilters()">Clear All</button>
+                </div>
+
+                <!-- Form -->
+                <form (ngSubmit)="onSearch()">
+
+                    <!-- Keyword search -->
+                    <div class="mb-4 text-start">
+                        <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Search
+                            Keyword</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i
+                                    class="bi bi-search"></i></span>
+                            <input type="text" class="form-control form-control-custom border-start-0 ps-0 text-dark"
+                                [(ngModel)]="filters.keyword" name="keyword"
+                                placeholder="Job title, keywords, company...">
+                        </div>
+                    </div>
+
+                    <!-- Location search -->
+                    <div class="mb-4 text-start">
+                        <label
+                            class="form-label small fw-bold text-muted text-uppercase tracking-wider">Location</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i
+                                    class="bi bi-geo-alt"></i></span>
+                            <input type="text" class="form-control form-control-custom border-start-0 ps-0 text-dark"
+                                [(ngModel)]="filters.location" name="location" placeholder="City, state, remote...">
+                        </div>
+                    </div>
+
+                    <!-- Job Type filter -->
+                    <div class="mb-4 text-start">
+                        <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Job
+                            Type</label>
+                        <select class="form-select form-select-custom text-dark" [(ngModel)]="filters.jobType"
+                            name="jobType">
+                            <option value="">Any Job Type</option>
+                            <option value="FULL_TIME">Full-Time</option>
+                            <option value="PART_TIME">Part-Time</option>
+                            <option value="CONTRACT">Contract</option>
+                            <option value="INTERNSHIP">Internship</option>
+                            <option value="REMOTE">Remote</option>
+                        </select>
+                    </div>
+
+                    <!-- Experience filter -->
+                    <div class="mb-4 text-start">
+                        <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Experience
+                            Level</label>
+                        <select class="form-select form-select-custom text-dark" [(ngModel)]="filters.experience"
+                            name="experience">
+                            <option value="">Any Experience Level</option>
+                            <option value="0">Entry Level (0+ yrs)</option>
+                            <option value="2">Junior (2+ yrs)</option>
+                            <option value="5">Mid Level (5+ yrs)</option>
+                            <option value="8">Senior (8+ yrs)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom w-100 rounded-pill fw-bold py-2 mt-2 shadow-sm">
+                        Apply Filters
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column: Job List -->
+        <div class="col-lg-9">
+
+            <!-- List Header Stats -->
+            <div
+                class="d-flex justify-content-between align-items-center mb-4 pb-2 bg-white p-3 rounded-4 shadow-sm border transition-hover">
+                <div class="fw-medium text-dark ps-2">
+                    <span *ngIf="!isLoading">Showing <span class="fw-bold text-primary">{{ jobs.length > 0 ?
+                            (currentPage * searchParams.size! + 1) : 0 }}</span> - <span class="fw-bold text-primary">{{
+                            jobs.length > 0 ? (currentPage * searchParams.size! + jobs.length) : 0 }}</span> of <span
+                            class="fw-bold text-primary">{{ totalElements }}</span> Jobs</span>
+                    <span *ngIf="isLoading" class="text-muted">
+                        <div class="spinner-grow spinner-grow-sm text-primary me-2" role="status"></div> Finding roles
+                        for you...
+                    </span>
+                </div>
+                <div class="pe-2 text-muted small fw-medium">
+                    <i class="bi bi-sort-down"></i> Sorted by Newest
+                </div>
+            </div>
+
+            <!-- Skeleton Loader -->
+            <div *ngIf="isLoading" class="d-flex flex-column gap-3">
+                <div class="glass-card p-4 h-100 placeholder-glow" *ngFor="let i of [1,2,3,4]">
+                    <div class="d-flex gap-3">
+                        <div class="placeholder rounded bg-secondary opacity-25" style="width: 60px; height: 60px;">
+                        </div>
+                        <div class="flex-grow-1">
+                            <span class="placeholder col-6 bg-secondary opacity-25 d-block mb-2"></span>
+                            <span class="placeholder col-4 bg-secondary opacity-25 d-block mb-3"></span>
+                            <span class="placeholder col-2 bg-secondary opacity-25 me-2"></span>
+                            <span class="placeholder col-3 bg-secondary opacity-25 me-2"></span>
+                            <span class="placeholder col-2 bg-secondary opacity-25"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="!isLoading && jobs.length === 0" class="text-center py-5 glass-card shadow-sm border mt-3">
+                <i class="bi bi-search display-3 text-muted mb-3 d-block opacity-25 text-primary"></i>
+                <h4 class="fw-bold text-dark">No matching jobs found</h4>
+                <p class="text-muted mb-4 px-3 mx-auto" style="max-width: 400px;">Try adjusting your search criteria,
+                    removing some filters, or checking back later for new opportunities.</p>
+                <button class="btn btn-outline-primary rounded-pill px-4 fw-medium shadow-sm transition-hover"
+                    (click)="clearFilters()">
+                    Clear All Filters
+                </button>
+            </div>
+
+            <!-- Job Cards Grid -->
+            <div class="row g-4" *ngIf="!isLoading && jobs.length > 0">
+                <div class="col-12" *ngFor="let job of jobs">
+                    <div
+                        class="glass-card job-card p-0 d-flex flex-column flex-md-row transition-hover border bg-white overflow-hidden position-relative">
+
+                        <!-- Hover decorative stripe -->
+                        <div class="position-absolute start-0 top-0 bottom-0 bg-primary opacity-0 transition-all card-stripe"
+                            style="width: 4px;"></div>
+
+                        <!-- Left Icon Area -->
+                        <div class="p-4 d-flex justify-content-center align-items-start border-end border-md-none border-bottom border-md-bottom-none bg-light bg-opacity-50"
+                            style="min-width: 120px;">
+                            <div class="company-logo bg-white border rounded-3 shadow-sm d-flex align-items-center justify-content-center fw-bold text-primary fs-2 transition-transform"
+                                style="width: 70px; height: 70px;">
+                                <!-- Optional image fallback -->
+                                <span *ngIf="!job.companyLogo">{{ (job.companyName || 'C').charAt(0) }}</span>
+                                <img *ngIf="job.companyLogo" [src]="job.companyLogo" alt="logo"
+                                    class="img-fluid rounded-3" style="max-height: 100%; max-width: 100%;">
+                            </div>
+                        </div>
+
+                        <!-- Main Content Area -->
+                        <div class="p-4 flex-grow-1 position-relative pe-md-5">
+                            <div
+                                class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-2 mb-2">
+                                <div>
+                                    <h4 class="fw-bold mb-1 text-dark text-truncate" style="max-width: 400px;">
+                                        <a [routerLink]="['/job-seeker/jobs', job.id]"
+                                            class="text-decoration-none text-dark custom-link-hover stretched-link">{{
+                                            job.title }}</a>
+                                    </h4>
+                                    <div class="d-flex align-items-center flex-wrap gap-2 text-primary fw-bold small">
+                                        <span>{{ job.companyName }}</span>
+                                        <span class="text-muted fw-normal"><i class="bi bi-dot"></i> {{ job.location
+                                            }}</span>
+                                        <span
+                                            class="badge bg-primary bg-opacity-10 text-primary border border-primary ms-1"
+                                            *ngIf="job.jobType">{{ job.jobType.replace('_', ' ') }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-md-end z-2 position-relative">
+                                    <button
+                                        class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center shadow-sm btn-icon-custom transition-hover bg-white"
+                                        style="width: 44px; height: 44px; z-index: 10;"
+                                        [ngClass]="{'border-primary text-primary': savedJobIds.has(job.id), 'bg-primary bg-opacity-10': savedJobIds.has(job.id)}"
+                                        (click)="toggleSaveJob(job.id, $event)"
+                                        [title]="savedJobIds.has(job.id) ? 'Saved' : 'Save Job'">
+
+                                        <!-- Show spinner if currently saving this specific job -->
+                                        <div *ngIf="isSaving[job.id]"
+                                            class="spinner-border spinner-border-sm text-primary" role="status"></div>
+
+                                        <!-- Else show normal icon icons -->
+                                        <i *ngIf="!isSaving[job.id]" class="bi"
+                                            [ngClass]="savedJobIds.has(job.id) ? 'bi-bookmark-fill' : 'bi-bookmark'"
+                                            style="font-size: 1.1rem; padding-top: 1px;"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <p class="text-muted small mb-3 description-truncate mt-3 lh-base">
+                                {{ job.description }}
+                            </p>
+
+                            <!-- Tags and Meta Footer -->
+                            <div
+                                class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 border-top pt-3 mt-auto">
+                                <div class="d-flex flex-wrap gap-2 z-2 position-relative">
+                                    <span class="badge rounded-pill bg-light text-secondary border px-3 py-1 fw-medium"
+                                        *ngFor="let skill of parseSkills(job.requiredSkills)"><i
+                                            class="bi bi-tag-fill me-1 text-muted opacity-50"></i> {{ skill }}</span>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-4 text-muted small fw-medium text-nowrap">
+                                    <span *ngIf="job.salaryMin || job.salaryMax"><i
+                                            class="bi bi-cash-stack text-success"></i> {{ job.salaryMin ?
+                                        '$'+(job.salaryMin/1000)+'k' : '' }} {{ job.salaryMin && job.salaryMax ? '-' :
+                                        '' }} {{ job.salaryMax ? '$'+(job.salaryMax/1000)+'k' : '' }}</span>
+                                    <span *ngIf="job.experienceYearsMin"><i class="bi bi-briefcase text-info"></i> {{
+                                        job.experienceYearsMin }}+ yrs</span>
+                                    <span title="Posted Date"><i class="bi bi-clock-history"></i> {{ job.createdAt |
+                                        date:'MMM d' }}</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="d-flex justify-content-center align-items-center mt-5 mb-3 gap-3"
+                *ngIf="!isLoading && totalPages > 1">
+                <button class="btn btn-outline-secondary rounded-pill px-4" [disabled]="currentPage === 0"
+                    (click)="changePage(-1)">
+                    <i class="bi bi-chevron-left me-1"></i> Prev
+                </button>
+                <div class="small fw-bold text-dark text-nowrap opacity-75">
+                    Page {{ currentPage + 1 }} of {{ totalPages }}
+                </div>
+                <button class="btn btn-outline-secondary rounded-pill px-4" [disabled]="currentPage >= totalPages - 1"
+                    (click)="changePage(1)">
+                    Next <i class="bi bi-chevron-right ms-1"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<app-toast [message]="toastMessage" [type]="toastType" [show]="showToast"></app-toast>

@@ -1,0 +1,47 @@
+.glass-card {
+    transition: all var(--transition-normal);
+}
+
+.transition-hover {
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+
+    &:hover {
+        background-color: #f8fafc !important;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1) !important;
+    }
+}
+
+.custom-link-hover {
+    transition: color 0.15s ease;
+
+    &:hover {
+        color: var(--primary-color) !important;
+        text-decoration: underline !important;
+    }
+}
+
+.transition-hover-row {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: rgba(37, 99, 235, 0.02) !important;
+    }
+}
+
+.custom-table {
+    --bs-table-bg: transparent;
+
+    th {
+        font-size: 0.75rem;
+    }
+
+    tbody tr td {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+}

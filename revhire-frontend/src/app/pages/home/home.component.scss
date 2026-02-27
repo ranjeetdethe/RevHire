@@ -1,0 +1,71 @@
+.hero-section {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+    overflow: hidden;
+
+    h1 {
+        font-size: 3.5rem;
+        line-height: 1.2;
+    }
+
+    .hero-bg-blob {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+        top: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 0;
+        pointer-events: none;
+    }
+}
+
+.cat-card {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
+        border-color: rgba(37, 99, 235, 0.2);
+
+        .icon-circle {
+            background: var(--primary-color) !important;
+            color: white !important;
+        }
+    }
+
+    .icon-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+}
+
+.step-card {
+    background: transparent;
+
+    .step-number {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+}
+
+.cta-section {
+    background: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat;
+
+    .cta-bg-pattern {
+        background-color: transparent;
+        background-image: radial-gradient(var(--primary-hover) 1px, transparent 1px);
+        background-size: 20px 20px;
+        opacity: 0.1;
+    }
+}

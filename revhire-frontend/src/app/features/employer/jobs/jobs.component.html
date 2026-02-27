@@ -1,0 +1,193 @@
+<div class="container-fluid py-4 min-vh-100 bg-light">
+    <!-- Header -->
+    <div
+        class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-2 border-bottom gap-3">
+        <div>
+            <h3 class="fw-bold text-dark font-heading mb-1">Manage Jobs</h3>
+            <p class="text-muted mb-0">View, edit, toggle, or delete your current job postings.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a routerLink="/employer/dashboard" class="btn btn-outline-secondary fw-medium rounded-pill px-4 shadow-sm">
+                <i class="bi bi-arrow-left"></i> Dashboard
+            </a>
+            <a routerLink="/employer/job-form/new" class="btn btn-primary-custom fw-medium rounded-pill px-4 shadow-sm">
+                <i class="bi bi-plus-circle"></i> Create Post
+            </a>
+        </div>
+    </div>
+
+    <!-- Skeleton Loader -->
+    <div *ngIf="isLoading" class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="!isLoading">
+
+        <!-- Filters & Search -->
+        <div class="glass-card p-3 mb-4 sticky-top border" style="top: 10px; z-index: 1020;">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i
+                                class="bi bi-search"></i></span>
+                        <input type="text" class="form-control form-control-custom border-start-0 ps-0"
+                            placeholder="Search by job title or location..." [(ngModel)]="searchTerm"
+                            (input)="onSearchChange()">
+                    </div>
+                </div>
+                <div
+                    class="col-md-6 col-lg-7 d-flex justify-content-md-end gap-2 overflow-auto hide-scroll pb-2 pb-md-0">
+                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all"
+                        [ngClass]="statusFilter === 'ALL' ? 'btn-dark shadow-sm' : 'btn-outline-secondary'"
+                        (click)="onFilterChange('ALL')">All</button>
+                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all"
+                        [ngClass]="statusFilter === 'OPEN' ? 'btn-success shadow-sm text-white border-success' : 'btn-outline-success'"
+                        (click)="onFilterChange('OPEN')">Open / Active</button>
+                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all"
+                        [ngClass]="statusFilter === 'CLOSED' ? 'btn-danger shadow-sm text-white border-danger' : 'btn-outline-danger'"
+                        (click)="onFilterChange('CLOSED')">Closed</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="filteredJobs.length === 0" class="text-center py-5 glass-card shadow-sm border mt-3 rounded-4">
+            <i class="bi bi-journal-x display-3 text-muted mb-3 d-block opacity-50"></i>
+            <h5 class="fw-bold text-dark">No Jobs Found</h5>
+            <p class="text-muted small mb-4 px-3 mx-auto" style="max-width: 400px;">You don't have any jobs matching
+                this criteria. Try changing filters or create a new job posting to get started.</p>
+            <button class="btn btn-outline-primary rounded-pill px-4"
+                (click)="statusFilter = 'ALL'; searchTerm = ''; applyFilters()"
+                *ngIf="statusFilter !== 'ALL' || searchTerm !== ''">
+                Clear Filters
+            </button>
+            <a routerLink="/employer/job-form/new" class="btn btn-primary-custom rounded-pill px-4 ms-2"
+                *ngIf="myJobs.length === 0">
+                Create First Job
+            </a>
+        </div>
+
+        <!-- Job List Container -->
+        <div class="row g-4" *ngIf="filteredJobs.length > 0">
+            <div class="col-12" *ngFor="let job of filteredJobs">
+
+                <div class="job-card glass-card p-4 transition-hover border bg-white position-relative overflow-hidden shadow-sm"
+                    [ngClass]="{'border-danger bg-danger bg-opacity-10': job.status === 'CLOSED'}">
+
+                    <div class="position-absolute start-0 top-0 bottom-0 bg-primary opacity-25" style="width: 4px;"
+                        *ngIf="job.status === 'OPEN'"></div>
+                    <div class="position-absolute start-0 top-0 bottom-0 bg-danger opacity-25" style="width: 4px;"
+                        *ngIf="job.status === 'CLOSED'"></div>
+
+                    <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-4">
+
+                        <!-- Left Data -->
+                        <div class="d-flex flex-column gap-2 flex-grow-1">
+                            <div class="d-flex align-items-center gap-3 mb-1">
+                                <!-- Title navigating to the Applicants view where employer manages candidates -->
+                                <h4 class="fw-bold mb-0 text-dark"><a [routerLink]="['/employer/applicants', job.id]"
+                                        class="text-decoration-none custom-link-hover">{{ job.title }}</a></h4>
+                                <app-status-badge [status]="job.status"></app-status-badge>
+                            </div>
+
+                            <div class="d-flex flex-wrap align-items-center gap-4 text-muted small fw-medium mt-1">
+                                <span><i class="bi bi-geo-alt-fill text-danger opacity-75"></i> {{ job.location
+                                    }}</span>
+                                <span><i class="bi bi-briefcase-fill text-info opacity-75"></i> {{
+                                    job.jobType.replace('_', ' ') }}</span>
+                                <span><i class="bi bi-clock-history text-secondary"></i> Posted {{ job.createdAt |
+                                    date:'MMM d' }}</span>
+                                <span><i class="bi bi-people-fill text-primary opacity-75"></i> {{ job.viewsCount || 0
+                                    }} Views</span>
+                            </div>
+                        </div>
+
+                        <!-- Right Actions -->
+                        <div
+                            class="d-flex flex-row flex-lg-column flex-xl-row align-items-center justify-content-end gap-2 flex-shrink-0 mt-3 mt-lg-0 border-top border-lg-0 pt-3 pt-lg-0">
+
+                            <!-- Applicants CTA -->
+                            <a [routerLink]="['/employer/applicants', job.id]"
+                                class="btn btn-primary-custom px-4 rounded-pill shadow-sm fw-medium d-flex align-items-center gap-2">
+                                <i class="bi bi-person-lines-fill"></i> View Applicants
+                            </a>
+
+                            <!-- Toggle Status Dropdown / Buttons -->
+                            <button
+                                class="btn btn-outline-secondary px-3 rounded-pill fw-medium d-flex align-items-center gap-2 transition-hover bg-white"
+                                (click)="toggleJobStatus(job)" [disabled]="isStatusChanging[job.id]"
+                                [title]="job.status === 'OPEN' ? 'Close Job' : 'Re-open Job'">
+                                <div *ngIf="isStatusChanging[job.id]" class="spinner-border spinner-border-sm"
+                                    role="status"></div>
+                                <i *ngIf="!isStatusChanging[job.id]" class="bi"
+                                    [ngClass]="job.status === 'OPEN' ? 'bi-x-circle text-danger' : 'bi-check-circle text-success'"></i>
+                                <span class="d-none d-sm-inline">{{ job.status === 'OPEN' ? 'Close' : 'Re-open'
+                                    }}</span>
+                            </button>
+
+                            <!-- Edit Settings -->
+                            <a [routerLink]="['/employer/job-form', job.id]"
+                                class="btn btn-outline-info d-flex align-items-center justify-content-center rounded-circle transition-hover shadow-sm bg-white"
+                                style="width: 44px; height: 44px;" title="Edit Job">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+
+                            <!-- Delete -->
+                            <button
+                                class="btn btn-outline-danger d-flex align-items-center justify-content-center rounded-circle transition-hover shadow-sm bg-white"
+                                style="width: 44px; height: 44px;" (click)="confirmDelete(job)"
+                                [disabled]="isDeleting[job.id]" title="Delete Job">
+                                <div *ngIf="isDeleting[job.id]" class="spinner-border spinner-border-sm" role="status">
+                                </div>
+                                <i *ngIf="!isDeleting[job.id]" class="bi bi-trash-fill"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- =========================
+     DELETE MODAL OVERLAY
+     ========================= -->
+<div class="modal fade show d-block" tabindex="-1" *ngIf="showDeleteModal" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 animate__animated animate__zoomIn animate__faster">
+
+            <div class="modal-body p-4 p-md-5 text-center">
+                <div class="icon-circle bg-danger bg-opacity-10 text-danger d-flex align-items-center justify-content-center rounded-circle mx-auto mb-4"
+                    style="width: 80px; height: 80px;">
+                    <i class="bi bi-exclamation-triangle-fill display-4"></i>
+                </div>
+
+                <h4 class="fw-bold text-dark mb-3">Delete Job Posting?</h4>
+                <p class="text-muted mb-4 px-2">Are you sure you want to delete <span class="fw-bold text-dark">"{{
+                        jobToDelete?.title }}"</span>? This action is permanent and will remove the job listing from all
+                    search results.</p>
+                <div
+                    class="alert alert-warning small text-start mb-4 border-warning border-opacity-25 bg-warning bg-opacity-10">
+                    <i class="bi bi-info-circle-fill me-1 text-warning"></i> Applicants will no longer be able to apply,
+                    and existing applications may be archived or removed based on policy.
+                </div>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="button" class="btn btn-light px-4 rounded-pill fw-bold"
+                        (click)="closeDeleteModal()">Cancel</button>
+                    <button type="button" class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm"
+                        (click)="deleteJob()">Delete Posting</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<app-toast [message]="toastMessage" [type]="toastType" [show]="showToast"></app-toast>

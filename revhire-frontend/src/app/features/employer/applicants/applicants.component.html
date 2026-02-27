@@ -1,0 +1,280 @@
+<div class="container-fluid py-4 min-vh-100 bg-light">
+    <!-- Header -->
+    <div
+        class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-2 border-bottom gap-3">
+        <div>
+            <a routerLink="/employer/jobs"
+                class="btn btn-link text-decoration-none text-muted p-0 mb-1 custom-link-hover d-flex align-items-center gap-1">
+                <i class="bi bi-arrow-left"></i> Back to Jobs
+            </a>
+            <h3 class="fw-bold text-dark font-heading mb-0">Applicants for: <span *ngIf="!isJobLoading">{{ job?.title ||
+                    'Job' }}</span><span *ngIf="isJobLoading"
+                    class="placeholder col-4 bg-secondary opacity-25 d-inline-block"></span></h3>
+            <p class="text-muted mb-0 small mt-1">Review candidate profiles, download resumes, and manage interview
+                statuses.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span
+                class="badge bg-primary rounded-pill px-3 py-2 fw-medium shadow-sm d-flex align-items-center gap-2 fs-6">
+                <i class="bi bi-people-fill"></i> Total Candidates: {{ !isLoading ? applications.length : '...' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Error State Job Load -->
+    <div *ngIf="jobError && !isJobLoading"
+        class="alert alert-danger shadow-sm rounded-4 mb-4 border-danger border-opacity-25 bg-danger bg-opacity-10 d-flex align-items-center gap-3">
+        <i class="bi bi-exclamation-triangle-fill fs-4 text-danger flex-shrink-0"></i>
+        <div>
+            <h6 class="fw-bold text-danger-emphasis mb-1">Failed to load job</h6>
+            <p class="small mb-0 text-dark">{{ jobError }}</p>
+        </div>
+    </div>
+
+    <!-- Skeleton Loader -->
+    <div *ngIf="isLoading" class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="!isLoading && !jobError">
+
+        <!-- Filters & Search -->
+        <div class="glass-card p-3 mb-4 sticky-top border" style="top: 10px; z-index: 1020;">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-6 col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i
+                                class="bi bi-search"></i></span>
+                        <input type="text" class="form-control form-control-custom border-start-0 ps-0"
+                            placeholder="Search by applicant name..." [(ngModel)]="searchTerm"
+                            (input)="onSearchChange()">
+                    </div>
+                </div>
+                <!-- Status specific horizontal scroll container -->
+                <div
+                    class="col-md-6 col-lg-8 d-flex justify-content-md-end gap-2 overflow-auto hide-scroll pb-2 pb-md-0 filter-btn-group">
+                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all border"
+                        [ngClass]="statusFilter === 'ALL' ? 'btn-dark shadow-sm' : 'btn-outline-secondary'"
+                        (click)="onFilterChange('ALL')">All</button>
+                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all border-success"
+                        [ngClass]="statusFilter === 'APPLIED' ? 'btn-success shadow-sm text-white' : 'btn-outline-success text-success bg-white bg-opacity-75'"
+                        (click)="onFilterChange('APPLIED')">New (Applied)</button>
+                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all border-info"
+                        [ngClass]="statusFilter === 'UNDER_REVIEW' ? 'btn-info shadow-sm text-white' : 'btn-outline-info text-info bg-white bg-opacity-75'"
+                        (click)="onFilterChange('UNDER_REVIEW')">Under Review</button>
+                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all border-primary"
+                        [ngClass]="statusFilter === 'SHORTLISTED' ? 'btn-primary shadow-sm text-white' : 'btn-outline-primary text-primary bg-white bg-opacity-75'"
+                        (click)="onFilterChange('SHORTLISTED')">Shortlisted / Interview</button>
+                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all border-danger"
+                        [ngClass]="statusFilter === 'REJECTED' ? 'btn-danger shadow-sm text-white' : 'btn-outline-danger text-danger bg-white bg-opacity-75'"
+                        (click)="onFilterChange('REJECTED')">Rejected</button>
+                    <button
+                        class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all border-secondary opacity-75"
+                        [ngClass]="statusFilter === 'WITHDRAWN' ? 'btn-secondary shadow-sm text-white' : 'btn-outline-secondary bg-white bg-opacity-75'"
+                        (click)="onFilterChange('WITHDRAWN')">Withdrawn</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="filteredApplications.length === 0"
+            class="text-center py-5 glass-card shadow-sm border mt-3 rounded-4">
+            <i class="bi bi-people display-3 text-muted mb-3 d-block opacity-25"></i>
+            <h5 class="fw-bold text-dark">No Applicants Found</h5>
+            <p class="text-muted small mb-4 px-3 mx-auto" style="max-width: 400px;">
+                {{ applications.length === 0 ? "You haven't received any applications for this job posting yet." : "No
+                applicants match your current filter selections." }}
+            </p>
+            <button class="btn btn-outline-primary rounded-pill px-4"
+                (click)="statusFilter = 'ALL'; searchTerm = ''; applyFilters()" *ngIf="applications.length > 0">
+                Clear Filters
+            </button>
+        </div>
+
+        <!-- List View Container for Applicants -->
+        <div class="d-flex flex-column gap-3 mb-5" *ngIf="filteredApplications.length > 0">
+
+            <div class="applicant-card glass-card shadow-sm border rounded-4 position-relative bg-white transition-hover"
+                *ngFor="let app of filteredApplications"
+                [ngClass]="{'border-primary shadow-lg border-2 z-3': app.status === 'SHORTLISTED', 'opacity-75 bg-light': app.status === 'REJECTED' || app.status === 'WITHDRAWN'}">
+
+                <div class="row g-0 align-items-center">
+
+                    <!-- Applicant Avatar / Left Area -->
+                    <div
+                        class="col-sm-2 col-md-auto p-4 d-flex justify-content-center align-items-center border-end border-sm-none h-100 bg-light bg-opacity-50 rounded-start-4">
+                        <div class="company-logo bg-white border border-secondary border-opacity-25 rounded-circle shadow-sm d-flex align-items-center justify-content-center fw-bold text-dark fs-3"
+                            style="width: 70px; height: 70px;">
+                            {{ app.applicant?.firstName?.charAt(0) || 'U' }}{{ app.applicant?.lastName?.charAt(0) || ''
+                            }}
+                        </div>
+                    </div>
+
+                    <!-- Applicant Main Info -->
+                    <div class="col flex-grow-1 p-4">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3">
+
+                            <div>
+                                <h4 class="fw-bold mb-1 text-dark">
+                                    {{ app.applicant?.firstName }} {{ app.applicant?.lastName }}
+                                </h4>
+                                <p class="text-muted fw-medium small d-flex flex-wrap align-items-center gap-3 mb-2">
+                                    <span title="Applicant User ID #"><i class="bi bi-person-badge"></i> Candidate #{{
+                                        app.applicant?.userId }}</span>
+                                    <span><i class="bi bi-clock-history"></i> Applied on {{ app.appliedAt | date:'MMM d,
+                                        yyyy' }}</span>
+                                    <span><i class="bi bi-envelope-check"></i> Cover Letter <span class="badge"
+                                            [ngClass]="app.coverLetter ? 'bg-success text-white' : 'bg-secondary'">{{
+                                            app.coverLetter ? 'Yes' : 'No' }}</span></span>
+                                </p>
+
+                                <!-- Embedded Status Select Menu mapped to actual data state -->
+                                <div class="btn-group shadow-sm mt-2">
+                                    <button type="button"
+                                        class="btn btn-sm dropdown-toggle fw-bold bg-white border d-flex align-items-center gap-2"
+                                        data-bs-toggle="dropdown" aria-expanded="false" [ngClass]="{
+                                                'border-success text-success': app.status === 'APPLIED',
+                                                'border-info text-info': app.status === 'UNDER_REVIEW',
+                                                'border-primary text-primary': app.status === 'SHORTLISTED',
+                                                'border-danger text-danger': app.status === 'REJECTED',
+                                                'border-secondary text-secondary': app.status === 'WITHDRAWN'
+                                            }" [disabled]="isUpdatingStatus[app.id] || app.status === 'WITHDRAWN'">
+                                        <div *ngIf="isUpdatingStatus[app.id]" class="spinner-border spinner-border-sm"
+                                            role="status"></div>
+                                        <i *ngIf="!isUpdatingStatus[app.id]" class="bi bi-circle-fill"
+                                            style="font-size: 0.5rem; vertical-align: middle;"></i>
+                                        {{ app.status.replace('_', ' ') }}
+                                    </button>
+                                    <ul class="dropdown-menu shadow-lg border-0 rounded-3">
+                                        <li>
+                                            <h6
+                                                class="dropdown-header text-uppercase tracking-wider small fw-bold text-muted">
+                                                Update Status</h6>
+                                        </li>
+                                        <li *ngIf="app.status !== 'APPLIED'"><button
+                                                class="dropdown-item py-2 text-success fw-medium"
+                                                (click)="updateStatus(app, 'APPLIED')"><i class="bi bi-star"></i> Move
+                                                to New Apps</button></li>
+                                        <li *ngIf="app.status !== 'UNDER_REVIEW'"><button
+                                                class="dropdown-item py-2 text-info fw-medium"
+                                                (click)="updateStatus(app, 'UNDER_REVIEW')"><i class="bi bi-search"></i>
+                                                Mark Under Review</button></li>
+                                        <li *ngIf="app.status !== 'SHORTLISTED'"><button
+                                                class="dropdown-item py-2 text-primary fw-medium border-top border-bottom"
+                                                (click)="updateStatus(app, 'SHORTLISTED')"><i class="bi bi-trophy"></i>
+                                                Shortlist / Advance</button></li>
+                                        <li *ngIf="app.status !== 'REJECTED'"><button
+                                                class="dropdown-item py-2 text-danger fw-medium"
+                                                (click)="updateStatus(app, 'REJECTED')"><i class="bi bi-x-circle"></i>
+                                                Reject Application</button></li>
+                                    </ul>
+                                </div>
+                                <span class="text-danger small fst-italic ms-3 fw-bold"
+                                    *ngIf="app.status === 'WITHDRAWN'">Candidate withdrew application.</span>
+
+                            </div>
+
+                            <!-- Right Side Action Icons -->
+                            <div class="d-flex flex-row flex-md-column gap-2 flex-shrink-0">
+                                <button
+                                    class="btn btn-outline-primary d-flex align-items-center justify-content-center shadow-sm rounded-circle btn-icon-custom bg-white transition-hover"
+                                    style="width: 44px; height: 44px;" title="Download Resume PDF"
+                                    (click)="downloadResume(app)">
+                                    <i class="bi bi-file-earmark-pdf-fill fs-5"></i>
+                                </button>
+
+                                <button
+                                    class="btn d-flex align-items-center justify-content-center shadow-sm rounded-circle btn-icon-custom transition-hover position-relative"
+                                    style="width: 44px; height: 44px;"
+                                    [ngClass]="app.employerNotes ? 'btn-warning bg-warning bg-opacity-10' : 'btn-outline-secondary bg-white'"
+                                    title="Add / Edit Internal Notes" (click)="openNotesModal(app)">
+                                    <i class="bi"
+                                        [ngClass]="app.employerNotes ? 'bi-chat-left-text-fill text-warning' : 'bi-chat-left-text'"></i>
+                                    <!-- notification badge for existing notes -->
+                                    <span
+                                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+                                        *ngIf="app.employerNotes">
+                                        <span class="visually-hidden">New alerts</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Read-only Data Panels (Cover letter & Existing Notes) -->
+                        <div class="mt-4 pt-3 border-top d-flex flex-column gap-3">
+                            <div *ngIf="app.coverLetter"
+                                class="rounded-3 p-3 bg-light border fst-italic text-secondary small">
+                                <h6 class="text-dark fw-bold fst-normal mb-2 small text-uppercase tracking-wider"><i
+                                        class="bi bi-envelope-open me-2 text-primary opacity-75"></i>Cover Letter
+                                    Attachment</h6>
+                                "{{ app.coverLetter }}"
+                            </div>
+
+                            <div *ngIf="app.employerNotes"
+                                class="rounded-3 p-3 bg-warning bg-opacity-10 border border-warning border-opacity-25 small text-dark fw-medium">
+                                <h6 class="text-warning-emphasis fw-bold mb-2 small text-uppercase tracking-wider"><i
+                                        class="bi bi-shield-lock me-2 text-warning opacity-75"></i>Internal Recruiter
+                                    Notes / Feedback</h6>
+                                <i class="bi bi-quote opacity-50 me-1"></i>{{ app.employerNotes }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- =========================
+     NOTES MODAL OVERLAY
+     ========================= -->
+<div class="modal fade show d-block" tabindex="-1" *ngIf="showNotesModal" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 animate__animated animate__zoomIn animate__faster">
+
+            <div
+                class="modal-header border-warning border-opacity-25 bg-warning bg-opacity-10 px-4 py-3 position-relative overflow-hidden">
+                <h5 class="modal-title fw-bold position-relative d-flex align-items-center gap-2 text-warning-emphasis">
+                    <i class="bi bi-chat-left-text-fill text-warning"></i> Assessor Notes for {{
+                    selectedApp?.applicant?.firstName }}
+                </h5>
+                <button type="button" class="btn-close" (click)="closeNotesModal()"></button>
+            </div>
+
+            <div class="modal-body p-4 text-center">
+
+                <p class="text-muted small mb-4 px-2 text-start">Add private internal notes for this candidate. Only you
+                    (the employer) can see these logs. Useful for interview feedback, phone screening outputs, or quick
+                    thoughts.</p>
+
+                <textarea
+                    class="form-control form-control-custom text-dark mb-4 text-start font-monospace-fallback shadow-sm"
+                    rows="6" [(ngModel)]="notesInput"
+                    placeholder="Candidate performed well on technical screen..."></textarea>
+
+                <div class="d-flex justify-content-end gap-3">
+                    <button type="button" class="btn btn-light px-4 rounded-pill fw-bold"
+                        (click)="closeNotesModal()">Discard Changes</button>
+                    <!-- @ts-ignore -->
+                    <button type="button"
+                        class="btn btn-warning px-4 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-2 text-dark"
+                        (click)="saveNotes()" [disabled]="selectedApp ? isUpdatingStatus[selectedApp.id] : false">
+                        <!-- @ts-ignore -->
+                        <div *ngIf="selectedApp ? isUpdatingStatus[selectedApp.id] : false"
+                            class="spinner-border spinner-border-sm" role="status"></div>
+                        <i class="bi bi-save"></i> Save Note To Profile
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<app-toast [message]="toastMessage" [type]="toastType" [show]="showToast"></app-toast>

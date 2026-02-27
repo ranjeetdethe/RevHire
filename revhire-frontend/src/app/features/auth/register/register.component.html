@@ -1,0 +1,228 @@
+<div class="register-wrapper min-vh-100 d-flex align-items-center py-5">
+    <div class="container py-lg-5">
+        <div
+            class="row g-0 auth-card shadow-premium rounded-4 overflow-hidden animate__animated animate__fadeInUp bg-white max-w-1000 mx-auto">
+
+            <!-- Left Side / Branding (Hidden on small screens) -->
+            <div
+                class="col-lg-5 d-none d-lg-flex bg-primary p-5 text-white flex-column justify-content-center position-relative overflow-hidden branding-pane">
+                <div class="branding-content position-relative z-1 text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-rocket-takeoff-fill display-3"></i>
+                    </div>
+                    <h2 class="display-6 fw-bold mb-4 font-heading">Start Your Journey</h2>
+                    <ul class="list-unstyled text-start fw-medium opacity-90 mx-auto"
+                        style="max-width: 280px; font-size: 1.1rem;">
+                        <li class="mb-4 d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-info me-3 mt-1"></i>
+                            <span>Access premium roles tailored to your skills</span>
+                        </li>
+                        <li class="mb-4 d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-info me-3 mt-1"></i>
+                            <span>Connect directly with hiring managers</span>
+                        </li>
+                        <li class="mb-4 d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-info me-3 mt-1"></i>
+                            <span>Track applications transparently</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Decorative Elements -->
+                <div class="deco-circle-1"></div>
+                <div class="deco-circle-2"></div>
+            </div>
+
+            <!-- Right Side / Register Form -->
+            <div class="col-lg-7 p-4 p-md-5 bg-white d-flex flex-column form-pane overflow-y-auto"
+                style="max-height: 85vh;">
+                <div class="w-100 mx-auto" style="max-width: 550px;">
+                    <div class="text-center text-lg-start mb-4">
+                        <h3 class="fw-bold text-dark font-heading">Create an account</h3>
+                        <p class="text-muted">Already have an account? <a routerLink="/auth/login"
+                                class="fw-bold custom-link ms-1">Sign in</a></p>
+                    </div>
+
+                    <!-- Step 1: Role Selection -->
+                    <div *ngIf="step === 1" class="animate__animated animate__fadeIn">
+                        <h5 class="fw-bold mb-4">How do you want to use RevHire?</h5>
+                        <div class="row g-4 mb-5">
+                            <div class="col-sm-6">
+                                <div class="role-card h-100 p-4 border rounded-4 text-center cursor-pointer transition-all"
+                                    [ngClass]="{'border-primary bg-primary text-white shadow-sm': selectedRole === 'JOB_SEEKER'}"
+                                    (click)="selectRole('JOB_SEEKER')">
+                                    <i class="bi bi-person-badge display-5 d-block mb-3"
+                                        [ngClass]="{'text-white': selectedRole === 'JOB_SEEKER', 'text-primary': selectedRole !== 'JOB_SEEKER'}"></i>
+                                    <h5 class="fw-bold flex-grow-1">I'm a Professional</h5>
+                                    <p class="small mb-0"
+                                        [ngClass]="{'opacity-90': selectedRole === 'JOB_SEEKER', 'text-muted': selectedRole !== 'JOB_SEEKER'}">
+                                        I want to find a job</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="role-card h-100 p-4 border rounded-4 text-center cursor-pointer transition-all"
+                                    [ngClass]="{'border-primary bg-primary text-white shadow-sm': selectedRole === 'EMPLOYER'}"
+                                    (click)="selectRole('EMPLOYER')">
+                                    <i class="bi bi-building display-5 d-block mb-3"
+                                        [ngClass]="{'text-white': selectedRole === 'EMPLOYER', 'text-primary': selectedRole !== 'EMPLOYER'}"></i>
+                                    <h5 class="fw-bold flex-grow-1">I'm an Employer</h5>
+                                    <p class="small mb-0"
+                                        [ngClass]="{'opacity-90': selectedRole === 'EMPLOYER', 'text-muted': selectedRole !== 'EMPLOYER'}">
+                                        I want to hire talent</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button
+                            class="btn btn-primary-custom w-100 py-3 d-flex justify-content-center align-items-center gap-2"
+                            [disabled]="!selectedRole" (click)="nextStep()">
+                            Continue To Details <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Step 2: Form Details -->
+                    <div *ngIf="step === 2" class="animate__animated animate__slideInRight">
+
+                        <div *ngIf="errorMessage"
+                            class="alert alert-danger d-flex align-items-center border-0 bg-danger bg-opacity-10 py-3 rounded-3 mb-4 animate__animated animate__shakeX"
+                            role="alert">
+                            <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-3 fs-5 text-danger"></i>
+                            <div>{{ errorMessage }}</div>
+                        </div>
+
+                        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="needs-validation">
+                            <h6 class="text-uppercase fw-bold text-muted mb-3 small"><i
+                                    class="bi bi-person me-2"></i>Personal Info</h6>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label">First Name *</label>
+                                    <input type="text" formControlName="firstName"
+                                        class="form-control form-control-custom"
+                                        [ngClass]="{'is-invalid': registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched}">
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label">Last Name *</label>
+                                    <input type="text" formControlName="lastName"
+                                        class="form-control form-control-custom"
+                                        [ngClass]="{'is-invalid': registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched}">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Email Address *</label>
+                                    <input type="email" formControlName="email" class="form-control form-control-custom"
+                                        [ngClass]="{'is-invalid': registerForm.get('email')?.invalid && registerForm.get('email')?.touched}">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Password * <span
+                                            class="fw-normal text-muted float-end small">(Min. 8
+                                            characters)</span></label>
+                                    <input type="password" formControlName="password"
+                                        class="form-control form-control-custom"
+                                        [ngClass]="{'is-invalid': registerForm.get('password')?.invalid && registerForm.get('password')?.touched}">
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label">Phone Number *</label>
+                                    <input type="text" formControlName="phone" class="form-control form-control-custom"
+                                        [ngClass]="{'is-invalid': registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched}">
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" formControlName="location"
+                                        class="form-control form-control-custom">
+                                </div>
+                            </div>
+
+                            <hr class="my-4 border-light-subtle">
+
+                            <!-- Security Questions -->
+                            <h6 class="text-uppercase fw-bold text-muted mb-3 small"><i
+                                    class="bi bi-shield-lock me-2"></i>Account Security</h6>
+                            <div class="row g-3 mb-4">
+                                <div class="col-12">
+                                    <label class="form-label">Security Question *</label>
+                                    <select formControlName="securityQuestion"
+                                        class="form-select form-control-custom bg-white">
+                                        <option value="What is your mother's maiden name?">What is your mother's maiden
+                                            name?</option>
+                                        <option value="What is the name of your first pet?">What is the name of your
+                                            first pet?</option>
+                                        <option value="What was your childhood nickname?">What was your childhood
+                                            nickname?</option>
+                                        <option value="What city were you born in?">What city were you born in?</option>
+                                        <option value="What is your pet name?">What is your pet name?</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Security Answer *</label>
+                                    <input type="password" formControlName="securityAnswer"
+                                        class="form-control form-control-custom"
+                                        [ngClass]="{'is-invalid': registerForm.get('securityAnswer')?.invalid && registerForm.get('securityAnswer')?.touched}">
+                                </div>
+                            </div>
+
+                            <!-- Role specific blocks -->
+                            <ng-container *ngIf="selectedRole === 'JOB_SEEKER'">
+                                <hr class="my-4 border-light-subtle">
+                                <h6 class="text-uppercase fw-bold text-muted mb-3 small"><i
+                                        class="bi bi-journal-text me-2"></i>Status</h6>
+                                <div class="mb-4">
+                                    <label class="form-label">Employment Status</label>
+                                    <select formControlName="employmentStatus"
+                                        class="form-select form-control-custom bg-white">
+                                        <option value="">Select Status...</option>
+                                        <option value="EMPLOYED">Employed</option>
+                                        <option value="UNEMPLOYED">Unemployed</option>
+                                        <option value="FREELANCER">Freelancer</option>
+                                        <option value="STUDENT">Student</option>
+                                    </select>
+                                </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="selectedRole === 'EMPLOYER'">
+                                <hr class="my-4 border-light-subtle">
+                                <h6 class="text-uppercase fw-bold text-muted mb-3 small"><i
+                                        class="bi bi-building me-2"></i>Company Details</h6>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-12">
+                                        <label class="form-label">Company Name *</label>
+                                        <input type="text" formControlName="companyName"
+                                            class="form-control form-control-custom"
+                                            [ngClass]="{'is-invalid': registerForm.get('companyName')?.invalid && registerForm.get('companyName')?.touched}">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label">Industry *</label>
+                                        <input type="text" formControlName="companyIndustry"
+                                            class="form-control form-control-custom"
+                                            [ngClass]="{'is-invalid': registerForm.get('companyIndustry')?.invalid && registerForm.get('companyIndustry')?.touched}">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label">Company Size</label>
+                                        <input type="text" formControlName="companySize" placeholder="e.g. 1-10"
+                                            class="form-control form-control-custom">
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            <div class="d-flex align-items-center justify-content-between mt-5 pt-3 border-top">
+                                <button type="button" class="btn btn-link text-decoration-none text-muted fw-bold ps-0"
+                                    (click)="step = 1">
+                                    <i class="bi bi-arrow-left me-1"></i> Back
+                                </button>
+                                <button type="submit" class="btn btn-primary-custom px-5 py-3"
+                                    [disabled]="registerForm.invalid || isLoading">
+                                    <span *ngIf="!isLoading">Create Account</span>
+                                    <div *ngIf="isLoading" class="spinner-border spinner-border-sm text-light me-2"
+                                        role="status"></div>
+                                    <span *ngIf="isLoading">Processing...</span>
+                                </button>
+                            </div>
+
+                            <p class="text-center text-muted small mt-4">By registering, you agree to our Terms of
+                                Service & Privacy Policy.</p>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

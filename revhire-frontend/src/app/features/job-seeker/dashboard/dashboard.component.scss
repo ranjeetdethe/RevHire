@@ -1,0 +1,48 @@
+.stat-card {
+    transition: all var(--transition-normal);
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+
+        .icon-box {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+    }
+}
+
+.transition-hover {
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+
+    &:hover {
+        background-color: #f8fafc !important;
+        border-color: rgba(37, 99, 235, 0.2) !important;
+        transform: translateX(4px);
+    }
+}
+
+.timeline {
+    border-left: 2px solid #e2e8f0;
+    margin-left: 10px;
+    padding-top: 10px;
+
+    .timeline-item {
+        position: relative;
+
+        &:last-child {
+            padding-bottom: 0 !important;
+
+            &::before {
+                content: '';
+                position: absolute;
+                left: -2px;
+                top: 20px;
+                bottom: 0;
+                width: 2px;
+                background: #fff;
+            }
+        }
+    }
+}

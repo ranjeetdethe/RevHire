@@ -1,0 +1,150 @@
+<div class="container-fluid py-4 min-vh-100 bg-light">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <div>
+            <h3 class="fw-bold text-dark font-heading mb-1">Resume Manager</h3>
+            <p class="text-muted mb-0">Upload and manage your primary resume for job applications.</p>
+        </div>
+        <div>
+            <a routerLink="/job-seeker/dashboard"
+                class="btn btn-outline-secondary fw-medium rounded-pill px-4 shadow-sm mb-2 mb-sm-0 me-0 me-sm-2">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Skeleton Loader -->
+    <div *ngIf="isLoading" class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center" *ngIf="!isLoading">
+
+        <!-- Left Column: Current Resume Status -->
+        <div class="col-lg-5">
+            <div class="glass-card p-4 h-100 position-relative overflow-hidden">
+                <!-- BG Accents -->
+                <div class="position-absolute top-0 end-0 bg-primary opacity-10 rounded-circle"
+                    style="width: 150px; height: 150px; margin-top: -50px; margin-right: -50px;"></div>
+
+                <div class="d-flex align-items-center mb-4 position-relative z-1">
+                    <div class="icon-circle bg-primary bg-opacity-10 text-primary me-3 d-flex align-items-center justify-content-center rounded-circle"
+                        style="width: 48px; height: 48px;">
+                        <i class="bi bi-file-earmark-person fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0 font-heading">Current Resume</h5>
+                        <p class="text-muted small mb-0">Visible to employers on application</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div *ngIf="!resumeMetadata"
+                    class="text-center py-5 bg-light rounded-4 border border-dashed mt-4 position-relative z-1">
+                    <i class="bi bi-file-earmark-x display-3 text-muted mb-3 d-block opacity-50"></i>
+                    <h5 class="fw-bold text-dark">No Resume Found</h5>
+                    <p class="text-muted small mb-0 px-4">Upload a PDF resume below to increase your chances of being
+                        hired.</p>
+                </div>
+
+                <!-- Active Resume State -->
+                <div *ngIf="resumeMetadata"
+                    class="bg-white border rounded-4 p-4 mt-4 shadow-sm position-relative z-1 transition-hover">
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="bg-danger bg-opacity-10 text-danger rounded p-3 me-3 text-center">
+                            <i class="bi bi-file-earmark-pdf-fill fs-2"></i>
+                            <div class="small fw-bold mt-1 text-uppercase">PDF</div>
+                        </div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="fw-bold text-dark mb-1 text-truncate" [title]="resumeMetadata.fileName">{{
+                                resumeMetadata.fileName }}</h5>
+                            <p class="text-muted small mb-0"><i class="bi bi-clock-history me-1"></i> Uploaded: {{
+                                resumeMetadata.uploadedAt | date:'mediumDate' }}</p>
+                            <div class="mt-2 text-success small fw-medium">
+                                <i class="bi bi-check-circle-fill me-1"></i> Active default resume
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 border-top pt-3">
+                        <button class="btn btn-outline-primary flex-grow-1 fw-bold" (click)="downloadResume()">
+                            <i class="bi bi-download me-1"></i> Download
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm px-3" (click)="deleteResume()"
+                            title="Delete Resume">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Upload Zone -->
+        <div class="col-lg-7">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold mb-3 font-heading"><i class="bi bi-cloud-arrow-up text-primary me-2"></i>Upload New
+                    Resume</h5>
+                <p class="text-muted small mb-4">Overwrites the existing active resume. PDFs only (Max 5MB).</p>
+
+                <!-- Drag & Drop Zone -->
+                <div class="upload-zone py-5 rounded-4 text-center transition-all bg-light"
+                    [ngClass]="{'drag-over': dragOver, 'border-primary bg-primary bg-opacity-10': dragOver}"
+                    (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+
+                    <div *ngIf="!selectedFile">
+                        <i class="bi bi-cloud-arrow-up display-1 text-primary opacity-50 mb-3 d-block bounce-anim"></i>
+                        <h5 class="fw-bold text-dark mb-2">Drag & Drop your PDF here</h5>
+                        <p class="text-muted small mb-4">or click the button below to browse</p>
+
+                        <!-- Hidden input -->
+                        <input type="file" id="fileInput" class="d-none" accept=".pdf,application/pdf"
+                            (change)="onFileSelected($event)">
+                        <button class="btn btn-primary-custom rounded-pill px-4"
+                            onclick="document.getElementById('fileInput').click()">
+                            Browse Files
+                        </button>
+                    </div>
+
+                    <!-- Selected File Preview -->
+                    <div *ngIf="selectedFile" class="animate__animated animate__zoomIn">
+                        <i class="bi bi-file-earmark-check display-1 text-success mb-3 d-block"></i>
+                        <h5 class="fw-bold text-dark text-truncate px-4 mx-auto" style="max-width: 400px;"
+                            [title]="selectedFile.name">{{ selectedFile.name }}</h5>
+                        <p class="text-muted small mb-4">{{ (selectedFile.size / 1024 / 1024) | number:'1.2-2' }} MB</p>
+
+                        <div class="d-flex justify-content-center gap-3">
+                            <button class="btn btn-outline-secondary rounded-pill px-4"
+                                (click)="removeSelectedFile()">Cancel</button>
+                            <button class="btn btn-primary-custom rounded-pill px-5 d-flex align-items-center gap-2"
+                                (click)="uploadResume()" [disabled]="isUploading">
+                                <span *ngIf="!isUploading"><i class="bi bi-cloud-arrow-up"></i> Upload File</span>
+                                <div *ngIf="isUploading" class="spinner-border spinner-border-sm text-light me-1"
+                                    role="status"></div>
+                                <span *ngIf="isUploading">Uploading...</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Tips -->
+                <div class="mt-4 pt-4 border-top">
+                    <h6 class="fw-bold text-dark mb-3"><i class="bi bi-lightbulb text-warning me-2"></i>Resume Tips</h6>
+                    <ul class="text-muted small list-unstyled mb-0" style="line-height: 1.8;">
+                        <li><i class="bi bi-check2 text-success me-2"></i> Ensure your PDF is text-selectable (not an
+                            image scan) for ATS parsing.</li>
+                        <li><i class="bi bi-check2 text-success me-2"></i> Keep it under 2 pages if you have less than 5
+                            years of experience.</li>
+                        <li><i class="bi bi-check2 text-success me-2"></i> Highlight your achievements, not just your
+                            responsibilities.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<app-toast [message]="toastMessage" [type]="toastType" [show]="showToast"></app-toast>

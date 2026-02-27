@@ -1,0 +1,175 @@
+<div class="container-fluid py-4 min-vh-100 bg-light">
+    <!-- Main Content -->
+    <div class="row g-4 mb-4">
+
+        <!-- Left Column: Stats & Recommendations -->
+        <div class="col-xl-8 col-lg-7">
+
+            <!-- Quick Stats Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-sm-6 col-md-4">
+                    <div class="glass-card stat-card p-4 border-start border-4 border-primary h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-muted fw-bold mb-0 text-uppercase tracking-wider font-body"
+                                style="font-size: 0.8rem;">Applications</h6>
+                            <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 40px; height: 40px;">
+                                <i class="bi bi-file-earmark-check fs-5"></i>
+                            </div>
+                        </div>
+                        <h2 class="display-6 fw-bold text-dark mb-0">{{ applications.length || 0 }}</h2>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-4">
+                    <div class="glass-card stat-card p-4 border-start border-4 border-success h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-muted fw-bold mb-0 text-uppercase tracking-wider font-body"
+                                style="font-size: 0.8rem;">Saved Jobs</h6>
+                            <div class="icon-box bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 40px; height: 40px;">
+                                <i class="bi bi-bookmark-heart fs-5"></i>
+                            </div>
+                        </div>
+                        <h2 class="display-6 fw-bold text-dark mb-0">{{ savedJobsCount }}</h2>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-4">
+                    <div class="glass-card stat-card p-4 border-start border-4 border-warning h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-muted fw-bold mb-0 text-uppercase tracking-wider font-body"
+                                style="font-size: 0.8rem;">Profile Score</h6>
+                            <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 40px; height: 40px;">
+                                <i class="bi bi-lightning-charge fs-5"></i>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-baseline gap-2">
+                            <h2 class="display-6 fw-bold text-dark mb-0">{{ profileCompleteness }}<span
+                                    class="fs-4">%</span></h2>
+                            <small class="text-muted fw-medium d-block" *ngIf="profileCompleteness < 100">Needs
+                                update</small>
+                            <small class="text-success fw-bold d-block"
+                                *ngIf="profileCompleteness >= 100">Perfect!</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommended Jobs Slider / List -->
+            <div class="glass-card p-4 h-auto">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0 font-heading"><i class="bi bi-stars text-warning me-2"></i>Recommended
+                        Matches</h5>
+                    <a routerLink="/job-seeker/search-jobs"
+                        class="btn btn-sm btn-light fw-medium d-none d-sm-block">View All</a>
+                </div>
+
+                <!-- Skeleton Loader -->
+                <div *ngIf="isLoading" class="d-flex justify-content-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div *ngIf="!isLoading && (!recommendedJobs || recommendedJobs.length === 0)"
+                    class="text-center py-5 opacity-75">
+                    <i class="bi bi-search display-1 text-muted mb-3 d-block"></i>
+                    <h5 class="fw-bold text-dark">No precise matches found</h5>
+                    <p class="text-muted mb-4">Try updating your skills in the profile section to generate accurate
+                        recommendations.</p>
+                    <a routerLink="/job-seeker/profile" class="btn btn-primary-custom btn-sm px-4">Update Skills</a>
+                </div>
+
+                <!-- List -->
+                <div class="list-group list-group-flush gap-3"
+                    *ngIf="!isLoading && recommendedJobs && recommendedJobs.length > 0">
+                    <div class="list-group-item bg-light bg-opacity-50 border rounded-3 p-3 transition-hover shadow-sm"
+                        *ngFor="let job of recommendedJobs">
+                        <div class="row align-items-center g-3">
+                            <div class="col-12 col-md-8">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="company-logo bg-white border shadow-sm rounded flex-shrink-0 d-flex align-items-center justify-content-center overflow-hidden"
+                                        style="width: 48px; height: 48px;">
+                                        <span class="fw-bold text-primary fs-4">{{ job.employerName?.charAt(0) ||
+                                            'C'
+                                            }}</span>
+                                    </div>
+                                    <div>
+                                        <a [routerLink]="['/job-seeker/search-jobs', job.id]"
+                                            class="text-decoration-none text-dark">
+                                            <h6 class="fw-bold mb-1 custom-link-hover">{{ job.title }}</h6>
+                                        </a>
+                                        <div class="d-flex flex-wrap align-items-center gap-2 text-muted small">
+                                            <span class="text-primary fw-medium"><i class="bi bi-building"></i> {{
+                                                job.employerName }}</span>
+                                            <span><i class="bi bi-geo-alt"></i> {{ job.location }}</span>
+                                            <span><i class="bi bi-cash-stack"></i> ${{ job.minSalary | number }} -
+                                                ${{
+                                                job.maxSalary | number }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 text-md-end">
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary me-2">{{ job.jobType
+                                    }}</span>
+                                <a [routerLink]="['/job-seeker/search-jobs', job.id]"
+                                    class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold">Apply</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Recent Activity & Profile -->
+        <div class="col-xl-4 col-lg-5">
+
+
+
+            <!-- Recent Applications -->
+            <div class="glass-card p-4 h-100" style="min-height: 350px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0 font-heading"><i class="bi bi-clock-history text-info me-2"></i>Recent
+                        Activity</h5>
+                    <a routerLink="/job-seeker/my-applications"
+                        class="custom-link small fw-medium text-decoration-none">See All</a>
+                </div>
+
+                <!-- Skeleton Loader -->
+                <div *ngIf="isLoading" class="d-flex justify-content-center py-4">
+                    <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+
+                <div *ngIf="!isLoading && recentApplications.length === 0" class="text-center py-4 opacity-50">
+                    <i class="bi bi-journal-x display-4 text-muted mb-2 d-block"></i>
+                    <p class="mb-0 fw-medium">No recent applications.</p>
+                </div>
+
+                <div class="timeline" *ngIf="!isLoading && recentApplications.length > 0">
+                    <div class="timeline-item position-relative pb-3 ps-4" *ngFor="let app of recentApplications">
+                        <div class="timeline-indicator position-absolute rounded-circle bg-primary"
+                            style="width: 12px; height: 12px; left: -6px; top: 4px; box-shadow: 0 0 0 4px rgba(37,99,235,0.2);">
+                        </div>
+                        <div class="ps-2">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <h6 class="fw-bold mb-0 text-dark">{{ app.jobTitle }}</h6>
+                                <app-status-badge [status]="app.status"></app-status-badge>
+                            </div>
+                            <p class="text-muted small mb-1">{{ app.employerName }} &bull; Applied {{
+                                app.appliedDate |
+                                date:'shortDate' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

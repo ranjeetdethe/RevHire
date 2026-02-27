@@ -1,0 +1,11 @@
+.custom-link-hover {
+    transition: color 0.3s ease;
+}
+
+.custom-link-hover:hover {
+    color: #fff !important;
+}
+
+.font-heading {
+    font-family: var(--font-heading);
+}

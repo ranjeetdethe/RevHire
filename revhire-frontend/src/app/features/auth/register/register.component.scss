@@ -1,0 +1,109 @@
+.register-wrapper {
+    background: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat fixed;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(241, 245, 249, 0.85);
+        backdrop-filter: blur(8px);
+    }
+}
+
+.max-w-1000 {
+    max-width: 1000px;
+}
+
+.auth-card {
+    min-height: 600px;
+    background: transparent;
+
+    .branding-pane {
+        background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-color) 100%) !important;
+        position: relative;
+        overflow: hidden;
+
+        /* Glassmorphism overlays inside the premium left pane */
+        &::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0) 60%);
+            transform: rotate(-30deg);
+        }
+
+        .deco-circle-1 {
+            width: 350px;
+            height: 350px;
+            background: rgba(255, 255, 255, 0.08);
+            position: absolute;
+            top: -150px;
+            right: -150px;
+            border-radius: 50%;
+        }
+
+        .deco-circle-2 {
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.12);
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            border-radius: 50%;
+        }
+    }
+
+    .form-pane {
+        background: #ffffff;
+
+        /* Custom scrollbar for form area */
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+        }
+    }
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.transition-all {
+    transition: all var(--transition-normal);
+}
+
+.role-card {
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md) !important;
+        border-color: var(--primary-color) !important;
+
+        i {
+            color: var(--primary-color) !important;
+        }
+    }
+}
+
+/* Ensure selected states override hover states */
+.role-card.bg-primary {
+    &:hover {
+        i {
+            color: white !important;
+        }
+    }
+}

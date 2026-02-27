@@ -1,0 +1,114 @@
+<div class="container-fluid py-4 min-vh-100 bg-light">
+    <!-- Skeleton Loader -->
+    <div *ngIf="isLoading" class="row g-4 justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="glass-card p-4 placeholder-glow rounded-4 mb-3" *ngFor="let i of [1,2,3]">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex gap-3 w-75">
+                        <div class="placeholder rounded bg-secondary opacity-25" style="width: 60px; height: 60px;">
+                        </div>
+                        <div class="flex-grow-1">
+                            <span class="placeholder col-8 bg-secondary opacity-25 d-block mb-2"></span>
+                            <span class="placeholder col-5 bg-secondary opacity-25 d-block"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && savedJobs.length === 0"
+        class="text-center py-5 glass-card shadow-sm border mt-3 rounded-4 mx-auto" style="max-width: 800px;">
+        <div class="icon-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center rounded-circle mx-auto mb-4 float-anim"
+            style="width: 100px; height: 100px;">
+            <i class="bi bi-bookmark-plus display-4"></i>
+        </div>
+        <h4 class="fw-bold text-dark">Your saved list is empty</h4>
+        <p class="text-muted mb-4 px-3 mx-auto" style="max-width: 450px;">Don't want to lose track of an interesting
+            job? Click the bookmark icon on any job posting to save it here.</p>
+        <a routerLink="/job-seeker/jobs"
+            class="btn btn-primary-custom rounded-pill px-5 py-2 fw-medium shadow-sm transition-hover">
+            Explore Open Roles
+        </a>
+    </div>
+
+    <!-- Saved Jobs List -->
+    <div class="row justify-content-center" *ngIf="!isLoading && savedJobs.length > 0">
+        <div class="col-12 col-xl-10">
+
+            <div class="mb-4 text-end">
+                <span class="text-muted fw-bold small text-uppercase tracking-wider"><i
+                        class="bi bi-collection-fill me-1 text-primary"></i> {{ savedJobs.length }} Saved Job{{
+                    savedJobs.length > 1 ? 's' : '' }}</span>
+            </div>
+
+            <div class="saved-job-card glass-card shadow-sm border bg-white rounded-4 overflow-hidden mb-3 transition-hover position-relative"
+                *ngFor="let item of savedJobs">
+
+                <div class="d-flex flex-column flex-md-row p-4 align-items-md-center gap-4">
+
+                    <!-- Company Logo/Initials (Far Left) -->
+                    <div class="company-logo bg-light border rounded-4 d-flex align-items-center justify-content-center fw-bold text-primary display-5 flex-shrink-0 mx-auto mx-md-0"
+                        style="width: 80px; height: 80px;">
+                        {{ item.job.companyName?.charAt(0) || 'C' }}
+                    </div>
+
+                    <!-- Main Info (Middle) -->
+                    <div class="flex-grow-1 text-center text-md-start">
+                        <!-- @ts-ignore -->
+                        <h4 class="fw-bold mb-1 text-dark text-truncate" style="max-width: 400px;">
+                            <!-- @ts-ignore -->
+                            <a [routerLink]="['/job-seeker/jobs', item.job.id || item.jobId]"
+                                class="text-decoration-none text-dark custom-link-hover stretched-link">{{
+                                item.job.title }}</a>
+                        </h4>
+
+                        <div
+                            class="d-flex flex-column flex-md-row align-items-center gap-md-3 gap-1 mb-2 text-muted fw-medium">
+                            <span class="text-primary fw-bold">{{ item.job.companyName }}</span>
+                            <span class="d-none d-md-inline">&bull;</span>
+                            <span><i class="bi bi-geo-alt-fill opacity-50 text-danger me-1"></i> {{ item.job.location
+                                }}</span>
+                            <span class="d-none d-md-inline opacity-50">|</span>
+                            <span class="small text-success fw-bold" *ngIf="getSalaryLabel(item)">
+                                {{ getSalaryLabel(item) }}
+                            </span>
+                        </div>
+
+                        <div
+                            class="small text-muted fst-italic mt-2 d-flex align-items-center justify-content-center justify-content-md-start gap-1">
+                            <i class="bi bi-clock"></i> Saved on {{ item.savedAt | date:'mediumDate' }}
+                        </div>
+                    </div>
+
+                    <!-- Actions (Far Right) -->
+                    <div
+                        class="d-flex flex-row flex-md-column flex-lg-row align-items-center gap-2 mt-3 mt-md-0 position-relative z-2">
+                        <!-- @ts-ignore -->
+                        <a [routerLink]="['/job-seeker/jobs', item.job.id || item.jobId]"
+                            class="btn btn-primary-custom rounded-pill px-4 fw-medium shadow-sm transition-transform text-nowrap flex-grow-1 flex-md-grow-0">
+                            View & Apply
+                        </a>
+
+                        <!-- @ts-ignore -->
+                        <button
+                            class="btn btn-outline-danger rounded-circle d-flex align-items-center justify-content-center transition-hover flex-shrink-0 shadow-sm bg-white"
+                            style="width: 44px; height: 44px;"
+                            (click)="removeSavedJob(item.job.id || item.jobId, $event)" title="Remove from Saved">
+                            <div *ngIf="isRemoving[getKey(item)]" class="spinner-border spinner-border-sm"
+                                role="status">
+                            </div>
+                            <i *ngIf="!isRemoving[getKey(item)]" class="bi bi-trash-fill"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<app-toast [message]="toastMessage" [type]="toastType" [show]="showToast"></app-toast>

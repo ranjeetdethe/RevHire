@@ -1,0 +1,418 @@
+<div class="container-fluid py-4 min-vh-100 bg-light">
+    <!-- Skeleton Loader -->
+    <div *ngIf="isLoading" class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row g-4" *ngIf="!isLoading && profile">
+
+        <!-- Left Column: Personal Info & Skills -->
+        <div class="col-lg-4">
+
+            <!-- Personal Info Card -->
+            <div class="glass-card mb-4 position-relative overflow-hidden p-0">
+                <div class="bg-primary position-absolute top-0 start-0 w-100" style="height: 100px; z-index: 0;">
+                </div>
+
+                <div class="position-absolute top-0 end-0 p-3 z-2">
+                    <button class="btn btn-light btn-sm rounded-circle shadow-sm" (click)="openPersonalModal()"
+                        title="Edit Info">
+                        <i class="bi bi-pencil-fill text-primary"></i>
+                    </button>
+                </div>
+
+                <div class="position-relative z-1 pt-5 px-4 pb-4 text-center text-md-start">
+                    <div class="d-flex flex-column flex-md-row align-items-center gap-3">
+                        <div class="profile-avatar bg-white border border-4 border-light rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width: 100px; height: 100px; margin-top: 10px;">
+                            <span class="display-4 fw-bold text-primary">{{ profile.firstName?.charAt(0) || 'U'
+                                }}</span>
+                        </div>
+                        <div class="mt-3 mt-md-0 pt-md-4">
+                            <h4 class="fw-bold mb-0 font-heading text-dark">{{ profile.firstName }} {{
+                                profile.lastName
+                                }}</h4>
+                            <p class="text-muted mb-2"><i class="bi bi-envelope me-1"></i> {{ profile.email }}</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top d-flex flex-column gap-2 text-muted small">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-geo-alt-fill text-primary"></i>
+                            <span *ngIf="profile.location">{{ profile.location }}</span>
+                            <span *ngIf="!profile.location" class="fst-italic opacity-50">Location not set</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-telephone-fill text-primary"></i>
+                            <span *ngIf="profile.phone">{{ profile.phone }}</span>
+                            <span *ngIf="!profile.phone" class="fst-italic opacity-50">Phone not set</span>
+                        </div>
+                    </div>
+
+                    <!-- Profile Completeness Progress Bar -->
+                    <div class="mt-4 px-2">
+                        <div class="d-flex justify-content-between align-items-center mb-1 small fw-bold">
+                            <span class="text-secondary">Profile Completeness</span>
+                            <span [class.text-success]="profileCompleteness >= 100"
+                                [class.text-warning]="profileCompleteness < 100">{{ profileCompleteness }}%</span>
+                        </div>
+                        <div class="progress rounded-pill border shadow-sm"
+                            style="height: 10px; background-color: #f1f5f9;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                [ngClass]="{'bg-success': profileCompleteness >= 100, 'bg-warning': profileCompleteness < 100}"
+                                role="progressbar" [style.width.%]="profileCompleteness"
+                                [attr.aria-valuenow]="profileCompleteness" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                        <small class="text-muted mt-2 d-block text-center" *ngIf="profileCompleteness < 100">
+                            Add missing details to get perfect match recommendations.
+                        </small>
+                    </div>
+
+                    <!-- Resume Card Embedded -->
+                    <div class="mt-4 pt-3 border-top text-center">
+                        <a routerLink="/job-seeker/resume"
+                            class="btn btn-outline-primary fw-bold rounded-pill shadow-sm w-100 py-2 transition-hover">
+                            <i class="bi bi-file-earmark-pdf-fill me-2 fs-5" style="vertical-align: -2px;"></i>
+                            Upload /
+                            Manage Resume
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About / Bio -->
+            <div class="glass-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 font-heading"><i class="bi bi-person-lines-fill text-info me-2"></i>About
+                    </h5>
+                    <button
+                        class="btn btn-outline-secondary btn-sm p-1 d-flex align-items-center justify-content-center rounded-circle"
+                        style="width: 28px; height: 28px;" (click)="openPersonalModal()">
+                        <i class="bi bi-pencil" style="font-size: 0.75rem;"></i>
+                    </button>
+                </div>
+
+                <p class="text-muted small mb-0 lh-lg" *ngIf="profile.about; else noAbout">
+                    {{ profile.about }}
+                </p>
+                <ng-template #noAbout>
+                    <p class="text-muted small fst-italic mb-0 opacity-75">No summary provided.</p>
+                </ng-template>
+            </div>
+
+            <!-- Skills -->
+            <div class="glass-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 font-heading"><i class="bi bi-lightning-charge text-warning me-2"></i>Skills
+                    </h5>
+                    <button
+                        class="btn btn-outline-primary btn-sm p-1 d-flex align-items-center justify-content-center rounded-circle"
+                        style="width: 28px; height: 28px;" (click)="openSkillModal()">
+                        <i class="bi bi-plus" style="font-size: 1.2rem; line-height: 0;"></i>
+                    </button>
+                </div>
+
+                <div *ngIf="!profile.skills || profile.skills.length === 0" class="text-center py-3 opacity-50">
+                    <p class="small fst-italic mb-0">No skills added yet.</p>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2" *ngIf="profile.skills && profile.skills.length > 0">
+                    <div *ngFor="let skill of profile.skills"
+                        class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 d-flex align-items-center gap-2 fw-medium shadow-sm transition-hover">
+                        {{ skill.skillName }}
+                        <button class="btn-close btn-close-white ms-1 custom-close-btn" style="font-size: 0.5rem;"
+                            (click)="deleteSkill(skill.id)"></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Experience & Education -->
+        <div class="col-lg-8">
+
+            <!-- Experience -->
+            <div class="glass-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0 font-heading"><i class="bi bi-briefcase-fill text-primary me-2"></i>Work
+                        Experience</h4>
+                    <button class="btn btn-primary-custom btn-sm rounded-pill fw-medium shadow-sm px-3"
+                        (click)="openExpModal()">
+                        <i class="bi bi-plus-lg me-1"></i> Add Experience
+                    </button>
+                </div>
+
+                <div *ngIf="!profile.experience || profile.experience.length === 0"
+                    class="text-center py-5 opacity-50 bg-light rounded-3 border border-dashed">
+                    <i class="bi bi-journal-x display-4 text-muted mb-2 d-block"></i>
+                    <p class="mb-0 fw-medium">No experience added.</p>
+                </div>
+
+                <div class="timeline" *ngIf="profile.experience && profile.experience.length > 0">
+                    <div class="timeline-item position-relative pb-4 ps-4" *ngFor="let exp of profile.experience">
+                        <div class="timeline-indicator position-absolute rounded-circle bg-primary"
+                            style="width: 14px; height: 14px; left: -7px; top: 4px; box-shadow: 0 0 0 4px rgba(37,99,235,0.2);">
+                        </div>
+
+                        <div
+                            class="timeline-content bg-white p-3 rounded-3 shadow-sm border border-light transition-hover row g-0">
+                            <div class="col-sm-9">
+                                <h5 class="fw-bold text-dark mb-1">{{ exp.jobTitle }}</h5>
+                                <h6 class="text-primary fw-medium mb-2">{{ exp.companyName }}</h6>
+
+                                <div class="d-flex align-items-center gap-3 text-muted small mb-2 fw-medium">
+                                    <span><i class="bi bi-calendar-event me-1"></i> {{ exp.startDate | date:'MMM
+                                        yyyy'
+                                        }} - {{ exp.isCurrent ? 'Present' : (exp.endDate | date:'MMM yyyy')
+                                        }}</span>
+                                </div>
+
+                                <p class="text-muted small mb-0 lh-base" *ngIf="exp.description">{{ exp.description
+                                    }}
+                                </p>
+                            </div>
+                            <div class="col-sm-3 d-flex justify-content-sm-end align-items-start mt-3 mt-sm-0">
+                                <button class="btn btn-outline-secondary btn-sm rounded-circle me-2 p-1"
+                                    style="width: 30px; height: 30px;" (click)="openExpModal(exp)">
+                                    <i class="bi bi-pencil" style="font-size: 0.8rem;"></i>
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm rounded-circle p-1"
+                                    style="width: 30px; height: 30px;" (click)="deleteExperience(exp.id)">
+                                    <i class="bi bi-trash" style="font-size: 0.8rem;"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education -->
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0 font-heading"><i
+                            class="bi bi-mortarboard-fill text-success me-2"></i>Education</h4>
+                    <button class="btn btn-outline-success btn-sm rounded-pill fw-semibold shadow-sm px-3 border-2"
+                        (click)="openEduModal()">
+                        <i class="bi bi-plus-lg me-1"></i> Add Education
+                    </button>
+                </div>
+
+                <div *ngIf="!profile.education || profile.education.length === 0"
+                    class="text-center py-5 opacity-50 bg-light rounded-3 border border-dashed-success">
+                    <i class="bi bi-mortarboard display-4 text-muted mb-2 d-block"></i>
+                    <p class="mb-0 fw-medium">No education history added.</p>
+                </div>
+
+                <div class="timeline border-success-subtle" *ngIf="profile.education && profile.education.length > 0">
+                    <div class="timeline-item position-relative pb-4 ps-4" *ngFor="let edu of profile.education">
+                        <div class="timeline-indicator position-absolute rounded-circle bg-success"
+                            style="width: 14px; height: 14px; left: -7px; top: 4px; box-shadow: 0 0 0 4px rgba(25,135,84,0.2);">
+                        </div>
+
+                        <div
+                            class="timeline-content bg-white p-3 rounded-3 shadow-sm border border-light transition-hover row g-0">
+                            <div class="col-sm-9">
+                                <h5 class="fw-bold text-dark mb-1">{{ edu.degree }} <span *ngIf="edu.fieldOfStudy">in {{
+                                        edu.fieldOfStudy }}</span></h5>
+                                <h6 class="text-success fw-medium mb-2">{{ edu.institution }}</h6>
+
+                                <div class="d-flex align-items-center gap-3 text-muted small fw-medium">
+                                    <span><i class="bi bi-calendar-event me-1"></i> {{ edu.startYear }} - {{
+                                        edu.isCurrent ? 'Present' : edu.endYear }}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 d-flex justify-content-sm-end align-items-start mt-3 mt-sm-0">
+                                <button class="btn btn-outline-secondary btn-sm rounded-circle me-2 p-1"
+                                    style="width: 30px; height: 30px;" (click)="openEduModal(edu)">
+                                    <i class="bi bi-pencil" style="font-size: 0.8rem;"></i>
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm rounded-circle p-1"
+                                    style="width: 30px; height: 30px;" (click)="deleteEducation(edu.id)">
+                                    <i class="bi bi-trash" style="font-size: 0.8rem;"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- =========================
+     MODALS OVERLAYS
+     ========================= -->
+<div class="modal fade show d-block" tabindex="-1" *ngIf="activeModal !== null" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered"
+        [ngClass]="{'modal-lg': activeModal === 'experience' || activeModal === 'education'}">
+        <div class="modal-content border-0 shadow-lg rounded-4 animate__animated animate__fadeInUp animate__faster">
+
+            <div class="modal-header border-bottom px-4 py-3">
+                <h5 class="modal-title fw-bold">
+                    <span *ngIf="activeModal === 'personal'">Edit Personal Info</span>
+                    <span *ngIf="activeModal === 'education'">{{ editingId ? 'Edit' : 'Add' }} Education</span>
+                    <span *ngIf="activeModal === 'experience'">{{ editingId ? 'Edit' : 'Add' }} Experience</span>
+                    <span *ngIf="activeModal === 'skill'">Add Skill</span>
+                </h5>
+                <button type="button" class="btn-close" (click)="closeModal()"></button>
+            </div>
+
+            <!-- PERSONAL MODAL -->
+            <div class="modal-body p-4" *ngIf="activeModal === 'personal'">
+                <form [formGroup]="personalForm" (ngSubmit)="savePersonal()">
+                    <div class="mb-3">
+                        <label
+                            class="form-label fw-bold small text-muted text-uppercase tracking-wider">Location</label>
+                        <input type="text" class="form-control form-control-custom" formControlName="location">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-muted text-uppercase tracking-wider">About Me
+                            SUMMARY</label>
+                        <textarea class="form-control form-control-custom" rows="4" formControlName="about"
+                            placeholder="Write a short summary about your professional background..."></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-light px-4 rounded-pill fw-medium"
+                            (click)="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom px-4" [disabled]="isSaving">
+                            <span *ngIf="!isSaving">Save Changes</span>
+                            <span *ngIf="isSaving">Saving...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- EDUCATION MODAL -->
+            <div class="modal-body p-4" *ngIf="activeModal === 'education'">
+                <form [formGroup]="eduForm" (ngSubmit)="saveEducation()">
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-muted text-uppercase tracking-wider">School
+                                /
+                                Institution *</label>
+                            <input type="text" class="form-control form-control-custom" formControlName="institution">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase tracking-wider">Degree
+                                *</label>
+                            <input type="text" class="form-control form-control-custom" formControlName="degree"
+                                placeholder="e.g. Bachelor of Science">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase tracking-wider">Field
+                                of
+                                Study *</label>
+                            <input type="text" class="form-control form-control-custom" formControlName="fieldOfStudy">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase tracking-wider">Start
+                                Year
+                                *</label>
+                            <input type="number" class="form-control form-control-custom" formControlName="startYear">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase tracking-wider">End
+                                Year</label>
+                            <input type="number" class="form-control form-control-custom" formControlName="endYear"
+                                [attr.disabled]="eduForm.get('isCurrent')?.value ? true : null">
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="currentEdu"
+                                    formControlName="isCurrent">
+                                <label class="form-check-label ms-2 fw-medium" for="currentEdu">I currently study
+                                    here</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                        <button type="button" class="btn btn-light px-4 rounded-pill fw-medium"
+                            (click)="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom px-4"
+                            [disabled]="eduForm.invalid || isSaving">Save Education</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- EXPERIENCE MODAL -->
+            <div class="modal-body p-4" *ngIf="activeModal === 'experience'">
+                <form [formGroup]="expForm" (ngSubmit)="saveExperience()">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase tracking-wider">Job
+                                Title
+                                *</label>
+                            <input type="text" class="form-control form-control-custom" formControlName="jobTitle">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase tracking-wider">Company
+                                Name *</label>
+                            <input type="text" class="form-control form-control-custom" formControlName="companyName">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase tracking-wider">Start
+                                Date
+                                *</label>
+                            <input type="month" class="form-control form-control-custom" formControlName="startDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase tracking-wider">End
+                                Date</label>
+                            <input type="month" class="form-control form-control-custom" formControlName="endDate"
+                                [attr.disabled]="expForm.get('isCurrent')?.value ? true : null">
+                        </div>
+                        <div class="col-12 mt-2">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="currentExp"
+                                    formControlName="isCurrent">
+                                <label class="form-check-label ms-2 fw-medium" for="currentExp">I currently work
+                                    here</label>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <label
+                                class="form-label fw-bold small text-muted text-uppercase tracking-wider">Description</label>
+                            <textarea class="form-control form-control-custom" rows="3"
+                                formControlName="description"></textarea>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                        <button type="button" class="btn btn-light px-4 rounded-pill fw-medium"
+                            (click)="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom px-4"
+                            [disabled]="expForm.invalid || isSaving">Save Experience</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- SKILL MODAL -->
+            <div class="modal-body p-4" *ngIf="activeModal === 'skill'">
+                <form [formGroup]="skillForm" (ngSubmit)="saveSkill()">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted text-uppercase tracking-wider">Skill Name
+                            *</label>
+                        <input type="text" class="form-control form-control-custom" formControlName="skillName"
+                            placeholder="e.g. Java, Angular, Project Management">
+                    </div>
+                    <!-- Using hidden select for proficiency since backend API doesn't require it, but Form has it -->
+                    <input type="hidden" formControlName="proficiency">
+
+                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                        <button type="button" class="btn btn-light px-4 rounded-pill fw-medium"
+                            (click)="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom px-4"
+                            [disabled]="skillForm.invalid || isSaving">Add Skill</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<app-toast [message]="toastMessage" [type]="toastType" [show]="showToast"></app-toast>

@@ -1,0 +1,72 @@
+.glass-card {
+    transition: all var(--transition-normal);
+}
+
+.transition-hover {
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+
+    &:hover {
+        background-color: #f8fafc !important;
+        border-color: rgba(37, 99, 235, 0.2) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1) !important;
+
+        .company-logo {
+            transform: scale(1.05);
+            transition: transform 0.2s ease-in-out;
+        }
+    }
+}
+
+.custom-link-hover {
+    transition: color 0.15s ease;
+
+    &:hover {
+        color: var(--primary-color) !important;
+        text-decoration: underline !important;
+    }
+}
+
+.form-control-custom,
+.form-select-custom {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    &:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.15);
+        background-color: #ffffff;
+    }
+}
+
+.hide-scroll {
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.btn-icon-custom {
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+        transform: scale(1.1);
+    }
+}
+
+/* Dropdown override fixing custom button alignments */
+.dropdown-toggle::after {
+    margin-left: 0.5em;
+    vertical-align: middle;
+}
+
+.applicant-card {
+    .dropdown-menu {
+        transform: translateY(4px);
+    }
+}
