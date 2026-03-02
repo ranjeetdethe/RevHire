@@ -198,16 +198,7 @@ RevHire/
   revhire-schema-mysql.sql     # Database setup
   revhire-schema.sql           # Database setup
   README.md
-```<img width="1920" height="1080" alt="Screenshot 2026-03-02 233813" src="https://github.com/user-attachments/assets/ac488866-13dc-457c-9ad9-cdc411d28479" />
-<img width="1920" height="1080" alt="Screenshot 2026-03-02 233601" src="https://github.com/user-attachments/assets/ccd89b2c-377e-45c0-bad2-b15fbe81704a" />
-<img width="1920" height="1080" alt="Screenshot 2026-03-02 233555" src="https://github.com/user-attachments/assets/027b21c3-9e5c-4655-ab8c-e6a657d4017f" />
-<img width="1920" height="1080" alt="Screenshot 2026-03-02 233548" src="https://github.com/user-attachments/assets/b4a0963d-d625-43d2-a61f-1d3833d772f7" />
-<img width="1920" height="1080" alt="Screenshot 2026-03-02 233426" src="https://github.com/user-attachments/assets/5e4046de-8c8c-4482-9d3d-a7ce7da95072" />
-<img width="1920" height="1080" alt="Screenshot 2026-03-02 233405" src="https://github.com/user-attachments/assets/468d140c-26f2-4984-bab9-b9045e464f10" />
-<img width="1920" height="1080" alt="Screenshot 2026-03-02 233354" src="https://github.com/user-attachments/assets/887c0754-0802-44be-b265-7fa42484c3fc" />
-<img width="1920" height="1080" alt="Screenshot 2026-03-02 233348" src="https://github.com/user-attachments/assets/0da82e79-d147-448e-b3db-e2df9012d059" />
-<img width="1920" height="1080" alt="Screenshot 2026-03-02 233342" src="https://github.com/user-attachments/assets/8be1f265-7942-4e31-88ca-7f5c43dc59b6" />
-<img width="1920" height="1080" alt="Screenshot 2026-03-02 233255" src="https://github.com/user-attachments/assets/69483185-0c4d-4915-9caf-5349659f2f70" />
+``
 <img width="1920" height="1080" alt="Screenshot 2026-03-02 233139" src="https://github.com/user-attachments/assets/38465f6b-63b5-4ff7-8960-77b96dbab5ea" />
 <img width="1920" height="1080" alt="Screenshot 2026-03-02 234629" src="https://github.com/user-attachments/assets/f1db657b-ddf8-48b9-a006-cf5992540641" />
 
