@@ -78,7 +78,7 @@ public class UserServiceTest {
     public void testRegisterUser_EmailExists() {
         when(userRepository.existsByEmail("john@example.com")).thenReturn(true);
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(com.revhire.exception.GlobalExceptionHandler.UserAlreadyExistsException.class, () -> {
             userService.registerUser("John", "Doe", "john@example.com", "password", "1234567890",
                     User.UserRole.JOB_SEEKER, "Q", "A");
         });

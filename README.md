@@ -1,278 +1,201 @@
-# RevHire - Job Portal Application 🚀
+# RevHire (AuraJobs Edition)
 
-A modern, full-stack job portal application built with **Spring Boot 3**, **Spring Security**, **Spring Data JPA**, **Thymeleaf**, and **MySQL**. RevHire connects job seekers with employers, providing a seamless platform for job posting, searching, and application management.
+RevHire (AuraJobs Edition) is a premium full-stack SaaS job portal (Naukri.com-inspired) built with **Angular 17** (frontend) and **Spring Boot 3 / Spring Security + JWT** (backend).
 
-## ✨ Features
+## Features
 
-### For Job Seekers
-- 🔐 **Secure Registration & Login** - Create account with email and password (BCrypt encrypted)
-- 🔍 **Job Search** - Browse and search jobs by keywords, location, and requirements
-- 📄 **Resume Management** - Upload and manage your resume (PDF support)
-- 📊 **Application Tracking** - View all your job applications and their statuses
-- 👤 **Profile Management** - Update your professional information
+### Job Seeker
+- Register/login (JWT)
+- Search jobs + view job details
+- Apply to jobs + track application status
+- Save jobs for later review
+- Profile management (education, experience, skills, certifications)
+- Resume upload & document management
+- Notifications (Application updates, job recommendations)
+- Account Settings management
 
-### For Employers
-- 🏢 **Company Profile** - Create and manage your company profile
-- ✍️ **Job Posting** - Post new job openings with detailed descriptions
-- 👥 **Application Management** - Review and manage candidate applications
-- 📈 **Dashboard** - View statistics and manage all your job postings
-- ✏️ **Job Management** - Edit or close job postings
+### Employer
+- Employer & Company profile management
+- Post and manage job listings
+- View and manage applicants per job
+- Update applicant status + add processing notes
+- Download applicant resumes
+- Real-time employer dashboard metrics view
 
-### Security & Authentication
-- 🔒 **Spring Security Integration** - Enterprise-grade authentication and authorization
-- 🛡️ **BCrypt Password Hashing** - Secure password storage
-- 👮 **Role-Based Access Control** - SEEKER and EMPLOYER roles
-- 🔑 **Session Management** - Secure user sessions
-- 🚪 **Password Recovery** - Security question-based password reset
+### Admin
+- Platform orchestration dashboard
+- Comprehensive user management
+- Platform-wide job listings management
 
-## 🛠️ Tech Stack
+## UI Screenshots
 
-### Backend
-- **Spring Boot 3.2.0** - Application framework
-- **Spring Data JPA** - Data access and ORM
-- **Spring Security 6.2.0** - Authentication and authorization
-- **Hibernate 6.3.1** - ORM implementation
-- **MySQL 8** - Relational database
-- **Jakarta Validation** - Bean validation
+Below are some visual previews of the RevHire application:
 
-### Frontend
-- **Thymeleaf 3.1.2** - Server-side template engine
-- **Thymeleaf Spring Security** - Security dialect
-- **Vanilla CSS** - Styling
-- **Font Awesome** - Icons
-- **Google Fonts** - Typography
+### Home Page
+![Home Page](images/home.png)
 
-### Development Tools
-- **Maven** - Build automation
-- **Lombok** - Boilerplate code reduction
-- **HikariCP** - Connection pooling
-- **SLF4J & Logback** - Logging
+### User Registration
+![User Registration](images/auth-register.png)
 
-## 📋 Prerequisites
+### Job Seeker Dashboard
+![Job Seeker Dashboard](images/seeker-dashboard.png)
 
-- **JDK 17** or higher
-- **Maven 3.6+**
-- **MySQL 8.0+**
-- **Docker & Docker Compose** (optional, for containerized deployment)
+### Notifications
+![Notifications](images/seeker-notifications.png)
 
-## 🚀 Quick Start
+### Job Search & Filters
+![Job Search](images/job-search.png)
 
-### 1. Clone the Repository
+### My Applications
+![My Applications](images/seeker-applications.png)
+
+### Saved Jobs
+![Saved Jobs](images/seeker-saved-jobs.png)
+
+### Employer Dashboard
+![Employer Dashboard](images/employer-dashboard.png)
+
+### Manage Active Jobs
+![Manage Active Jobs](images/employer-manage-jobs.png)
+
+### Employer Job Posting
+![Employer Job Posting](images/employer-job-posting.png)
+
+### Review Applicants
+![Review Applicants](images/employer-applicants-view.png)
+
+## Application Flow & Architecture
+
+1. **User Authentication:** Both seekers and employers register and log in. JWT tokens are issued by the Spring Boot backend and stored securely on the frontend to authorize subsequent API requests.
+2. **Job Posting (Employer):** Employers can create and manage their job postings through a dedicated dashboard metrics view. 
+3. **Job Discovery (Seeker):** Seekers use the Angular-based search interface to filter active jobs by keyword, location, or salary, and view detailed job descriptions.
+4. **Application Tracking:** Once a job seeker applies, the application appears in the Employer's dashboard, where they can review the candidate's profile/resume and update the application status (e.g., IN_REVIEW, ACCEPTED, REJECTED).
+
+## Tech Stack
+
+- **Frontend**: Angular 17, Tailwind CSS, Angular Material, RxJS
+- **Backend**: Spring Boot 3.2, Spring Security, Spring Data JPA, JWT, ModelMapper
+- **DB**: MySQL (default in local config), PostgreSQL supported via driver
+- **API docs**: Springdoc OpenAPI (`/swagger-ui.html`)
+- **Containerization**: Docker & Docker Compose
+
+## Prerequisites
+
+- Node.js 18+ and npm
+- Angular CLI 17+
+- Java 17
+- Maven 3.9+
+- MySQL 8+ (or PostgreSQL)
+
+## Quick Start (Local)
+
+### 1) Backend (Spring Boot)
+
+1. Create a database (name should match your config).
+2. Update DB connection in `src/main/resources/application.properties` (local/dev).
+
+Current default local settings are:
+- **Backend**: `http://localhost:8080`
+- **DB URL**: `jdbc:mysql://localhost:3307/revhire_db`
+
+Run:
+
 ```bash
-git clone <your-repo-url>
-cd RevHire
+mvn -DskipTests spring-boot:run
 ```
 
-### 2. Set Up Database
-```sql
--- Create database
-CREATE DATABASE revhire_db;
+Swagger UI:
+- `http://localhost:8080/swagger-ui.html`
 
--- MySQL should be running on port 3307 (or update application.properties)
-```
+### 2) Frontend (Angular)
 
-### 3. Configure Application
-Update `src/main/resources/application.properties`:
+Frontend expects the backend at:
+- `http://localhost:8080/api/v1` (see `revhire-frontend/src/environments/environment.ts`)
 
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3307/revhire_db
-spring.datasource.username=root
-spring.datasource.password=Ranjeet@123
-```
+Run:
 
-### 4. Build and Run
 ```bash
-# Build the project
-mvn clean install
-
-# Run the application
-mvn spring-boot:run
+cd revhire-frontend
+npm install
+npm start
 ```
 
-The application will start on `http://localhost:8080`
+App:
+- `http://localhost:4200`
 
-### Alternative: Docker Deployment
+### 3) Run with Docker Compose
+
+To quickly run both the backend and the database with Docker:
+
 ```bash
-# Build and run with Docker Compose
-docker-compose up -d
-
-# View logs
-docker-compose logs -f app
+docker-compose up --build
 ```
+This will start:
+- **MySQL Database**: Exposed on port `3307` locally.
+- **Spring Boot App**: Available at `http://localhost:8080`.
 
-## 📂 Project Structure
+*(You can then run the frontend using `npm start` as shown above)*
 
-```
+## Configuration Notes
+
+### Spring profiles
+
+- **Default**: `src/main/resources/application.properties` (local MySQL, `ddl-auto=update`)
+- **Dev**: `src/main/resources/application-dev.properties` (more verbose error output)
+- **Prod**: `src/main/resources/application-prod.properties`
+  - Uses env vars: `DB_URL`, `DB_USER`, `DB_PASS`
+  - `spring.jpa.hibernate.ddl-auto=validate` (expects schema already created)
+
+### Database schema scripts (optional)
+
+- `revhire-schema-mysql.sql` (MySQL)
+- `revhire-schema.sql` (PostgreSQL)
+
+These are helpful for **production-like schema creation + seed data**. If you use them, consider setting:
+- `spring.jpa.hibernate.ddl-auto=validate`
+
+## Test Accounts (only if you ran the schema seed)
+
+From the schema scripts:
+- `seeker@test.com` / `password123`
+- `employer@test.com` / `password123`
+
+Otherwise, just register new accounts from the UI.
+
+## Common Issues / Fixes
+
+- **CORS error**: frontend must be `http://localhost:4200` (CORS is configured for it). If you change the frontend port, update `CorsConfig`.
+- **401 Unauthorized**: clear localStorage and login again (token expired/invalid).
+- **DB connection error**: verify MySQL port (`3307` in config), database name (`revhire_db`), username/password.
+- **Job search returns empty**: backend supports both legacy params (`keyword`, `minExp`) and Angular params (`title`, `experienceMin`, `salaryMin`, `salaryMax`).
+
+## Testing
+
+Both frontend and backend components are equipped with automated tests to ensure application reliability.
+
+### Backend (Spring Boot)
+- **Unit Testing**: Tests are implemented using **JUnit 5** and **Mockito**.
+- **Coverage**: Service layer modules (e.g., `UserServiceTest`, `JobServiceTest`, `ApplicationServiceTest`) and Controller layer logic are tested under `src/test/java/com/revhire/`.
+- **Run Tests**: Execute `mvn test` in the root backend directory.
+
+### Frontend (Angular)
+- **Unit Testing**: Tests utilize the **Jasmine** and **Karma** testing framework.
+- **Coverage**: Essential components (like `HomeComponent`, `RegisterComponent`) contain test coverage in `.spec.ts` files located within `revhire-frontend/src/app/`.
+- **Run Tests**: Navigate to frontend folder (`cd revhire-frontend`) and execute `npm test` or `ng test`.
+
+## Repository Layout
+
+```text
 RevHire/
-├── src/
-│   ├── main/
-│   │   ├── java/com/revhire/
-│   │   │   ├── controller/       # REST & MVC Controllers
-│   │   │   ├── dto/              # Data Transfer Objects
-│   │   │   ├── exception/        # Global exception handling
-│   │   │   ├── model/            # JPA Entities
-│   │   │   ├── repository/       # Spring Data repositories
-│   │   │   ├── security/         # Security configuration
-│   │   │   ├── service/          # Business logic
-│   │   │   │   └── impl/         # Service implementations
-│   │   │   └── RevHireApplication.java
-│   │   └── resources/
-│   │       ├── static/           # CSS, JS, images
-│   │       ├── templates/        # Thymeleaf templates
-│   │       ├── application.properties
-│   │       └── application-prod.properties
-│   └── test/                     # Unit & Integration tests
-├── docker-compose.yml
-├── Dockerfile
-├── DEPLOYMENT.md                  # Deployment guide
-├── pom.xml
-└── README.md
+  src/                        # Spring Boot backend
+    main/
+      java/com/revhire/        # controllers, services, security, models
+      resources/               # application*.properties
+  revhire-frontend/            # Angular frontend
+  pom.xml                      # Maven dependencies
+  docker-compose.yml           # Docker deployment config
+  Dockerfile                   # Backend Dockerfile
+  revhire-schema-mysql.sql     # Database setup
+  revhire-schema.sql           # Database setup
+  README.md
 ```
-
-## 🗄️ Database Schema
-
-### Core Entities
-- **users** - User accounts (SEEKER/EMPLOYER)
-- **job_seekers** - Job seeker profiles
-- **employers** - Employer profiles
-- **jobs** - Job postings
-- **applications** - Job applications
-- **resumes** - Resume files
-
-### Relationships
-- User (1) ↔ (1) JobSeeker/Employer
-- Employer (1) ↔ (N) Jobs
-- Job (1) ↔ (N) Applications
-- JobSeeker (1) ↔ (N) Applications
-- JobSeeker (1) ↔ (1) Resume
-
-## 🔌 API Endpoints
-
-### Public Endpoints
-- `GET /` - Home page
-- `GET /register` - Registration form
-- `POST /register` - Process registration
-- `GET /login` - Login page
-- `POST /login` - Process login (Spring Security)
-- `GET /jobs` - Browse jobs
-- `GET /jobs/{id}` - View job details
-
-### Job Seeker Endpoints (Authenticated - SEEKER role)
-- `GET /seeker/dashboard` - Job seeker dashboard
-- `POST /applications/apply` - Apply for a job
-- `GET /applications/my-applications` - View my applications
-- `GET /seeker/resume/upload` - Upload resume
-
-### Employer Endpoints (Authenticated - EMPLOYER role)
-- `GET /employer/dashboard` - Employer dashboard
-- `GET /employer/jobs/new` - New job form
-- `POST /employer/jobs` - Create job posting
-- `GET /employer/jobs/{id}/applications` - View applications
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-mvn test
-
-# Run specific test class
-mvn test -Dtest=UserServiceTest
-
-# Run tests with coverage
-mvn clean verify
-```
-
-## 🏗️ Architecture
-
-The application follows a **layered architecture**:
-
-1. **Presentation Layer** - Controllers & Thymeleaf templates
-2. **Service Layer** - Business logic
-3. **Data Access Layer** - Repositories & JPA Entities
-4. **Security Layer** - Spring Security configuration
-
-### Design Patterns Used
-- **Repository Pattern** - Data access abstraction
-- **Service Pattern** - Business logic encapsulation
-- **DTO Pattern** - Data transfer between layers
-- **MVC Pattern** - Web layer structure
-- **Dependency Injection** - Spring's IoC container
-
-## 🔐 Security Features
-
-- **Password Encryption** - BCrypt with cost factor 10
-- **CSRF Protection** - Enabled by default
-- **Session Management** - HTTP session-based
-- **Role-Based Access** - Method-level security
-- **SQL Injection Prevention** - Parameterized queries (JPA)
-- **XSS Protection** - Thymeleaf auto-escaping
-
-## 📝 Configuration Profiles
-
-### Development (`application.properties`)
-- Show SQL queries
-- Hibernate DDL auto-update
-- Thymeleaf cache disabled
-
-### Production (`application-prod.properties`)
-- SQL logging disabled
-- Hibernate validation only
-- Thymeleaf cache enabled
-- Environment variable configuration
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Code Style
-- Follow Java conventions
-- Use meaningful variable names
-- Add JavaDoc for public methods
-- Write unit tests for new features
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 👥 Authors
-
-- **Ranjeet Dethe** - Initial work
-
-## 🙏 Acknowledgments
-
-- Spring Boot team for the amazing framework
-- Thymeleaf for the template engine
-- MySQL for the database
-- Font Awesome for icons
-
-## 📞 Support
-
-For issues, questions, or suggestions:
-- Open an issue on GitHub
-- Email: <your-email@example.com>
-
-## 🗺️ Roadmap
-
-### Version 1.1 (Planned)
-- [ ] Email notifications for applications
-- [ ] Advanced search filters
-- [ ] Resume parsing with AI
-- [ ] Real-time chat between employers and seekers
-- [ ] Mobile responsive design improvements
-
-### Version 2.0 (Future)
-- [ ] REST API for mobile app
-- [ ] OAuth2 login (Google, LinkedIn)
-- [ ] Payment integration for premium features
-- [ ] Analytics dashboard
-- [ ] Multi-language support
-
----
-
-**Made with ❤️ using Spring Boot**
-
-For deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
