@@ -107,16 +107,18 @@
     - [x] `jobs.html`: Add advanced search filters (Job Type, Experience).
     - [x] `job-details.html`: Display new fields, "Save Job" button, "Apply" modal with cover letter.
     - [x] `fragments.html`: Add "Saved Jobs" link and Notification icon. Updated Navbar with User Dropdown.
+    - [x] `home.html`: Replace mocked data with real-time API integrations and feature Candidate Resource pages.
 
 - [x] **Integration Tests**
     - [x] Created `JobControllerTest.java`.
 
-### Phase 5: Documentation & Deliverables
+### Phase 5: Documentation & Deployment
 
-- [ ] **ERD Diagram** — Entity Relationship Diagram (can generate from schema)
-- [ ] **Architecture Diagram** — Application layered architecture diagram
-- [ ] **README.md** — Update with setup instructions, tech stack, screenshots
-- [ ] **Testing Artifacts** — Unit tests for services, integration tests
+- [x] **Deployment Pipeline** — Created multi-container Docker compose setup with NGINX frontend proxy and Spring Boot backend.
+- [x] **ERD Diagram** — Entity Relationship Diagram (can generate from schema)
+- [x] **Architecture Diagram** — Application layered architecture diagram
+- [x] **README.md** — Update with setup instructions, tech stack, screenshots
+- [x] **Testing Artifacts** — Unit tests for services, integration tests
 
 ---
 
