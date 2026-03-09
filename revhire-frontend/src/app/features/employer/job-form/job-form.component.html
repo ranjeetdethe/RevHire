@@ -1,257 +1,183 @@
-<div class="container-fluid py-4 min-vh-100 bg-light">
+<div class="container-fluid py-4 bg-light min-vh-100">
 
-    <!-- Header -->
-    <div
-        class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-2 border-bottom gap-3">
-        <div>
-            <a routerLink="/employer/jobs"
-                class="btn btn-link text-decoration-none text-muted p-0 mb-1 custom-link-hover d-flex align-items-center gap-1">
-                <i class="bi bi-arrow-left"></i> Back to Manage Jobs
-            </a>
-            <h3 class="fw-bold text-dark font-heading mb-0">{{ isEditMode ? 'Edit Job Posting' : 'Create New Job' }}
-            </h3>
-            <p class="text-muted mb-0 small mt-1">Fill out the details below to attract top talent.</p>
-        </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-secondary fw-medium rounded-pill px-4 shadow-sm" routerLink="/employer/jobs"
-                [disabled]="isSaving">
-                Cancel
-            </button>
-            <button class="btn btn-primary-custom fw-bold rounded-pill px-5 shadow-sm d-flex align-items-center gap-2"
-                (click)="onSubmit()" [disabled]="isSaving || isLoading">
-                <div *ngIf="isSaving" class="spinner-border spinner-border-sm" role="status"></div>
-                <i *ngIf="!isSaving" class="bi" [ngClass]="isEditMode ? 'bi-save' : 'bi-send-fill'"></i>
-                {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Posting' : 'Publish Job') }}
-            </button>
+    <div *ngIf="isLoading" class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 
     <!-- Error State -->
-    <div *ngIf="errorMessage && !isSaving"
-        class="alert alert-danger border-danger border-opacity-25 bg-danger bg-opacity-10 shadow-sm rounded-4 mb-4 d-flex align-items-center gap-3 animate__animated animate__fadeIn">
-        <i class="bi bi-exclamation-triangle-fill fs-4 text-danger flex-shrink-0"></i>
-        <div>
-            <h6 class="fw-bold text-danger-emphasis mb-1">Failed to process request</h6>
-            <p class="small mb-0 text-dark">{{ errorMessage }}</p>
-        </div>
+    <div *ngIf="errorMessage && !isSaving" class="alert alert-danger mb-4 shadow-sm">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
     </div>
 
-    <!-- Skeleton Loader -->
-    <div *ngIf="isLoading" class="row pe-0 ps-0 g-4">
-        <div class="col-lg-8">
-            <div class="glass-card p-4 p-md-5 placeholder-glow rounded-4">
-                <span class="placeholder col-4 display-6 bg-secondary opacity-25 d-block mb-4"></span>
-                <span class="placeholder col-12 bg-secondary opacity-25 d-block mb-3" style="height: 50px;"></span>
-                <span class="placeholder col-6 bg-secondary opacity-25 d-block mb-3" style="height: 50px;"></span>
-                <span class="placeholder col-12 bg-secondary opacity-25 d-block mt-4" style="height: 200px;"></span>
+    <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading"
+        class="job-form-wrapper animate__animated animate__fadeIn">
+
+        <!-- Breadcrumbs -->
+        <div class="breadcrumb d-flex align-items-center gap-2">
+            <a routerLink="/employer/dashboard">Home</a>
+            <i class="bi bi-chevron-right small text-muted" style="font-size:0.7em;"></i>
+            <a routerLink="/employer/jobs">Job Postings</a>
+            <i class="bi bi-chevron-right small text-muted" style="font-size:0.7em;"></i>
+            <span>{{ isEditMode ? 'Edit' : 'New' }}</span>
+        </div>
+
+        <!-- Header -->
+        <div class="form-header">
+            <div class="title-area">
+                <h3>{{ isEditMode ? 'Edit Job Posting: ' + jobForm.get('title')?.value : 'Create New Job Posting' }}
+                </h3>
+                <span class="job-id" *ngIf="isEditMode">ID: RH-5432{{ jobForm.get('id')?.value }}</span>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn-cancel" routerLink="/employer/jobs">Cancel</button>
+                <button type="button" class="btn-save" (click)="onSubmit()" [disabled]="isSaving || jobForm.invalid">
+                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-1"></span>
+                    Save Changes
+                </button>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="glass-card p-4 placeholder-glow rounded-4">
-                <span class="placeholder col-6 display-6 bg-secondary opacity-25 d-block mb-4"></span>
-                <span class="placeholder col-12 bg-secondary opacity-25 d-block mb-3" style="height: 50px;"></span>
-                <span class="placeholder col-12 bg-secondary opacity-25 d-block mb-3" style="height: 50px;"></span>
-            </div>
-        </div>
-    </div>
 
-    <!-- Form Container -->
-    <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+        <!-- Main Form Card -->
+        <div class="form-card">
 
-        <div class="row g-4">
-
-            <!-- Main Details (Left Column) -->
-            <div class="col-lg-8">
-                <div
-                    class="glass-card p-4 p-md-5 rounded-4 shadow-sm border border-light position-relative overflow-hidden mb-4">
-
-                    <h5 class="fw-bold text-dark font-heading mb-4 border-bottom pb-2 d-flex align-items-center gap-2">
-                        <i class="bi bi-card-text text-primary"></i> Basic Information
-                    </h5>
-
-                    <!-- Job Title -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-dark mb-1">Job Title <span
-                                class="text-danger">*</span></label>
-                        <p class="small text-muted mb-2">A clear and concise title brings in more applicants.</p>
-                        <input type="text" class="form-control form-control-custom text-dark"
-                            [class.is-invalid]="f['title'].invalid && (f['title'].dirty || f['title'].touched)"
-                            formControlName="title" placeholder="e.g. Senior Software Engineer">
-                        <div class="invalid-feedback" *ngIf="f['title'].errors?.['required']">Job title is required.
-                        </div>
+            <!-- Basic Info -->
+            <div class="section-block">
+                <h5>Basic Information</h5>
+                <div class="row g-4">
+                    <div class="col-md-6 form-group">
+                        <label>Job Title</label>
+                        <input type="text" class="form-control" formControlName="title"
+                            placeholder="e.g. Senior Java Developer"
+                            [class.border-danger]="f['title'].invalid && f['title'].touched">
+                        <div class="invalid-feedback" *ngIf="f['title'].invalid && f['title'].touched">Job title is
+                            required.</div>
                     </div>
-
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold small text-muted text-uppercase tracking-wider mb-1">Job
-                                Type <span class="text-danger">*</span></label>
-                            <select class="form-select form-select-custom text-dark" formControlName="jobType"
-                                [class.is-invalid]="f['jobType'].invalid && f['jobType'].touched">
-                                <option value="FULL_TIME">Full-Time</option>
-                                <option value="PART_TIME">Part-Time</option>
-                                <option value="CONTRACT">Contract</option>
-                                <option value="INTERNSHIP">Internship</option>
-                                <option value="REMOTE">Remote</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold small text-muted text-uppercase tracking-wider mb-1">Work
-                                Location <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0 text-muted"><i
-                                        class="bi bi-geo-alt"></i></span>
-                                <input type="text"
-                                    class="form-control form-control-custom border-start-0 ps-0 text-dark"
-                                    [class.is-invalid]="f['location'].invalid && f['location'].touched"
-                                    formControlName="location" placeholder="City, State, or Remote">
-                            </div>
-                        </div>
+                    <div class="col-md-6 form-group">
+                        <label>Job Type</label>
+                        <select class="form-select" formControlName="jobType">
+                            <option value="FULL_TIME">Full-Time</option>
+                            <option value="PART_TIME">Part-Time</option>
+                            <option value="CONTRACT">Contract</option>
+                            <option value="INTERNSHIP">Internship</option>
+                            <option value="REMOTE">Remote</option>
+                        </select>
                     </div>
-
-                    <h5
-                        class="fw-bold text-dark font-heading mb-4 mt-5 border-bottom pb-2 d-flex align-items-center gap-2">
-                        <i class="bi bi-pencil-square text-primary"></i> Detailed Description
-                    </h5>
-
-                    <!-- Description -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-dark mb-1">Role Description <span
-                                class="text-danger">*</span></label>
-                        <p class="small text-muted mb-2">Provide a detailed breakdown of responsibilities and
-                            expectations. (Min 50 chars)</p>
-                        <textarea class="form-control form-control-custom text-dark" rows="8"
-                            [class.is-invalid]="f['description'].invalid && (f['description'].dirty || f['description'].touched)"
-                            formControlName="description" placeholder="Describe the day-to-day..."></textarea>
-                        <div class="invalid-feedback text-danger small mt-1"
-                            *ngIf="f['description'].invalid && f['description'].touched">
-                            <span *ngIf="f['description'].errors?.['required']">Description is required.</span>
-                            <span *ngIf="f['description'].errors?.['minlength']">Description is too short. Please add
-                                more detail.</span>
-                        </div>
+                    <div class="col-md-6 form-group">
+                        <label>Work Location</label>
+                        <input type="text" class="form-control" formControlName="location"
+                            placeholder="e.g. Pune, Maharashtra, India">
                     </div>
-
-                    <!-- Required Skills -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-dark mb-1">Required Skills <span
-                                class="text-danger">*</span></label>
-                        <p class="small text-muted mb-2">Enter skills separated by commas (e.g. Java, Spring Boot,
-                            React)</p>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted"><i
-                                    class="bi bi-tags"></i></span>
-                            <input type="text" class="form-control form-control-custom border-start-0 ps-0 text-dark"
-                                [class.is-invalid]="f['requiredSkills'].invalid && f['requiredSkills'].touched"
-                                formControlName="requiredSkills" placeholder="Skill 1, Skill 2, ...">
-                        </div>
-                        <div class="invalid-feedback d-block text-danger small mt-1"
-                            *ngIf="f['requiredSkills'].invalid && f['requiredSkills'].touched">
-                            Skills are required.
-                        </div>
+                    <div class="col-md-6 form-group">
+                        <label>Job Status</label>
+                        <select class="form-select" formControlName="status">
+                            <option value="OPEN">Active / Open</option>
+                            <option value="CLOSED">Closed</option>
+                        </select>
                     </div>
-
                 </div>
             </div>
 
-            <!-- Parameters (Right Column) -->
-            <div class="col-lg-4">
+            <!-- Detailed Description -->
+            <div class="section-block mt-5">
+                <h5>Detailed Description</h5>
+                <div class="rich-text-editor">
+                    <div class="toolbar">
+                        <i class="bi bi-type-bold fw-bold"></i>
+                        <i class="bi bi-type-italic fst-italic"></i>
+                        <i class="bi bi-type-underline text-decoration-underline"></i>
+                        <i class="bi bi-list-ul"></i>
+                        <i class="bi bi-code-slash"></i>
+                    </div>
+                    <textarea formControlName="description" placeholder="A Java Developer role is a... "
+                        [class.border-danger]="f['description'].invalid && f['description'].touched"></textarea>
+                </div>
+                <div class="invalid-feedback" *ngIf="f['description'].invalid && f['description'].touched">Description
+                    is required (min 50 chars).</div>
+            </div>
 
-                <div class="sticky-top" style="top: 80px; z-index: 10;">
-
-                    <!-- Requirements Card -->
-                    <div class="glass-card p-4 rounded-4 shadow-sm border border-light mb-4">
-                        <h5 class="fw-bold mb-4 font-heading text-dark border-bottom pb-2"><i
-                                class="bi bi-person-check text-warning me-2"></i> Requirements</h5>
-
-                        <!-- Experience -->
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Min
-                                Experience (Years) <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control form-control-custom" min="0"
-                                [class.is-invalid]="f['experienceYearsMin'].invalid && f['experienceYearsMin'].touched"
-                                formControlName="experienceYearsMin">
-                        </div>
-
-                        <!-- Education -->
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Education
-                                Required <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-custom"
-                                [class.is-invalid]="f['educationRequired'].invalid && f['educationRequired'].touched"
-                                formControlName="educationRequired" placeholder="e.g. Bachelor's in CS">
+            <!-- Requirements -->
+            <div class="section-block mt-5">
+                <h5>Requirements</h5>
+                <div class="row g-4">
+                    <div class="col-md-6 form-group">
+                        <label>Minimum Experience</label>
+                        <!-- In existing model, it could be experienceYearsMin or years. We will mock the text input for visual match if needed, but existing is number -->
+                        <div class="input-group"
+                            style="border: 1px solid #E2E8F0; border-radius: 6px; overflow: hidden;">
+                            <input type="number" class="form-control border-0 bg-white"
+                                formControlName="experienceYearsMin" min="0" style="box-shadow: none;">
+                            <span class="input-group-text bg-light border-0 text-muted">Years</span>
                         </div>
                     </div>
-
-                    <!-- Salary & Scope Card -->
-                    <div class="glass-card p-4 rounded-4 shadow-sm border border-light mb-4">
-                        <h5 class="fw-bold mb-4 font-heading text-dark border-bottom pb-2"><i
-                                class="bi bi-cash-stack text-success me-2"></i> Salary & Scope</h5>
-
-                        <!-- Salary Range -->
-                        <div class="row g-2 mb-3">
-                            <label
-                                class="form-label small fw-bold text-muted text-uppercase tracking-wider w-100">Annual
-                                Salary Range ($) <span
-                                    class="text-muted text-lowercase opacity-50 fw-normal">(Optional)</span></label>
-                            <div class="col-6">
-                                <input type="number" class="form-control form-control-custom"
-                                    formControlName="salaryMin" placeholder="Min USD">
-                            </div>
-                            <div class="col-6">
-                                <input type="number" class="form-control form-control-custom"
-                                    formControlName="salaryMax" placeholder="Max USD">
-                            </div>
-                        </div>
-
-                        <!-- Openings -->
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Number of
-                                Openings <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control form-control-custom" min="1"
-                                [class.is-invalid]="f['openingsCount'].invalid && f['openingsCount'].touched"
-                                formControlName="openingsCount">
-                        </div>
+                    <div class="col-md-6 form-group">
+                        <label>Education Level</label>
+                        <input type="text" class="form-control" formControlName="educationRequired"
+                            placeholder="e.g. Bachelor's Degree">
                     </div>
-
-                    <!-- Settings Card -->
-                    <div class="glass-card p-4 rounded-4 shadow-sm border border-light">
-                        <h5 class="fw-bold mb-4 font-heading text-dark border-bottom pb-2"><i
-                                class="bi bi-gear text-info me-2"></i> Settings</h5>
-
-                        <!-- Deadline -->
-                        <div class="mb-3">
-                            <label
-                                class="form-label small fw-bold text-muted text-uppercase tracking-wider mb-1">Application
-                                Deadline <span
-                                    class="text-muted text-lowercase opacity-50 fw-normal">(Optional)</span></label>
-                            <input type="date" class="form-control form-control-custom text-dark"
-                                formControlName="deadline">
-                        </div>
-
-                        <!-- Status Toggle -->
-                        <div class="mb-3 mt-4">
-                            <div class="custom-status-radio p-3 border rounded-3 d-flex align-items-center justify-content-between transition-all"
-                                [ngClass]="f['status'].value === 'OPEN' ? 'border-primary bg-primary bg-opacity-10' : 'bg-light'">
-                                <div>
-                                    <h6 class="fw-bold mb-0 text-dark">Accepting Applications</h6>
-                                    <p class="small text-muted mb-0">Publish job to public search</p>
-                                </div>
-                                <div class="form-check form-switch ms-3" style="transform: scale(1.3);">
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                        [checked]="f['status'].value === 'OPEN'"
-                                        (change)="jobForm.patchValue({status: $any($event.target).checked ? 'OPEN' : 'CLOSED'})">
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
                 </div>
 
+                <div class="form-group mt-3">
+                    <label>Required Skills</label>
+                    <div class="skills-input">
+                        <!-- Mocked visual display for already added skills if comma separated -->
+                        <ng-container *ngIf="f['requiredSkills'].value">
+                            <div class="skill-tag" *ngFor="let skill of f['requiredSkills'].value.split(',')">
+                                {{ skill.trim() }} <i class="bi bi-x"></i>
+                            </div>
+                        </ng-container>
+                        <!-- Actual input field for Angular form bindings to intercept -->
+                        <input type="text" placeholder="Type a skill and add comma..." formControlName="requiredSkills">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salary & Scope -->
+            <div class="section-block mt-5">
+                <h5>Salary & Scope</h5>
+                <div class="row g-4 mb-2">
+                    <div class="col-md-6 form-group">
+                        <label>Salary Range <span class="text-muted fw-normal small">(Optional)</span></label>
+                        <div class="d-flex gap-2">
+                            <input type="number" class="form-control" formControlName="salaryMin" placeholder="Min">
+                            <span class="d-flex align-items-center text-muted">to</span>
+                            <input type="number" class="form-control" formControlName="salaryMax" placeholder="Max">
+                        </div>
+                    </div>
+                    <div class="col-md-3 form-group align-self-end">
+                        <div class="p-2 bg-light text-center border rounded fw-medium text-muted h-100"
+                            style="padding-top: 0.65rem !important; padding-bottom: 0.65rem !important;">
+                            Monthly
+                        </div>
+                    </div>
+                    <div class="col-md-3 form-group align-self-end">
+                        <div class="p-2 bg-light text-center border rounded fw-medium text-muted h-100"
+                            style="padding-top: 0.65rem !important; padding-bottom: 0.65rem !important;">
+                            USD
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6 form-group mb-0">
+                        <label>Job Duration / Openings</label>
+                        <input type="number" class="form-control" min="1" formControlName="openingsCount"
+                            placeholder="Number of Openings">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="bottom-actions mt-4">
+                <button type="submit" class="btn-update" [disabled]="isSaving || jobForm.invalid">
+                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-1"></span>
+                    {{ isEditMode ? 'Update Posting' : 'Publish Job' }}
+                </button>
+                <button type="button" class="btn-preview">Preview</button>
             </div>
 
         </div>
-
     </form>
 </div>
-
 <app-toast [message]="toastMessage" [type]="toastType" [show]="showToast"></app-toast>

@@ -6,12 +6,12 @@ import { ApplicationService } from '../../../core/services/application.service';
 import { Job } from '../../../models/job.model';
 import { AuthService } from '../../../core/services/auth.service';
 import { User } from '../../../models/user.model';
-import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
+
 
 @Component({
   selector: 'app-employer-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, StatusBadgeComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

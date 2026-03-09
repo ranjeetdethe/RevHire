@@ -1,176 +1,181 @@
-<div class="container-fluid py-4 min-vh-100 bg-light">
+<div *ngIf="isLoading" class="d-flex justify-content-center align-items-center mb-5" style="height: 300px;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
 
-    <!-- Welcome Header -->
-    <div
-        class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-2 border-bottom gap-3">
-        <div class="d-flex align-items-center gap-3">
-            <div class="icon-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
-                style="width: 56px; height: 56px;">
-                <i class="bi bi-buildings-fill fs-3"></i>
+<div *ngIf="!isLoading" class="animate__animated animate__fadeIn">
+    <!-- Header Title -->
+    <div class="mb-4">
+        <h3 class="fw-bold mb-1">Welcome back, {{ user?.firstName || 'Alex' }}!</h3>
+        <p class="text-muted small">Here is what is happening with your recruitment today.</p>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="metrics-grid">
+        <!-- Card 1 -->
+        <div class="stat-card card-blue">
+            <div class="top-row">
+                <div>
+                    <div class="title">Total Job Postings</div>
+                    <div class="value">{{ totalJobs || 24 }}</div>
+                </div>
+                <div class="icon-box"><i class="bi bi-briefcase"></i></div>
             </div>
-            <div>
-                <h3 class="fw-bold text-dark font-heading mb-0">Hello, {{ user?.firstName || 'Employer' }}!</h3>
-                <p class="text-muted mb-0">Here's what's happening with your job postings.</p>
+            <div class="trend"><i class="bi bi-arrow-up-short"></i> +8% this month</div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="stat-card card-teal">
+            <div class="top-row">
+                <div>
+                    <div class="title">Total Applications</div>
+                    <div class="value">{{ totalApplicationsReceived || 892 }}</div>
+                </div>
+                <div class="icon-box"><i class="bi bi-people"></i></div>
+            </div>
+            <div class="trend"><i class="bi bi-arrow-up-short"></i> +15% this month</div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="stat-card card-light-cyan">
+            <div class="top-row">
+                <div>
+                    <div class="title">Active Candidates</div>
+                    <div class="value">156</div>
+                </div>
+                <div class="icon-box"><i class="bi bi-person-lines-fill"></i></div>
             </div>
         </div>
-        <div class="d-flex gap-2">
-            <a routerLink="/employer/job-form/new"
-                class="btn btn-primary-custom fw-medium rounded-pill px-4 shadow-sm h-100 d-flex align-items-center">
-                <i class="bi bi-plus-circle me-2"></i> Post New Job
-            </a>
+
+        <!-- Card 4 -->
+        <div class="stat-card card-light-blue">
+            <div class="top-row">
+                <div>
+                    <div class="title">Shortlisted Candidates</div>
+                    <div class="value">45</div>
+                </div>
+                <div class="icon-box"><i class="bi bi-star"></i></div>
+            </div>
         </div>
     </div>
 
-    <!-- Skeleton Loader Top -->
-    <div *ngIf="isLoading" class="row g-4 mb-5">
-        <div class="col-md-4" *ngFor="let i of [1,2,3]">
-            <div class="glass-card p-4 placeholder-glow rounded-4">
-                <span class="placeholder col-4 bg-secondary opacity-25 mb-3 d-block"></span>
-                <span class="placeholder col-8 display-1 bg-secondary opacity-25 d-block"></span>
+    <!-- Charts Section -->
+    <div class="charts-grid">
+        <!-- Applications Trend Chart -->
+        <div class="chart-card">
+            <div class="header">
+                <h5>Applications Trend (Last 30 Days)</h5>
+                <button class="toggle-btn">X/Y axes <i class="bi bi-chevron-down ms-1"></i></button>
+            </div>
+            <!-- Mock SVG Curve Chart -->
+            <div class="trend-chart-ph">
+                <div class="y-axis">
+                    <span>250</span>
+                    <span>200</span>
+                    <span>150</span>
+                    <span>100</span>
+                    <span>50</span>
+                    <span>0</span>
+                </div>
+                <!-- Inline SVG to mimic exactly the image chart style -->
+                <svg class="svg-curve" preserveAspectRatio="none" viewBox="0 0 100 100">
+                    <defs>
+                        <linearGradient id="gradient" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.5" />
+                            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,80 C10,75 20,70 30,50 C40,70 50,65 60,40 C70,30 80,45 90,20 L100,5 L100,100 L0,100 Z"
+                        fill="url(#gradient)" />
+                    <path d="M0,80 C10,75 20,70 30,50 C40,70 50,65 60,40 C70,30 80,45 90,20 L100,5" fill="none"
+                        stroke="#2563eb" stroke-width="2" />
+                    <!-- Tooltip Point -->
+                    <circle cx="70" cy="35" r="3" fill="white" stroke="#2563eb" stroke-width="2" />
+                    <line x1="70" y1="35" x2="70" y2="100" stroke="#94a3b8" stroke-dasharray="2,2" />
+                </svg>
+                <div class="x-axis">
+                    <span>X</span><span>32</span><span>44</span><span>46</span><span>48</span><span>110</span><span>112</span><span>114</span><span>...</span><span>28</span><span>Stvo</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jobs Performance Bar Chart -->
+        <div class="chart-card">
+            <div class="header">
+                <h5>Jobs Performance</h5>
+            </div>
+            <div class="bars-chart-ph">
+                <div class="y-axis">
+                    <span>250</span><span>200</span><span>150</span><span>100</span><span>50</span><span>0</span>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-fill" style="height: 80%;"></div>
+                    <div class="bar-label">Senior<br>UI/UX</div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-fill" style="height: 50%;"></div>
+                    <div class="bar-label">Data<br>Analyst</div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-fill" style="height: 70%;"></div>
+                    <div class="bar-label">Product<br>Manager</div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-fill" style="height: 45%;"></div>
+                    <div class="bar-label">Marketing<br>Lead</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Metrics Cards Grid -->
-    <div class="row g-4 mb-4" *ngIf="!isLoading">
-
-        <!-- Total Active Jobs -->
-        <div class="col-md-4">
-            <div
-                class="glass-card p-4 rounded-4 shadow-sm border border-success border-opacity-25 h-100 position-relative overflow-hidden transition-hover">
-                <div class="position-absolute top-0 end-0 bg-success opacity-10 rounded-circle"
-                    style="width: 150px; height: 150px; margin-top: -50px; margin-right: -50px;"></div>
-                <div class="d-flex justify-content-between align-items-start mb-3 position-relative z-1">
-                    <h5 class="text-muted fw-bold mb-0 text-uppercase tracking-wider small">Active Listings</h5>
-                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm"
-                        style="width: 40px; height: 40px;">
-                        <i class="bi bi-briefcase-fill"></i>
-                    </div>
-                </div>
-                <h2 class="display-3 fw-bold text-dark mb-0 position-relative z-1 font-heading">{{ activeJobs }}</h2>
-                <div class="mt-3 text-success fw-medium small position-relative z-1 d-flex gap-1 align-items-center">
-                    <i class="bi bi-check-circle-fill"></i> Currently open to candidates
-                </div>
-            </div>
+    <!-- Table Section -->
+    <div class="recent-table-card">
+        <div class="header">
+            <h5>Recent Job Postings</h5>
+            <button class="btn btn-outline-secondary btn-sm rounded" routerLink="/employer/jobs">View All Jobs</button>
         </div>
+        <div class="table-responsive">
+            <table *ngIf="recentJobs && recentJobs.length > 0">
+                <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Location</th>
+                        <th>Date Posted</th>
+                        <th>Status</th>
+                        <th>Engagement</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let job of recentJobs">
+                        <td>
+                            <div class="candidate-cell">
+                                <span class="fw-bold">{{job.title}}</span>
+                            </div>
+                        </td>
+                        <td>{{job.location}}</td>
+                        <td>{{job.createdAt | date: 'mediumDate'}}</td>
+                        <td><span class="status-badge"
+                                [ngClass]="job.status === 'OPEN' ? 'shortlisted' : 'rejected'">{{job.status}}</span>
+                        </td>
+                        <td class="fw-bold text-center">{{job.viewsCount || 0}}</td>
+                        <td>
+                            <div class="action-btns">
+                                <button [routerLink]="['/employer/job-form', job.id]" title="Edit Post"><i
+                                        class="bi bi-pencil"></i></button>
+                                <button [routerLink]="['/employer/applicants', job.id]" title="View Applicants"><i
+                                        class="bi bi-people"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <!-- Total Historical Jobs -->
-        <div class="col-md-4">
-            <div
-                class="glass-card p-4 rounded-4 shadow-sm border border-primary border-opacity-25 h-100 position-relative overflow-hidden transition-hover">
-                <div class="position-absolute top-0 end-0 bg-primary opacity-10 rounded-circle"
-                    style="width: 150px; height: 150px; margin-top: -50px; margin-right: -50px;"></div>
-                <div class="d-flex justify-content-between align-items-start mb-3 position-relative z-1">
-                    <h5 class="text-muted fw-bold mb-0 text-uppercase tracking-wider small">Total Organized</h5>
-                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm"
-                        style="width: 40px; height: 40px;">
-                        <i class="bi bi-card-checklist"></i>
-                    </div>
-                </div>
-                <h2 class="display-3 fw-bold text-dark mb-0 position-relative z-1 font-heading">{{ totalJobs }}</h2>
-                <div class="mt-3 text-primary fw-medium small position-relative z-1 d-flex gap-1 align-items-center">
-                    <i class="bi bi-clock-history"></i> Lifetime jobs created
-                </div>
-            </div>
-        </div>
-
-        <!-- Total Engagement / Application Metrics -->
-        <div class="col-md-4">
-            <div
-                class="glass-card p-4 rounded-4 shadow-sm border border-info border-opacity-25 h-100 position-relative overflow-hidden transition-hover">
-                <div class="position-absolute top-0 end-0 bg-info opacity-10 rounded-circle"
-                    style="width: 150px; height: 150px; margin-top: -50px; margin-right: -50px;"></div>
-                <div class="d-flex justify-content-between align-items-start mb-3 position-relative z-1">
-                    <h5 class="text-muted fw-bold mb-0 text-uppercase tracking-wider small">Profile Views / Engagement
-                    </h5>
-                    <div class="bg-info text-dark rounded-circle d-flex align-items-center justify-content-center shadow-sm"
-                        style="width: 40px; height: 40px;">
-                        <i class="bi bi-bar-chart-fill"></i>
-                    </div>
-                </div>
-                <h2 class="display-3 fw-bold text-dark mb-0 position-relative z-1 font-heading">{{
-                    totalApplicationsReceived }}</h2>
-                <div
-                    class="mt-3 text-info-emphasis fw-medium small position-relative z-1 d-flex gap-1 align-items-center">
-                    <i class="bi bi-people-fill"></i> Traffic across active listings
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Recent Postings Section -->
-    <div class="row g-4">
-        <div class="col-12">
-            <div class="glass-card p-4 rounded-4 shadow-sm border mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold mb-0 font-heading text-dark"><i
-                            class="bi bi-clock-history text-primary me-2"></i> Recent Job Postings</h5>
-                    <a routerLink="/employer/jobs"
-                        class="btn btn-link text-decoration-none custom-link-hover fw-medium p-0">View All Postings <i
-                            class="bi bi-arrow-right"></i></a>
-                </div>
-
-                <!-- Skeleton Table -->
-                <div *ngIf="isLoading" class="placeholder-glow w-100">
-                    <div class="placeholder border rounded w-100 mb-2 bg-secondary opacity-25" style="height: 50px;"
-                        *ngFor="let i of [1,2,3,4]"></div>
-                </div>
-
-                <!-- Empty State -->
-                <div *ngIf="!isLoading && myJobs.length === 0" class="text-center py-5">
-                    <i class="bi bi-journal-x display-4 text-muted mb-3 d-block opacity-25"></i>
-                    <h5 class="fw-bold text-dark">No Jobs Posted Yet</h5>
-                    <p class="text-muted small mb-4">Create your first job listing to start receiving applications.</p>
-                    <a routerLink="/employer/job-form/new" class="btn btn-primary-custom rounded-pill px-4 shadow-sm">
-                        Create Post
-                    </a>
-                </div>
-
-                <!-- Table View -->
-                <div class="table-responsive" *ngIf="!isLoading && myJobs.length > 0">
-                    <table class="table table-hover align-middle custom-table mb-0">
-                        <thead class="table-light text-muted small text-uppercase tracking-wider">
-                            <tr>
-                                <th class="ps-3 py-3 border-0 rounded-start">Job Title</th>
-                                <th class="py-3 border-0">Job Type</th>
-                                <th class="py-3 border-0">Posted Date</th>
-                                <th class="py-3 border-0">Views</th>
-                                <th class="py-3 border-0">Status</th>
-                                <th class="pe-3 py-3 border-0 rounded-end text-end">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="border-top-0">
-                            <tr *ngFor="let job of recentJobs" class="transition-hover-row">
-                                <td class="ps-3 py-3">
-                                    <h6 class="mb-1 fw-bold text-dark"><a [routerLink]="['/employer/jobs', job.id]"
-                                            class="text-decoration-none text-dark custom-link-hover">{{ job.title }}</a>
-                                    </h6>
-                                    <span class="text-muted small"><i class="bi bi-geo-alt opacity-75"></i> {{
-                                        job.location }}</span>
-                                </td>
-                                <td class="py-3 fw-medium text-dark small">
-                                    <span class="badge bg-light text-dark border">{{ job.jobType.replace('_', ' ')
-                                        }}</span>
-                                </td>
-                                <td class="py-3 text-muted small fw-medium">
-                                    {{ job.createdAt | date:'MMM d, yyyy' }}
-                                </td>
-                                <td class="py-3 fw-bold text-primary">
-                                    <i class="bi bi-eye opacity-50 me-1"></i> {{ job.viewsCount || 0 }}
-                                </td>
-                                <td class="py-3">
-                                    <app-status-badge [status]="job.status"></app-status-badge>
-                                </td>
-                                <td class="pe-3 py-3 text-end">
-                                    <a [routerLink]="['/employer/jobs', job.id]"
-                                        class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-medium shadow-sm transition-hover">Manage</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
+            <div *ngIf="!recentJobs || recentJobs.length === 0" class="text-center py-5">
+                <i class="bi bi-journal-x fs-1 text-muted opacity-25"></i>
+                <p class="mt-2 text-muted">No recent job postings found.</p>
+                <a routerLink="/employer/job-form" class="btn btn-primary mt-2">Create New Post</a>
             </div>
         </div>
     </div>

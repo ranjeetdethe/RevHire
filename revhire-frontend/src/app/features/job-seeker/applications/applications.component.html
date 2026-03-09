@@ -1,138 +1,135 @@
-<div class="container-fluid py-4 min-vh-100 bg-light">
-    <!-- Skeleton Loader -->
-    <div *ngIf="isLoading" class="d-flex justify-content-center py-5">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+<div class="applications-wrapper min-vh-100" style="font-family: 'Inter', sans-serif;">
+    <div class="container py-4">
+
+        <!-- Search and Filter Bar -->
+        <div class="bg-white p-3 rounded-4 shadow-sm border mb-4 d-flex gap-3 align-items-center">
+            <div class="input-group search-input-group flex-grow-1">
+                <span class="input-group-text bg-transparent border-end-0 text-muted ps-3"><i
+                        class="bi bi-search"></i></span>
+                <input type="text" class="form-control border-start-0 ps-2 shadow-none text-dark"
+                    placeholder="Search job titles, companies, or status..." (input)="onSearchChange($event)">
+            </div>
+            <div class="d-flex gap-2 ms-md-4 overflow-auto hide-scroll pb-1">
+                <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all border"
+                    [ngClass]="statusFilter === 'ALL' ? 'btn-dark text-white' : 'btn-light text-dark'"
+                    (click)="onFilterChange('ALL')">All</button>
+                <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all border"
+                    [ngClass]="statusFilter === 'APPLIED' ? 'btn-primary text-white' : 'btn-light text-dark'"
+                    (click)="onFilterChange('APPLIED')">Applied</button>
+                <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all border"
+                    [ngClass]="statusFilter === 'UNDER_REVIEW' ? 'btn-info text-dark' : 'btn-light text-dark'"
+                    (click)="onFilterChange('UNDER_REVIEW')">Under Review</button>
+                <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all border"
+                    [ngClass]="statusFilter === 'SHORTLISTED' ? 'btn-success text-white' : 'btn-light text-dark'"
+                    (click)="onFilterChange('SHORTLISTED')">Shortlisted</button>
+                <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all border"
+                    [ngClass]="statusFilter === 'REJECTED' ? 'btn-danger text-white' : 'btn-light text-dark'"
+                    (click)="onFilterChange('REJECTED')">Rejected</button>
+            </div>
         </div>
-    </div>
 
-    <div *ngIf="!isLoading">
+        <!-- Header -->
+        <div class="mb-4">
+            <h4 class="fw-bold text-dark mb-1 d-flex align-items-center justify-content-between">
+                My Job Applications
+            </h4>
+            <span class="text-muted small">{{ filteredApplications.length }} Applications</span>
+        </div>
 
-        <!-- Filters & Search -->
-        <div class="glass-card p-3 mb-4 sticky-top border" style="top: 10px; z-index: 1020;">
-            <div class="row g-3 align-items-center">
-                <div class="col-md-6 col-lg-5">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0 text-muted"><i
-                                class="bi bi-search"></i></span>
-                        <input type="text" class="form-control form-control-custom border-start-0 ps-0"
-                            placeholder="Search by job title or company..." (input)="onSearchChange($event)">
+        <!-- Skeleton Loader -->
+        <div *ngIf="isLoading" class="row g-4">
+            <div class="col-md-6 col-lg-4" *ngFor="let i of [1,2,3,4,5,6]">
+                <div class="app-card border rounded-4 p-4 bg-white placeholder-glow h-100">
+                    <div class="d-flex gap-3 mb-4">
+                        <div class="placeholder bg-secondary opacity-25 rounded-circle"
+                            style="width: 48px; height: 48px;"></div>
+                        <div class="flex-grow-1">
+                            <span class="placeholder col-8 bg-secondary opacity-25 d-block mb-2"></span>
+                            <span class="placeholder col-5 bg-secondary opacity-25 d-block"></span>
+                        </div>
                     </div>
-                </div>
-                <div
-                    class="col-md-6 col-lg-7 d-flex justify-content-md-end gap-2 overflow-auto hide-scroll pb-2 pb-md-0">
-                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all"
-                        [ngClass]="statusFilter === 'ALL' ? 'btn-dark shadow-sm' : 'btn-outline-secondary'"
-                        (click)="onFilterChange('ALL')">All</button>
-                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all"
-                        [ngClass]="statusFilter === 'APPLIED' ? 'btn-primary shadow-sm text-white border-primary' : 'btn-outline-primary'"
-                        (click)="onFilterChange('APPLIED')">Applied</button>
-                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all"
-                        [ngClass]="statusFilter === 'UNDER_REVIEW' ? 'btn-info shadow-sm text-white border-info' : 'btn-outline-info'"
-                        (click)="onFilterChange('UNDER_REVIEW')">Under Review</button>
-                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all"
-                        [ngClass]="statusFilter === 'SHORTLISTED' ? 'btn-success shadow-sm text-white border-success' : 'btn-outline-success'"
-                        (click)="onFilterChange('SHORTLISTED')">Shortlisted</button>
-                    <button class="btn btn-sm rounded-pill px-3 fw-medium flex-shrink-0 transition-all"
-                        [ngClass]="statusFilter === 'REJECTED' ? 'btn-danger shadow-sm text-white border-danger' : 'btn-outline-danger'"
-                        (click)="onFilterChange('REJECTED')">Rejected</button>
                 </div>
             </div>
         </div>
 
         <!-- Empty State -->
-        <div *ngIf="filteredApplications.length === 0" class="text-center py-5 glass-card">
-            <i class="bi bi-journal-x display-3 text-muted mb-3 d-block opacity-50"></i>
+        <div *ngIf="!isLoading && filteredApplications.length === 0"
+            class="text-center py-5 bg-white border border-dashed rounded-4 shadow-sm mt-3">
+            <i class="bi bi-folder-x display-3 text-muted mb-3 d-block opacity-25"></i>
             <h5 class="fw-bold text-dark">No Applications Found</h5>
-            <p class="text-muted small mb-4">You haven't applied to any jobs matching this criteria.</p>
-            <button class="btn btn-outline-primary rounded-pill px-4"
-                (click)="statusFilter = 'ALL'; searchTerm = ''; applyFilters()"
-                *ngIf="statusFilter !== 'ALL' || searchTerm !== ''">
-                Clear Filters
-            </button>
-            <a routerLink="/job-seeker/jobs" class="btn btn-primary-custom rounded-pill px-4 ms-2"
-                *ngIf="applications.length === 0">
-                Browse Jobs
-            </a>
+            <p class="text-muted small mb-4">You haven't applied to any jobs that match this search.</p>
         </div>
 
-        <!-- Application List Grid -->
-        <div class="row g-4" *ngIf="filteredApplications.length > 0">
-            <div class="col-12 col-xl-6" *ngFor="let app of filteredApplications">
-                <div class="glass-card application-card h-100 p-0 overflow-hidden d-flex flex-column transition-hover border"
-                    [ngClass]="{'border-primary bg-primary bg-opacity-10': app.status === 'SHORTLISTED', 'opacity-75 bg-light': app.status === 'REJECTED' || app.status === 'WITHDRAWN'}">
+        <!-- Application Cards Grid -->
+        <div class="row g-4" *ngIf="!isLoading && filteredApplications.length > 0">
+            <div class="col-md-6 col-lg-4" *ngFor="let app of filteredApplications">
+                <div
+                    class="app-card bg-white border rounded-4 p-4 h-100 d-flex flex-column position-relative shadow-sm transition-hover">
 
-                    <!-- Card Header / Title section -->
-                    <div class="p-4 pb-0 d-flex justify-content-between align-items-start gap-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="company-logo bg-white border rounded shadow-sm flex-shrink-0 d-flex align-items-center justify-content-center fw-bold text-primary fs-3"
-                                style="width: 56px; height: 56px;">
-                                <!-- @ts-ignore -->
-                                {{ app.job?.companyName?.charAt(0) || 'C' }}
-                            </div>
-                            <div>
-                                <!-- @ts-ignore -->
+                    <!-- Top Section: Logo & Details -->
+                    <div class="d-flex gap-3 mb-3 pb-1 align-items-start">
+                        <div class="company-logo bg-light border border-secondary border-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 fw-bold fs-4 text-primary"
+                            style="width: 50px; height: 50px;">
+                            <span *ngIf="!app.job?.companyLogo">{{ (app.job?.companyName || 'C').charAt(0) }}</span>
+                            <img *ngIf="app.job?.companyLogo" [src]="app.job?.companyLogo" alt="logo"
+                                class="img-fluid rounded-circle p-1">
+                        </div>
+                        <div class="flex-grow-1 pe-2">
+                            <h5 class="fw-bold text-dark mb-1 fs-6">
                                 <a [routerLink]="['/job-seeker/jobs', app.job?.id]"
-                                    class="text-decoration-none text-dark custom-link-hover">
-                                    <!-- @ts-ignore -->
-                                    <h5 class="fw-bold mb-1">{{ app.job?.title }}</h5>
-                                </a>
-                                <!-- @ts-ignore -->
-                                <h6 class="text-muted fw-medium mb-0 small"><i class="bi bi-building me-1"></i> {{
-                                    app.job?.companyName }} &bull; <i class="bi bi-geo-alt ms-1 me-1"></i> {{
-                                    app.job?.location }}</h6>
-                            </div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <app-status-badge [status]="app.status"></app-status-badge>
+                                    class="text-decoration-none text-dark stretched-link">{{ app.job?.title }}</a>
+                            </h5>
+                            <p class="text-muted mb-0 small">{{ app.job?.companyName }}</p>
                         </div>
                     </div>
 
-                    <!-- Card Body -->
-                    <div class="p-4 pt-3 flex-grow-1">
-                        <hr class="border-secondary opacity-10 mt-0 mb-3">
-
-                        <div class="row g-3">
-                            <div class="col-sm-6">
-                                <p class="small text-muted mb-1 text-uppercase tracking-wider fw-bold"
-                                    style="font-size: 0.70rem;">Applied On</p>
-                                <p class="fw-medium text-dark mb-0 d-flex align-items-center gap-2">
-                                    <i class="bi bi-calendar-check text-primary"></i>
-                                    {{ app.appliedAt | date:'mediumDate' }}
-                                </p>
-                            </div>
-                            <!-- Support for checking if there's a cover letter -->
-                            <div class="col-sm-6 text-sm-end">
-                                <p class="small text-muted mb-1 text-uppercase tracking-wider fw-bold"
-                                    style="font-size: 0.70rem;">Cover Letter</p>
-                                <span class="badge"
-                                    [ngClass]="app.coverLetter ? 'bg-success bg-opacity-10 text-success border border-success' : 'bg-secondary bg-opacity-10 text-secondary border border-secondary'">
-                                    <i class="bi"
-                                        [ngClass]="app.coverLetter ? 'bi-check-circle' : 'bi-dash-circle'"></i>
-                                    {{ app.coverLetter ? 'Included' : 'None' }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Notes section (if employers left a note based on mapping) -->
-                        <div *ngIf="app.employerNotes"
-                            class="mt-3 p-3 bg-warning bg-opacity-10 border border-warning rounded-3 border-opacity-25 animate__animated animate__fadeIn">
-                            <p class="small text-warning-emphasis fw-bold mb-1"><i
-                                    class="bi bi-chat-left-text me-1"></i>
-                                Note from Employer</p>
-                            <p class="small text-dark mb-0 fst-italic">{{ app.employerNotes }}</p>
-                        </div>
-
-                        <!-- Withdrawal Reason (if withdrawn) -->
-                        <div *ngIf="app.status === 'WITHDRAWN' && app.withdrawalReason"
-                            class="mt-3 p-3 bg-secondary bg-opacity-10 border border-secondary rounded-3 border-opacity-25">
-                            <p class="small text-secondary fw-bold mb-1"><i class="bi bi-info-circle me-1"></i>
-                                Withdrawal Reason</p>
-                            <p class="small text-dark mb-0 fst-italic">{{ app.withdrawalReason }}</p>
+                    <!-- Meta info (Location, Applied Date, Status) -->
+                    <div class="mb-4">
+                        <p class="text-muted small mb-2"><i class="bi bi-geo-alt"></i> {{ app.job?.location || 'Remote'
+                            }}</p>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <span class="text-dark small fw-medium">Applied: {{ app.appliedAt | date:'MMM d, yyyy'
+                                }}</span>
+                            <!-- Custom status pill matching the design exactly, overriding shared component for specific visual look -->
+                            <span class="badge rounded-pill fw-bold" style="padding: 0.35em 0.7em;" [ngClass]="{
+                                    'bg-success bg-opacity-25 text-success': app.status === 'SHORTLISTED',
+                                    'bg-secondary bg-opacity-25 text-secondary': app.status === 'APPLIED',
+                                    'bg-info bg-opacity-25 text-primary': app.status === 'UNDER_REVIEW' || $any(app.status) === 'INTERVIEW',
+                                    'bg-danger bg-opacity-25 text-danger': app.status === 'REJECTED',
+                                    'bg-purple-light text-purple': $any(app.status) === 'OFFERED'
+                                }">
+                                {{ app.status === 'UNDER_REVIEW' ? 'INTERVIEW' : app.status }}
+                            </span>
                         </div>
                     </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex gap-2 mt-auto z-2 position-relative">
+                        <button class="btn btn-outline-secondary rounded-pill flex-grow-1 fw-bold fs-sm border-2"
+                            [routerLink]="['/job-seeker/search-jobs', app.job?.id]">View Details</button>
+                        <button
+                            class="btn btn-light border bg-light bg-opacity-50 text-dark rounded-pill flex-grow-1 fw-bold fs-sm border-2"
+                            [routerLink]="['/job-seeker/search-jobs', app.job?.id]">Manage</button>
+                    </div>
+
                 </div>
             </div>
+        </div>
+
+        <!-- Pagination mock -->
+        <div class="d-flex justify-content-end align-items-center mt-5 mb-2 gap-2"
+            *ngIf="!isLoading && filteredApplications.length > 0">
+            <button
+                class="btn btn-outline-secondary btn-sm p-1 rounded d-flex align-items-center justify-content-center"
+                style="width: 28px; height: 28px;" disabled>
+                <i class="bi bi-chevron-left text-muted"></i>
+            </button>
+            <span class="small fw-medium text-dark px-2">1 of 3</span>
+            <button
+                class="btn btn-outline-secondary btn-sm p-1 rounded d-flex align-items-center justify-content-center"
+                style="width: 28px; height: 28px;">
+                <i class="bi bi-chevron-right text-dark"></i>
+            </button>
         </div>
 
     </div>

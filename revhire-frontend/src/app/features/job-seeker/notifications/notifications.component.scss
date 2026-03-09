@@ -1,32 +1,46 @@
-.glass-card {
-    transition: all var(--transition-normal);
+.notifications-wrapper {
+    background-color: #f1f5f9;
 }
 
-.transition-hover {
-    transition: all 0.2s ease-in-out;
-    border: 1px solid transparent;
+.custom-link-hover {
+    transition: color 0.15s ease;
 
     &:hover {
-        background-color: #f8fafc !important;
-        border-color: rgba(37, 99, 235, 0.2) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1) !important;
+        color: #2563EB !important;
+        text-decoration: underline !important;
     }
 }
 
 .notification-card {
-    border-radius: 12px;
-}
-
-.btn-close-custom {
-    color: #6c757d;
-    background-color: transparent;
-    opacity: 0.5;
+    transition: box-shadow 0.2s, transform 0.2s, background-color 0.2s;
 
     &:hover {
-        opacity: 1;
-        background-color: rgba(37, 99, 235, 0.1);
-        color: var(--primary-color);
-        transform: scale(1.1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        background-color: #f8fafc !important;
+
+        .action-btn {
+            color: #475569 !important;
+
+            &:hover {
+                color: #2563EB !important;
+            }
+        }
+    }
+}
+
+.action-btn {
+    transition: color 0.2s;
+}
+
+.search-input-wrapper {
+    input {
+        &::placeholder {
+            color: #94a3b8;
+        }
+
+        &:focus {
+            background-color: white !important;
+            border-color: #cbd5e1 !important;
+        }
     }
 }

@@ -1,54 +1,53 @@
-.glass-card {
-    transition: all var(--transition-normal);
-}
-
-.transition-hover {
-    transition: all 0.2s ease-in-out;
-    border: 1px solid transparent;
-
-    &:hover {
-        background-color: #f8fafc !important;
-        border-color: rgba(37, 99, 235, 0.2) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
-
-        .company-logo {
-            transform: scale(1.05);
-        }
-    }
-}
-
-.transition-transform {
-    transition: transform 0.2s ease;
-
-    &:hover {
-        transform: scale(1.05);
-    }
+.saved-jobs-wrapper {
+    background-color: #f1f5f9;
 }
 
 .custom-link-hover {
     transition: color 0.15s ease;
 
     &:hover {
-        color: var(--primary-color) !important;
+        color: #2563EB !important;
         text-decoration: underline !important;
     }
 }
 
-.float-anim {
-    animation: float 3s ease-in-out infinite;
+.saved-job-card {
+    transition: all 0.2s ease;
+
+    &:hover {
+        border-color: rgba(37, 99, 235, 0.3) !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+        transform: translateY(-1px);
+    }
 }
 
-@keyframes float {
-    0% {
-        transform: translateY(0px);
-    }
+.btn-primary-custom {
+    background-color: #2563EB;
+    color: white;
+    border: none;
 
-    50% {
-        transform: translateY(-10px);
+    &:hover {
+        background-color: shade(#2563EB, 10%);
+        color: white;
     }
+}
 
-    100% {
-        transform: translateY(0px);
+.action-btn {
+    &:hover {
+        background-color: #f87171 !important;
+        color: white !important;
+        border-color: #ef4444 !important;
+    }
+}
+
+.search-input-wrapper {
+    input {
+        &::placeholder {
+            color: #94a3b8;
+        }
+
+        &:focus {
+            border-color: #94a3b8 !important;
+        }
     }
 }

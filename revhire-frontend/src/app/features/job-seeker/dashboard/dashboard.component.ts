@@ -14,7 +14,7 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 @Component({
   selector: 'app-seeker-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, StatusBadgeComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -25,6 +25,7 @@ export class DashboardComponent implements OnInit {
   savedJobsCount = 0;
   profileCompleteness = 0;
   isLoading = true;
+  today = new Date();
 
   constructor(
     private authService: AuthService,

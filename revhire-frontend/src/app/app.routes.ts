@@ -10,6 +10,18 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent)
     },
     {
+        path: 'resources/resume-guide',
+        loadComponent: () => import('./pages/resources/resume-guide/resume-guide.component').then(m => m.ResumeGuideComponent)
+    },
+    {
+        path: 'resources/interview-tips',
+        loadComponent: () => import('./pages/resources/interview-tips/interview-tips.component').then(m => m.InterviewTipsComponent)
+    },
+    {
+        path: 'resources/salary-negotiation',
+        loadComponent: () => import('./pages/resources/salary-negotiation/salary-negotiation.component').then(m => m.SalaryNegotiationComponent)
+    },
+    {
         path: 'auth',
         children: [
             {
@@ -31,6 +43,7 @@ export const routes: Routes = [
     {
         path: 'employer',
         canActivate: [authGuard, employerGuard],
+        loadComponent: () => import('./layouts/employer-layout/employer-layout.component').then(m => m.EmployerLayoutComponent),
         children: [
             {
                 path: 'dashboard',

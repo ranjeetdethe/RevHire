@@ -8,85 +8,58 @@
     <nav th:replace="~{fragments :: header}"></nav>
 
     <main>
-        <!-- Modern Hero Section -->
-        <section class="position-relative overflow-hidden pt-5 pb-5">
-            <div class="container-xl position-relative z-index-1">
-                <div class="row align-items-center g-5 py-5">
-                    <div class="col-lg-6 text-center text-lg-start">
-                        <div
-                            class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary-light text-primary text-sm fw-bold mb-4">
-                            <span class="badge bg-primary text-white rounded-pill px-2">New</span>
-                            <span>Platform 4.0 is live</span>
-                        </div>
-                        <h1 class="display-3 fw-bold text-slate-900 mb-4 lh-sm">
-                            Unlock your true <br>
-                            <span class="text-primary position-relative">career potential</span>
-                        </h1>
-                        <p class="lead text-slate-500 mb-5 pe-lg-5">
-                            Connect with 500+ top-tier companies. RevHire is the modern way to find jobs, track
-                            applications, and get hired faster.
-                        </p>
-                        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
-                            <a href="/jobs" class="btn btn-primary btn-lg shadow-lg px-5 py-3 rounded-xl fw-bold">Browse
-                                Jobs</a>
-                            <a href="/register?role=EMPLOYER"
-                                class="btn btn-secondary btn-lg px-5 py-3 rounded-xl fw-bold">Post a Job</a>
-                        </div>
+        <!-- Modern Centered Hero Section -->
+        <section class="position-relative overflow-hidden" style="padding: 100px 0 120px; background: #FFFFFF;">
+            <!-- Soft Gradient Blobs Behind -->
+            <div class="position-absolute top-0 start-0 translate-middle pointer-events-none opacity-50 blur-3xl"
+                style="width: 800px; height: 800px; background: radial-gradient(circle, rgba(37,99,235,0.08) 0%, rgba(255,255,255,0) 70%); z-index: 0;">
+            </div>
+            <div class="position-absolute top-0 end-0 translate-middle-y pointer-events-none opacity-50 blur-3xl"
+                style="width: 800px; height: 800px; background: radial-gradient(circle, rgba(16,185,129,0.05) 0%, rgba(255,255,255,0) 70%); z-index: 0; transform: translateX(30%);">
+            </div>
 
-                        <div
-                            class="mt-5 d-flex align-items-center gap-4 text-slate-400 justify-content-center justify-content-lg-start">
-                            <span class="d-flex align-items-center gap-2"><i
-                                    class="fas fa-check-circle text-success"></i> Verified Jobs</span>
-                            <span class="d-flex align-items-center gap-2"><i
-                                    class="fas fa-check-circle text-success"></i> Secure Apply</span>
+            <div class="container-xl position-relative z-index-1 text-center">
+                <div class="mx-auto" style="max-width: 800px;">
+                    <h1 class="display-3 fw-bold mb-4" style="color: #0F172A; letter-spacing: -1px;">
+                        Find Your Dream Career <br>
+                        <span style="color: #2563EB;">With RevHire</span>
+                    </h1>
+                    <p class="lead mb-5" style="color: #64748B; font-size: 1.25rem;">
+                        Connect with 500+ top-tier companies. The modern way to find jobs, track applications, and get
+                        hired faster.
+                    </p>
+
+                    <!-- Large Search Bar -->
+                    <div class="bg-white p-3 rounded-pill shadow-lg d-flex align-items-center mx-auto"
+                        style="max-width: 700px; border: 1px solid #E2E8F0;">
+                        <div class="flex-grow-1 border-end px-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-search text-slate-400 me-2"></i>
+                                <input type="text" class="form-control border-0 shadow-none px-0"
+                                    placeholder="Job title, keywords, or company..." style="font-size: 1.05rem;">
+                            </div>
                         </div>
+                        <div class="flex-grow-1 px-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-map-marker-alt text-slate-400 me-2"></i>
+                                <input type="text" class="form-control border-0 shadow-none px-0"
+                                    placeholder="City or state..." style="font-size: 1.05rem;">
+                            </div>
+                        </div>
+                        <button class="btn text-white rounded-pill px-5 py-3 fw-bold ms-2"
+                            style="background-color: #2563EB; white-space: nowrap;">
+                            Search Jobs
+                        </button>
                     </div>
-                    <div class="col-lg-6 position-relative">
-                        <div class="position-absolute top-0 start-50 translate-middle pointer-events-none opacity-50 blur-3xl"
-                            style="width: 600px; height: 600px; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(255,255,255,0) 70%); z-index: -1;">
-                        </div>
-                        <!-- Hero Image / Illustration Placeholder -->
-                        <div
-                            class="saas-card p-4 rotate-2 shadow-2xl ms-lg-5 position-relative bg-white border border-slate-100 rounded-2xl">
-                            <div class="d-flex justify-content-between align-items-start mb-4">
-                                <div class="d-flex gap-3">
-                                    <div class="bg-primary rounded-xl d-flex align-items-center justify-content-center text-white"
-                                        style="width: 56px; height: 56px; font-size: 1.5rem;">
-                                        <i class="fab fa-google"></i>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold mb-1">Senior Product Designer</h5>
-                                        <div class="text-slate-500 text-sm">Google • Mountain View, CA</div>
-                                    </div>
-                                </div>
-                                <span class="tag tag-soft">Full Time</span>
-                            </div>
-                            <div class="d-flex gap-2 mb-4">
-                                <span class="tag tag-soft bg-slate-50 border">UI/UX</span>
-                                <span class="tag tag-soft bg-slate-50 border">Figma</span>
-                                <span class="tag tag-soft bg-slate-50 border">Prototyping</span>
-                            </div>
-                            <div
-                                class="d-flex justify-content-between align-items-center pt-3 border-top border-slate-100">
-                                <div class="fw-bold text-slate-800">$140k - $180k</div>
-                                <button class="btn btn-primary btn-sm px-4">Apply Now</button>
-                            </div>
 
-                            <!-- Floating Card -->
-                            <div class="saas-card p-3 position-absolute top-100 start-0 translate-middle-y shadow-lg border border-white"
-                                style="width: 200px; transform: translateX(-30px) rotate(-5deg);">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-success rounded-circle d-flex align-items-center justify-content-center text-white"
-                                        style="width: 40px; height: 40px;">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div>
-                                        <div class="fw-bold text-slate-800">You're Hired!</div>
-                                        <div class="text-xs text-slate-500">Just now</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="mt-4 text-slate-500 text-sm">
+                        <span class="fw-medium text-slate-700 me-2">Popular:</span>
+                        <a href="#" class="text-decoration-none text-slate-500 hover-text-primary me-2">Software
+                            Engineer</a> •
+                        <a href="#" class="text-decoration-none text-slate-500 hover-text-primary mx-2">Product
+                            Manager</a> •
+                        <a href="#" class="text-decoration-none text-slate-500 hover-text-primary ms-2">Data
+                            Scientist</a>
                     </div>
                 </div>
             </div>

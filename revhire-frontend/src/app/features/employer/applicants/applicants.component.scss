@@ -1,72 +1,237 @@
-.glass-card {
-    transition: all var(--transition-normal);
+$primary: #2563EB;
+$text-dark: #0F172A;
+$text-muted: #64748B;
+$border-color: #E2E8F0;
+$bg-light: #F8FAFC;
+
+:host {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    min-height: 100%;
+    background-color: transparent;
 }
 
-.transition-hover {
-    transition: all 0.2s ease-in-out;
-    border: 1px solid transparent;
+// Header Area
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
 
-    &:hover {
-        background-color: #f8fafc !important;
-        border-color: rgba(37, 99, 235, 0.2) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1) !important;
+    h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: $text-dark;
+        margin: 0;
+    }
 
-        .company-logo {
-            transform: scale(1.05);
-            transition: transform 0.2s ease-in-out;
+    .candidate-count {
+        color: $primary;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+}
+
+// Search Bar
+.search-bar-container {
+    margin-bottom: 1.5rem;
+
+    .search-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        .bi-search {
+            position: absolute;
+            left: 1rem;
+            color: $text-muted;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid $border-color;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+
+            &:focus {
+                border-color: $primary;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            }
         }
     }
 }
 
-.custom-link-hover {
-    transition: color 0.15s ease;
+// Tabs
+.custom-tabs {
+    display: flex;
+    gap: 1.5rem;
+    border-bottom: 1px solid $border-color;
+    margin-bottom: 2rem;
+
+    .tab-item {
+        padding: 0.75rem 0.25rem;
+        color: $text-muted;
+        font-weight: 500;
+        cursor: pointer;
+        position: relative;
+        font-size: 0.95rem;
+
+        &:hover {
+            color: $text-dark;
+        }
+
+        &.active {
+            color: $primary;
+            font-weight: 600;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: -1px;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background-color: $primary;
+                border-radius: 3px 3px 0 0;
+            }
+        }
+    }
+}
+
+// Applicant Card
+.applicant-card {
+    background-color: white;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+
+    &.shortlisted-card {
+        border: 2px solid rgba($primary, 0.4);
+        box-shadow: 0 4px 15px -3px rgba($primary, 0.15);
+    }
 
     &:hover {
-        color: var(--primary-color) !important;
-        text-decoration: underline !important;
-    }
-}
-
-.form-control-custom,
-.form-select-custom {
-    background-color: #f8fafc;
-    border-radius: 8px;
-    padding: 0.8rem 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-
-    &:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.15);
-        background-color: #ffffff;
-    }
-}
-
-.hide-scroll {
-    &::-webkit-scrollbar {
-        display: none;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
 
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.btn-icon-custom {
-    transition: all 0.2s ease;
-
-    &:hover:not(:disabled) {
-        transform: scale(1.1);
+    .avatar {
+        img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
     }
-}
 
-/* Dropdown override fixing custom button alignments */
-.dropdown-toggle::after {
-    margin-left: 0.5em;
-    vertical-align: middle;
-}
+    .content-area {
+        flex: 1;
 
-.applicant-card {
-    .dropdown-menu {
-        transform: translateY(4px);
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+
+            .name {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: $text-dark;
+                margin: 0;
+            }
+
+            .applied-date {
+                color: #7dd3fc; // Light blue exactly like image
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+        }
+
+        .job-title {
+            color: $primary;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 0.2rem 0 0.4rem 0;
+        }
+
+        .contact-info {
+            color: $text-muted;
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .bottom-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+
+            .skills-wrap {
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+
+                .skill-chip {
+                    background-color: $bg-light;
+                    color: $text-dark;
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                    padding: 0.2rem 0.6rem;
+                    border-radius: 4px;
+                }
+            }
+
+            .actions-wrap {
+                display: flex;
+                gap: 0.75rem;
+                align-items: center;
+
+                .status-dropdown {
+                    color: $primary;
+                    border: 1px solid $primary;
+                    background: white;
+                    padding: 0.4rem 1rem;
+                    border-radius: 6px;
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+
+                    &::after {
+                        display: none;
+                    }
+                }
+
+                .btn-view-profile {
+                    color: $text-dark;
+                    border: 1px solid $border-color;
+                    background: white;
+                    padding: 0.4rem 1rem;
+                    border-radius: 6px;
+                    font-weight: 500;
+                    font-size: 0.85rem;
+
+                    &:hover {
+                        background: $bg-light;
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+
+        .content-area .bottom-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
     }
 }

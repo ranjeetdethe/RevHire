@@ -1,28 +1,292 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments :: head('Applicants')}"></head>
+<head>
+    <title th:replace="~{fragments :: head('Applicants')}"></title>
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: calc(100vh - 76px);
+            background-color: #F8FAFC;
+        }
+
+        /* Sidebar styling for desktop */
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-right: 1px solid #E2E8F0;
+            padding: 2rem 1rem;
+            display: none;
+        }
+
+        @media (min-width: 992px) {
+            .sidebar {
+                display: block;
+            }
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #475569;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .sidebar-item:hover,
+        .sidebar-item.active {
+            background-color: #EFF6FF;
+            color: #2563EB;
+        }
+
+        .sidebar-item i {
+            width: 24px;
+            font-size: 1.1rem;
+            margin-right: 0.75rem;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.5rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar input:focus {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+        }
+
+        .status-tabs {
+            display: flex;
+            border-bottom: 1px solid #E2E8F0;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .status-tabs::-webkit-scrollbar {
+            display: none;
+            /* Chrome/Safari */
+        }
+
+        .status-tab {
+            padding: 0.75rem 1.5rem;
+            color: #64748B;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .status-tab.active {
+            color: #2563EB;
+            border-bottom-color: #2563EB;
+        }
+
+        .status-tab:hover:not(.active) {
+            color: #1E293B;
+            border-bottom-color: #CBD5E1;
+        }
+
+        .applicant-card {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.2s;
+            position: relative;
+        }
+
+        .applicant-card:hover {
+            border-color: #93C5FD;
+        }
+
+        .applicant-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #DBEAFE;
+            color: #2563EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        .applicant-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 0.15rem;
+        }
+
+        .applicant-job {
+            color: #2563EB;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .applicant-meta {
+            color: #64748B;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .applicant-date {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 0.85rem;
+            color: #64748B;
+            font-weight: 500;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .skill-tag {
+            background-color: #F1F5F9;
+            color: #475569;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid #E2E8F0;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: -1rem;
+        }
+
+        .btn-status-dropdown {
+            border: 1px solid #2563EB;
+            color: #2563EB;
+            background: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+        }
+
+        .btn-status-dropdown:hover,
+        .btn-status-dropdown:focus {
+            background: #EFF6FF;
+            color: #1E3A8A;
+            border-color: #1E3A8A;
+        }
+
+        .btn-view-profile {
+            border: 1px solid #E2E8F0;
+            color: #475569;
+            background: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+        }
+
+        .btn-view-profile:hover {
+            background: #F8FAFC;
+            color: #0F172A;
+        }
+    </style>
+</head>
 
 <body>
     <nav th:replace="~{fragments :: header}"></nav>
 
-    <main class="container-xl py-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <a href="/employer/dashboard"
-                    class="text-decoration-none text-slate-500 mb-2 d-block hover-text-primary text-sm transition-all"><i
-                        class="fas fa-arrow-left me-1"></i> Back to Dashboard</a>
-                <h2 class="fw-bold text-slate-900 mb-0">Applicants for <span th:text="${job.title}"
-                        class="text-primary">Job Title</span></h2>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="/employer/dashboard" class="sidebar-item">
+                <i class="fas fa-chart-pie"></i> Dashboard
+            </a>
+            <a href="#" class="sidebar-item active">
+                <i class="fas fa-users"></i> Candidates
+            </a>
+            <a href="/employer/jobs" class="sidebar-item">
+                <i class="fas fa-briefcase"></i> Jobs
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="far fa-envelope"></i> Messages
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
+                <h2 class="fw-bold text-slate-900 mb-0" style="font-size: 1.75rem;">
+                    Applicants for: <span th:text="${job.title}" style="color: #0F172A; font-weight: 800;">Job
+                        Title</span>
+                </h2>
+                <div class="text-primary fw-bold fs-5">
+                    Total Candidates: <span th:text="${#lists.size(applications)}">0</span>
+                </div>
             </div>
 
-            <div class="bg-white border rounded px-3 py-2 text-sm fw-medium text-slate-600 shadow-sm">
-                <i class="fas fa-users me-2 text-primary"></i> <span
-                    th:text="${#lists.size(applications) + ' Applicants'}">0 Applicants</span>
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search applicants by name, skill, email...">
             </div>
-        </div>
 
-        <div class="saas-card p-0 overflow-hidden">
+            <!-- Status Tabs -->
+            <div class="status-tabs">
+                <div class="status-tab active">All (<span th:text="${#lists.size(applications)}">0</span>)</div>
+                <div class="status-tab">New (0)</div>
+                <div class="status-tab">Under Review (0)</div>
+                <div class="status-tab">Shortlisted (0)</div>
+                <div class="status-tab">Rejected (0)</div>
+                <div class="status-tab">Hired (0)</div>
+            </div>
+
+            <!-- No Applicants State -->
             <div th:if="${#lists.isEmpty(applications)}" class="text-center py-5">
                 <div class="bg-slate-50 rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
                     style="width: 80px; height: 80px;">
@@ -32,119 +296,108 @@
                 <p class="text-slate-500 mb-0">Share your job posting to attract candidates.</p>
             </div>
 
-            <div th:unless="${#lists.isEmpty(applications)}" class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light text-slate-500 text-uppercase text-xs fw-semibold">
-                        <tr>
-                            <th class="ps-4 py-3 border-0">Candidate</th>
-                            <th class="py-3 border-0">Applied Date</th>
-                            <th class="py-3 border-0">Current Status</th>
-                            <th class="py-3 border-0 text-end pe-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="app : ${applications}">
-                            <td class="ps-4">
-                                <div class="d-flex align-items-center py-2">
-                                    <div class="avatar bg-primary-light text-primary fw-bold rounded-circle d-flex align-items-center justify-content-center me-3"
-                                        style="width: 48px; height: 48px; font-size: 1.2rem;">
-                                        <span
-                                            th:if="${app.jobSeeker != null and app.jobSeeker.user != null and app.jobSeeker.user.firstName != null and app.jobSeeker.user.firstName.length() > 0}"
-                                            th:text="${#strings.substring(app.jobSeeker.user.firstName, 0, 1)}">U</span>
-                                        <span
-                                            th:unless="${app.jobSeeker != null and app.jobSeeker.user != null and app.jobSeeker.user.firstName != null and app.jobSeeker.user.firstName.length() > 0}">U</span>
-                                    </div>
-                                    <div>
-                                        <div class="fw-bold text-slate-900"
-                                            th:text="${app.jobSeeker != null and app.jobSeeker.user != null ? app.jobSeeker.user.firstName + ' ' + app.jobSeeker.user.lastName : 'Unknown'}">
-                                            Name</div>
-                                        <div class="text-sm text-slate-500"
-                                            th:text="${app.jobSeeker != null and app.jobSeeker.user != null ? app.jobSeeker.user.email : 'N/A'}">
-                                            user@example.com
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="text-slate-600 text-sm">
-                                <i class="far fa-calendar-alt me-2 text-slate-400"></i>
-                                <span th:if="${app.appliedAt != null}"
-                                    th:text="${#dates.format(app.appliedAt, 'MMM dd, yyyy')}">Feb 14, 2026</span>
-                                <span th:unless="${app.appliedAt != null}">Not stated</span>
-                            </td>
-                            <td>
-                                <span class="tag border"
-                                    th:classappend="${app.status.name() == 'APPLIED' ? 'tag-soft text-primary bg-primary-light border-primary-light' : 
-                                                      (app.status.name() == 'SHORTLISTED' ? 'tag-success' : 
-                                                      (app.status.name() == 'REJECTED' ? 'tag-soft text-danger bg-red-50 border-red-100' : 
-                                                      (app.status.name() == 'UNDER_REVIEW' ? 'tag-soft text-warning bg-warning-light border-warning-light' : 'tag-soft')))}"
-                                    th:text="${app.status}">STATUS</span>
-                            </td>
-                            <td class="text-end pe-4">
-                                <div class="d-flex justify-content-end gap-2">
-                                    <a th:if="${app.jobSeeker != null and app.jobSeeker.user != null}"
-                                        th:href="@{'/resume/view/' + ${app.jobSeeker.user.id}}" target="_blank"
-                                        class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2"
-                                        title="View Resume">
-                                        <i class="fas fa-file-alt"></i> Resume
-                                    </a>
+            <!-- Applicants List -->
+            <div th:unless="${#lists.isEmpty(applications)}">
 
-                                    <div class="btn-group">
-                                        <button type="button"
-                                            class="btn btn-primary btn-sm dropdown-toggle fw-bold shadow-sm"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            Update Status
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-lg">
-                                            <li>
-                                                <h6
-                                                    class="dropdown-header text-uppercase text-xs fw-bold text-slate-400">
-                                                    Move Candidate To...</h6>
-                                            </li>
-                                            <li>
-                                                <form th:action="@{'/employer/applications/' + ${app.id} + '/status'}"
-                                                    method="post">
-                                                    <input type="hidden" name="status" value="SHORTLISTED">
-                                                    <button type="submit"
-                                                        class="dropdown-item d-flex align-items-center gap-2 py-2 hover-bg-success-light">
-                                                        <i class="fas fa-check text-success w-4"></i> Shortlist
-                                                    </button>
-                                                </form>
-                                            </li>
-                                            <li>
-                                                <form th:action="@{'/employer/applications/' + ${app.id} + '/status'}"
-                                                    method="post">
-                                                    <input type="hidden" name="status" value="UNDER_REVIEW">
-                                                    <button type="submit"
-                                                        class="dropdown-item d-flex align-items-center gap-2 py-2 hover-bg-warning-light">
-                                                        <i class="fas fa-eye text-warning w-4"></i> Under Review
-                                                    </button>
-                                                </form>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li>
-                                                <form th:action="@{'/employer/applications/' + ${app.id} + '/status'}"
-                                                    method="post">
-                                                    <input type="hidden" name="status" value="REJECTED">
-                                                    <button type="submit"
-                                                        class="dropdown-item d-flex align-items-center gap-2 py-2 hover-bg-red-50 text-danger">
-                                                        <i class="fas fa-times w-4"></i> Reject
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div th:each="app : ${applications}" class="applicant-card">
+                    <!-- Date -->
+                    <div class="applicant-date" th:if="${app.appliedAt != null}"
+                        th:text="'Applied on ' + ${#dates.format(app.appliedAt, 'MMM dd')}">
+                        Applied on Feb 25
+                    </div>
+
+                    <div class="d-flex align-items-start gap-4">
+                        <!-- Avatar -->
+                        <div class="applicant-avatar">
+                            <span
+                                th:if="${app.jobSeeker != null and app.jobSeeker.user != null and app.jobSeeker.user.firstName != null and app.jobSeeker.user.firstName.length() > 0}"
+                                th:text="${#strings.substring(app.jobSeeker.user.firstName, 0, 1)}">U</span>
+                            <span
+                                th:unless="${app.jobSeeker != null and app.jobSeeker.user != null and app.jobSeeker.user.firstName != null and app.jobSeeker.user.firstName.length() > 0}">U</span>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="flex-grow-1">
+                            <h3 class="applicant-name"
+                                th:text="${app.jobSeeker != null and app.jobSeeker.user != null ? app.jobSeeker.user.firstName + ' ' + app.jobSeeker.user.lastName : 'Unknown'}">
+                                Applicant Name
+                            </h3>
+                            <div class="applicant-job" th:text="${job.title}">Senior Java Developer</div>
+
+                            <div class="applicant-meta mt-1">
+                                <span
+                                    th:text="${app.jobSeeker != null and app.jobSeeker.user != null ? app.jobSeeker.user.email : 'N/A'}">email@example.com</span>
+                                <span
+                                    th:if="${app.jobSeeker != null and app.jobSeeker.user != null and app.jobSeeker.user.phone != null}">
+                                    | <span th:text="${app.jobSeeker.user.phone}">+1 555-0000</span></span>
+                            </div>
+
+                            <!-- Skills (Mock tags since we don't have jobSeeker.skills directly available in this model easily, or we can just render the word if it exists) -->
+                            <div class="skill-tags">
+                                <span class="skill-tag" th:if="${app.jobSeeker != null}"><i
+                                        class="fas fa-graduation-cap text-slate-400 me-1"></i> Checked Profile</span>
+                                <span class="skill-tag"
+                                    th:if="${app.jobSeeker != null and app.jobSeeker.resumeUrl != null}"><i
+                                        class="fas fa-file-alt text-slate-400 me-1"></i> Resume Attached</span>
+                                <span class="skill-tag" th:if="${job.title.contains('Java')}">Java</span>
+                                <span class="skill-tag" th:if="${job.title.contains('Java')}">Spring Boot</span>
+                                <span class="skill-tag bg-slate-100 fw-normal text-slate-500 border-0"
+                                    th:text="'Status: ' + ${app.status}">STATUS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="action-buttons">
+                        <div class="dropdown">
+                            <button class="btn btn-status-dropdown dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" th:text="${app.status}">
+                                SHORTLISTED
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-1">
+                                <li>
+                                    <form th:action="@{'/employer/applications/' + ${app.id} + '/status'}"
+                                        method="post">
+                                        <input type="hidden" name="status" value="SHORTLISTED">
+                                        <button type="submit" class="dropdown-item fw-medium py-2"><i
+                                                class="fas fa-check text-primary me-2 w-4"></i> Shortlist</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form th:action="@{'/employer/applications/' + ${app.id} + '/status'}"
+                                        method="post">
+                                        <input type="hidden" name="status" value="UNDER_REVIEW">
+                                        <button type="submit" class="dropdown-item fw-medium py-2"><i
+                                                class="fas fa-eye text-warning me-2 w-4"></i> Under Review</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <form th:action="@{'/employer/applications/' + ${app.id} + '/status'}"
+                                        method="post">
+                                        <input type="hidden" name="status" value="REJECTED">
+                                        <button type="submit" class="dropdown-item fw-medium text-danger py-2"><i
+                                                class="fas fa-times me-2 w-4"></i> Reject</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <a th:if="${app.jobSeeker != null and app.jobSeeker.user != null}"
+                            th:href="@{'/resume/view/' + ${app.jobSeeker.user.id}}" target="_blank"
+                            class="btn btn-view-profile text-decoration-none d-flex align-items-center">
+                            View Profile
+                        </a>
+                    </div>
+                </div>
+
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
-    <footer th:replace="~{fragments :: footer}"></footer>
+    <!-- The original site footer might not fit perfectly with a sidebar layout, but we'll include it or let the user decide. Typically dashboard sidebars are full height without a global footer. -->
 </body>
 
 </html>

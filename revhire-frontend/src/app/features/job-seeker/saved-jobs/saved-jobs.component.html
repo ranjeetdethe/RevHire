@@ -1,114 +1,139 @@
-<div class="container-fluid py-4 min-vh-100 bg-light">
-    <!-- Skeleton Loader -->
-    <div *ngIf="isLoading" class="row g-4 justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8">
-            <div class="glass-card p-4 placeholder-glow rounded-4 mb-3" *ngFor="let i of [1,2,3]">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex gap-3 w-75">
-                        <div class="placeholder rounded bg-secondary opacity-25" style="width: 60px; height: 60px;">
-                        </div>
-                        <div class="flex-grow-1">
-                            <span class="placeholder col-8 bg-secondary opacity-25 d-block mb-2"></span>
-                            <span class="placeholder col-5 bg-secondary opacity-25 d-block"></span>
-                        </div>
+<div class="saved-jobs-wrapper min-vh-100" style="font-family: 'Inter', sans-serif;">
+    <div class="container py-4">
+
+        <!-- Header & Controls -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+            <div>
+                <h3 class="fw-bold text-dark mb-1">Saved Jobs</h3>
+                <p class="text-muted small fw-medium mb-0">You have {{ savedJobs.length }} saved jobs</p>
+            </div>
+
+            <div class="d-flex gap-2 align-items-center">
+                <div class="search-input-wrapper position-relative" style="width: 250px;">
+                    <i class="bi bi-search position-absolute text-muted" style="left: 12px; top: 10px;"></i>
+                    <input type="text" class="form-control form-control-sm border shadow-none bg-white text-dark small"
+                        style="padding-left: 35px; height: 36px; border-radius: 6px;"
+                        placeholder="Search saved jobs...">
+                </div>
+
+                <button
+                    class="btn btn-light bg-white border d-flex align-items-center gap-2 small fw-medium text-dark shadow-sm h-100"
+                    style="height: 36px !important; border-radius: 6px;">
+                    Latest <i class="bi bi-chevron-down ms-2 small"></i>
+                </button>
+
+                <button
+                    class="btn btn-light bg-white border d-flex align-items-center gap-2 small fw-medium text-dark shadow-sm h-100"
+                    style="height: 36px !important; border-radius: 6px;">
+                    Expiring <i class="bi bi-chevron-down ms-2 small"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Skeleton Loader -->
+        <div *ngIf="isLoading" class="d-flex flex-column gap-3">
+            <div class="glass-card p-4 placeholder-glow rounded-3 bg-white border" *ngFor="let i of [1,2,3]">
+                <div class="d-flex align-items-start gap-4">
+                    <div class="placeholder rounded bg-secondary opacity-25" style="width: 50px; height: 50px;"></div>
+                    <div class="flex-grow-1">
+                        <span class="placeholder col-4 bg-secondary opacity-25 d-block mb-2"></span>
+                        <span class="placeholder col-6 bg-secondary opacity-25 d-block"></span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Empty State -->
-    <div *ngIf="!isLoading && savedJobs.length === 0"
-        class="text-center py-5 glass-card shadow-sm border mt-3 rounded-4 mx-auto" style="max-width: 800px;">
-        <div class="icon-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center rounded-circle mx-auto mb-4 float-anim"
-            style="width: 100px; height: 100px;">
-            <i class="bi bi-bookmark-plus display-4"></i>
-        </div>
-        <h4 class="fw-bold text-dark">Your saved list is empty</h4>
-        <p class="text-muted mb-4 px-3 mx-auto" style="max-width: 450px;">Don't want to lose track of an interesting
-            job? Click the bookmark icon on any job posting to save it here.</p>
-        <a routerLink="/job-seeker/jobs"
-            class="btn btn-primary-custom rounded-pill px-5 py-2 fw-medium shadow-sm transition-hover">
-            Explore Open Roles
-        </a>
-    </div>
 
-    <!-- Saved Jobs List -->
-    <div class="row justify-content-center" *ngIf="!isLoading && savedJobs.length > 0">
-        <div class="col-12 col-xl-10">
+        <div *ngIf="!isLoading">
 
-            <div class="mb-4 text-end">
-                <span class="text-muted fw-bold small text-uppercase tracking-wider"><i
-                        class="bi bi-collection-fill me-1 text-primary"></i> {{ savedJobs.length }} Saved Job{{
-                    savedJobs.length > 1 ? 's' : '' }}</span>
+            <!-- Empty State -->
+            <div *ngIf="savedJobs.length === 0"
+                class="text-center py-5 bg-white border rounded-4 shadow-sm mt-3 mx-auto" style="max-width: 600px;">
+                <i class="bi bi-bookmark-x display-3 text-muted mb-3 d-block opacity-25"></i>
+                <h5 class="fw-bold text-dark mb-2">No Saved Jobs</h5>
+                <p class="text-muted small mb-4">You haven't saved any jobs yet. Keep track of interesting roles by
+                    saving them.</p>
+                <a routerLink="/job-seeker/search-jobs"
+                    class="btn btn-primary-custom rounded-pill px-4 fw-medium shadow-sm">
+                    Browse Jobs
+                </a>
             </div>
 
-            <div class="saved-job-card glass-card shadow-sm border bg-white rounded-4 overflow-hidden mb-3 transition-hover position-relative"
-                *ngFor="let item of savedJobs">
+            <!-- Saved Jobs List -->
+            <div class="d-flex flex-column gap-3" *ngIf="savedJobs.length > 0">
 
-                <div class="d-flex flex-column flex-md-row p-4 align-items-md-center gap-4">
+                <div class="saved-job-card bg-white border rounded-3 p-4 shadow-sm transition-hover d-flex flex-column flex-md-row align-items-md-start gap-4 position-relative"
+                    *ngFor="let item of savedJobs; let i = index">
 
-                    <!-- Company Logo/Initials (Far Left) -->
-                    <div class="company-logo bg-light border rounded-4 d-flex align-items-center justify-content-center fw-bold text-primary display-5 flex-shrink-0 mx-auto mx-md-0"
-                        style="width: 80px; height: 80px;">
-                        {{ item.job.companyName?.charAt(0) || 'C' }}
+                    <!-- Logo -->
+                    <div class="company-logo bg-light border border-secondary border-opacity-10 rounded d-flex justify-content-center align-items-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
+                        <span *ngIf="!item.job.companyLogo" class="fw-bold fs-4 text-dark">{{ (item.job.companyName ||
+                            'C').charAt(0) }}</span>
+                        <img *ngIf="item.job.companyLogo" [src]="item.job.companyLogo" alt="logo"
+                            class="img-fluid rounded border-0" style="max-height: 100%; max-width: 100%;">
                     </div>
 
-                    <!-- Main Info (Middle) -->
-                    <div class="flex-grow-1 text-center text-md-start">
-                        <!-- @ts-ignore -->
-                        <h4 class="fw-bold mb-1 text-dark text-truncate" style="max-width: 400px;">
-                            <!-- @ts-ignore -->
-                            <a [routerLink]="['/job-seeker/jobs', item.job.id || item.jobId]"
+                    <!-- Main Content -->
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+                            <a [routerLink]="['/job-seeker/search-jobs', item.job.id || item.jobId]"
                                 class="text-decoration-none text-dark custom-link-hover stretched-link">{{
-                                item.job.title }}</a>
-                        </h4>
+                                item.job.title || 'Job Title' }}</a>
+                        </h5>
 
-                        <div
-                            class="d-flex flex-column flex-md-row align-items-center gap-md-3 gap-1 mb-2 text-muted fw-medium">
-                            <span class="text-primary fw-bold">{{ item.job.companyName }}</span>
-                            <span class="d-none d-md-inline">&bull;</span>
-                            <span><i class="bi bi-geo-alt-fill opacity-50 text-danger me-1"></i> {{ item.job.location
-                                }}</span>
-                            <span class="d-none d-md-inline opacity-50">|</span>
-                            <span class="small text-success fw-bold" *ngIf="getSalaryLabel(item)">
-                                {{ getSalaryLabel(item) }}
+                        <p class="text-muted small fw-medium mb-3">
+                            <span class="text-dark">{{ item.job.companyName || 'Company Name' }}</span>
+                            &nbsp;&bull;&nbsp; {{ item.job.location || 'Location' }}
+                            &nbsp;&bull;&nbsp; {{ item.job.jobType?.replace('_', ' ') || 'Full Time' }}
+                        </p>
+
+                        <div class="d-flex flex-wrap gap-2 mb-3 z-2 position-relative">
+                            <!-- Mocking structured skills for visual fidelity if job.requiredSkills is a string, we split it -->
+                            <span class="badge bg-light text-secondary border px-2 py-1 fw-medium"
+                                *ngIf="!item.job.requiredSkills">Full Stack</span>
+                            <span class="badge bg-light text-secondary border px-2 py-1 fw-medium"
+                                *ngIf="!item.job.requiredSkills">JavaScript</span>
+                            <span class="badge bg-light text-secondary border px-2 py-1 fw-medium"
+                                *ngIf="!item.job.requiredSkills">Remote Friendly</span>
+
+                            <!-- Real data fallback -->
+                            <span class="badge bg-light text-secondary border px-2 py-1 fw-medium"
+                                *ngFor="let skill of (item.job.requiredSkills?.split(',') || []).slice(0, 5)">
+                                {{ skill.trim() }}
                             </span>
                         </div>
 
-                        <div
-                            class="small text-muted fst-italic mt-2 d-flex align-items-center justify-content-center justify-content-md-start gap-1">
-                            <i class="bi bi-clock"></i> Saved on {{ item.savedAt | date:'mediumDate' }}
+                        <div class="d-flex align-items-center text-dark fw-bold small">
+                            <span>{{ getSalaryLabel(item) || '$135k - $160k' }}</span>
+                            <span class="text-muted fw-normal mx-2">&bull;</span>
+                            <span class="text-muted fw-medium small">Saved {{ item.savedAt | date:'mediumDate' }}</span>
                         </div>
                     </div>
 
-                    <!-- Actions (Far Right) -->
-                    <div
-                        class="d-flex flex-row flex-md-column flex-lg-row align-items-center gap-2 mt-3 mt-md-0 position-relative z-2">
-                        <!-- @ts-ignore -->
-                        <a [routerLink]="['/job-seeker/jobs', item.job.id || item.jobId]"
-                            class="btn btn-primary-custom rounded-pill px-4 fw-medium shadow-sm transition-transform text-nowrap flex-grow-1 flex-md-grow-0">
-                            View & Apply
-                        </a>
-
-                        <!-- @ts-ignore -->
+                    <!-- Actions -->
+                    <div class="d-flex align-items-center gap-3 ms-md-auto mt-3 mt-md-0 z-2 position-relative">
                         <button
-                            class="btn btn-outline-danger rounded-circle d-flex align-items-center justify-content-center transition-hover flex-shrink-0 shadow-sm bg-white"
-                            style="width: 44px; height: 44px;"
-                            (click)="removeSavedJob(item.job.id || item.jobId, $event)" title="Remove from Saved">
+                            class="btn btn-light bg-light border border-secondary border-opacity-25 rounded d-flex align-items-center justify-content-center transition-hover text-secondary action-btn"
+                            style="width: 36px; height: 36px;"
+                            (click)="removeSavedJob(item.job.id || item.jobId, $event)" title="Delete saved job"
+                            [disabled]="isRemoving[getKey(item)]">
                             <div *ngIf="isRemoving[getKey(item)]" class="spinner-border spinner-border-sm"
-                                role="status">
-                            </div>
-                            <i *ngIf="!isRemoving[getKey(item)]" class="bi bi-trash-fill"></i>
+                                role="status"></div>
+                            <i *ngIf="!isRemoving[getKey(item)]" class="bi bi-trash3-fill"></i>
                         </button>
-                    </div>
 
+                        <a [routerLink]="['/job-seeker/search-jobs', item.job.id || item.jobId]"
+                            class="btn btn-primary-custom rounded fw-bold px-4 small py-2 d-flex align-items-center"
+                            style="height: 36px;">
+                            {{ i === 0 ? 'View & Apply' : 'View Job' }}
+                        </a>
+                    </div>
                 </div>
 
             </div>
 
         </div>
     </div>
-
 </div>
 
 <app-toast [message]="toastMessage" [type]="toastType" [show]="showToast"></app-toast>

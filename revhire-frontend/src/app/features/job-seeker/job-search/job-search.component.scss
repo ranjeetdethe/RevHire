@@ -1,76 +1,76 @@
-.glass-card {
-    transition: all var(--transition-normal);
+$primary: #2563EB;
+$text-dark: #0f172a;
+
+.job-search-wrapper {
+    background-color: #f8fafc;
 }
 
-.transition-hover {
-    transition: all 0.2s ease-in-out;
-    border: 1px solid transparent;
+.search-input-group {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
 
-    &:hover {
-        background-color: #f8fafc !important;
-        border-color: rgba(37, 99, 235, 0.2) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
-
-        .card-stripe {
-            opacity: 1 !important;
-        }
-
-        .company-logo {
-            transform: scale(1.05);
-        }
+    &:focus-within {
+        border-color: $primary;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 }
 
-.card-stripe {
-    background-color: var(--primary-color) !important;
-}
+.filter-sidebar {
+    .filter-section {
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 1rem;
 
-.transition-transform {
-    transition: transform 0.2s ease;
-}
+        &:last-child {
+            border-bottom: none;
+        }
+    }
 
-.job-card {
-    border-radius: 12px;
-}
+    .form-check-input {
+        cursor: pointer;
+        width: 1.1em;
+        height: 1.1em;
+        border-color: #cbd5e1;
 
-.custom-link-hover {
-    transition: color 0.15s ease;
+        &:checked {
+            background-color: $primary;
+            border-color: $primary;
+        }
+    }
 
-    &:hover {
-        color: var(--primary-color) !important;
-        text-decoration: underline !important;
+    .form-check-label {
+        cursor: pointer;
+        font-size: 0.9rem;
+        margin-left: 0.3rem;
     }
 }
 
-.btn-icon-custom {
+.job-grid-card {
     transition: all 0.2s ease;
-    position: relative;
-    z-index: 10;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
     &:hover {
-        background-color: rgba(37, 99, 235, 0.1) !important;
-        color: var(--primary-color) !important;
-        border-color: var(--primary-color) !important;
-        transform: scale(1.1);
+        border-color: rgba(37, 99, 235, 0.3) !important;
+        box-shadow: 0 8px 15px -3px rgba(37, 99, 235, 0.1);
+        transform: translateY(-2px);
     }
 }
 
 .description-truncate {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.form-select-custom {
-    background-color: #f8fafc;
-    border-radius: 8px;
-    padding: 0.6rem 1rem;
+.btn-primary-custom {
+    background-color: $primary;
+    color: white;
+    border: none;
+    transition: all 0.2s;
 
-    &:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+    &:hover {
+        background-color: shade($primary, 10%);
     }
 }

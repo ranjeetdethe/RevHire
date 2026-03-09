@@ -1,138 +1,128 @@
-<div class="container-fluid py-4 min-vh-100 bg-light">
-    <!-- Header -->
-    <div
-        class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-2 border-bottom gap-3">
-        <div class="d-flex align-items-center gap-3">
-            <div class="icon-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center rounded-circle flex-shrink-0 position-relative"
-                style="width: 56px; height: 56px;">
-                <i class="bi bi-bell-fill fs-3"></i>
-                <span
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light"
-                    *ngIf="!isLoading && unreadCount > 0" style="font-size: 0.65rem;">
-                    {{ unreadCount > 99 ? '99+' : unreadCount }}
-                </span>
-            </div>
-            <div>
-                <h3 class="fw-bold text-dark font-heading mb-1">Notifications</h3>
-                <p class="text-muted mb-0 small">Stay updated on new applications, messages, and system alerts.</p>
-            </div>
-        </div>
-        <div class="d-flex gap-2 align-items-center">
-            <button
-                class="btn btn-outline-secondary fw-medium rounded-pill px-4 shadow-sm d-flex align-items-center gap-2"
-                [disabled]="isLoading || unreadCount === 0 || isClearingAll" (click)="markAllAsRead()">
-                <!-- @ts-ignore -->
-                <div *ngIf="isClearingAll" class="spinner-border spinner-border-sm" role="status"></div>
-                <!-- @ts-ignore -->
-                <i *ngIf="!isClearingAll" class="bi bi-check-all fs-5"></i>
-                Mark All as Read
-            </button>
-        </div>
-    </div>
+<div class="notifications-wrapper min-vh-100" style="font-family: 'Inter', sans-serif;">
+    <div class="container py-4">
 
-    <!-- Skeleton Loader -->
-    <div *ngIf="isLoading" class="row pe-0 ps-0 g-3 mt-4">
-        <div class="col-12" *ngFor="let i of [1,2,3,4]">
-            <div class="glass-card p-4 placeholder-glow rounded-4">
-                <div class="d-flex align-items-center gap-3">
-                    <span class="placeholder rounded-circle bg-secondary opacity-25"
-                        style="width: 50px; height: 50px;"></span>
-                    <div class="flex-grow-1">
-                        <span class="placeholder col-4 bg-secondary opacity-25 d-block mb-2"></span>
-                        <span class="placeholder col-8 bg-secondary opacity-25 d-block"></span>
+        <!-- Header -->
+        <div class="mb-4">
+            <h3 class="fw-bold text-dark font-heading mb-2">Notifications</h3>
+            <p class="text-muted small fw-medium">Stay updated on your application status, interviews, and account
+                activity.</p>
+        </div>
+
+        <!-- Main Notification Container -->
+        <div class="bg-white rounded-4 shadow-sm border p-4">
+
+            <!-- Controls (Search & Filters) -->
+            <div class="d-flex flex-column flex-md-row justify-content-end align-items-md-center gap-3 mb-4">
+                <div class="search-input-wrapper position-relative" style="max-width: 300px; width: 100%;">
+                    <input type="text"
+                        class="form-control form-control-sm border rounded-pill shadow-none px-3 py-2 text-dark small bg-light"
+                        placeholder="Search notifications...">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end align-items-center gap-3 mb-4 flex-wrap">
+                <button class="btn btn-light rounded-2 py-1 px-3 small fw-medium border shadow-sm">All</button>
+                <button
+                    class="btn btn-link text-decoration-none text-muted p-0 small fw-medium custom-link-hover">Read</button>
+                <button
+                    class="btn btn-link text-decoration-none text-muted p-0 small fw-medium custom-link-hover">Unread</button>
+                <button class="btn btn-link text-decoration-none text-dark p-0 small fw-medium custom-link-hover"
+                    (click)="markAllAsRead()">Mark All as Read</button>
+            </div>
+
+            <!-- Skeleton Loader -->
+            <div *ngIf="isLoading" class="d-flex flex-column gap-3">
+                <div class="col-12" *ngFor="let i of [1,2,3,4]">
+                    <div class="p-3 placeholder-glow border rounded-4 bg-light bg-opacity-50">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="placeholder rounded-circle bg-secondary opacity-25"
+                                style="width: 50px; height: 50px;"></span>
+                            <div class="flex-grow-1">
+                                <span class="placeholder col-4 bg-secondary opacity-25 d-block mb-2"></span>
+                                <span class="placeholder col-8 bg-secondary opacity-25 d-block"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div *ngIf="!isLoading">
+            <div *ngIf="!isLoading">
 
-        <!-- Empty State -->
-        <div *ngIf="notifications.length === 0"
-            class="text-center py-5 glass-card shadow-sm border mt-3 rounded-4 mx-auto" style="max-width: 700px;">
-            <div class="icon-circle bg-light text-muted d-flex align-items-center justify-content-center rounded-circle mx-auto mb-4 border d-flex animate__animated animate__pulse animate__infinite"
-                style="width: 100px; height: 100px; animation-duration: 3s;">
-                <i class="bi bi-bell-slash fs-1 opacity-50"></i>
-            </div>
-            <h4 class="fw-bold text-dark mb-2">You're all caught up!</h4>
-            <p class="text-muted small mb-4 px-3 mx-auto" style="max-width: 400px;">You don't have any notifications at
-                the moment. We'll alert you here when candidates apply or messages arrive.</p>
-        </div>
+                <!-- Empty State -->
+                <div *ngIf="notifications.length === 0" class="text-center py-5">
+                    <i class="bi bi-bell-slash display-4 text-muted mb-3 d-block opacity-25"></i>
+                    <h5 class="fw-bold text-dark">No Notifications</h5>
+                    <p class="text-muted small">You don't have any notifications at the moment.</p>
+                </div>
 
-        <!-- List View Container -->
-        <div class="d-flex flex-column gap-3 mb-5 mt-2" *ngIf="notifications.length > 0">
+                <!-- Notifications List (Matching mock visually if real ones are standard) -->
+                <div class="d-flex flex-column gap-3" *ngIf="notifications.length > 0">
 
-            <div class="notification-card glass-card shadow-sm border rounded-4 overflow-hidden position-relative bg-white transition-hover animate__animated animate__fadeInUp"
-                *ngFor="let notif of notifications; let i = index"
-                style="animation-delay: {{ i * 0.05 }}s; cursor: pointer;"
-                [ngClass]="{'opacity-75 bg-light border-light shadow-none': notif.isRead, 'border-primary border-2 shadow-lg z-3 notification-unread': !notif.isRead}"
-                (click)="handleNotificationClick(notif)">
+                    <!-- We map actual notifications data, falling back to visually matched icons/styles -->
+                    <div class="notification-card border rounded-4 p-3 d-flex position-relative transition-hover bg-white"
+                        *ngFor="let notif of notifications" [ngClass]="{'opacity-75': notif.isRead}">
 
-                <div class="position-absolute start-0 top-0 bottom-0 bg-primary opacity-25" style="width: 6px;"
-                    *ngIf="!notif.isRead"></div>
+                        <div class="d-flex align-items-start gap-4 w-100 ps-2">
+                            <!-- Icon Circle -->
+                            <div class="icon-circle border rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm"
+                                style="width: 56px; height: 56px;" [ngClass]="{
+                                    'bg-primary bg-opacity-10 text-primary border-primary border-opacity-25': !notif.isRead,
+                                    'bg-light text-muted border-secondary border-opacity-25': notif.isRead
+                                }">
+                                <i class="bi fs-4" [ngClass]="{
+                                    'bi-hand-thumbs-up-fill': (notif.title || '').includes('Status') && !(notif.title || '').includes('REJECTED'),
+                                    'bi-chat-left-text-fill': (notif.title || '').includes('Message'),
+                                    'bi-calendar-event': (notif.title || '').includes('Interview'),
+                                    'bi-hand-index-thumb-fill text-danger': (notif.title || '').includes('REJECTED'),
+                                    'bi-person-fill': (notif.title || '').includes('Profile View'),
+                                    'bi-bell-fill': true
+                                }"></i>
+                            </div>
 
-                <div
-                    class="d-flex flex-column flex-md-row align-items-md-center p-4 gap-4 pe-5 pe-md-4 position-relative">
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <h6 class="fw-bold text-dark mb-0 fs-6">{{ notif.title || 'Notification' }}</h6>
+                                    <span class="text-muted small fw-medium text-nowrap mt-1">{{ notif.createdAt |
+                                        date:'shortTime' }}</span>
+                                </div>
+                                <p class="text-dark small mb-3 me-md-5">{{ notif.message }}</p>
 
-                    <!-- Icon / Type Avatar -->
-                    <div class="flex-shrink-0 d-flex justify-content-center">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm"
-                            style="width: 56px; height: 56px;" [ngClass]="{
-                                 'bg-primary': notif.type === 'APPLICATION' || notif.type === 'SUCCESS',
-                                 'bg-info': notif.type === 'SYSTEM' || notif.type === 'INFO',
-                                 'bg-warning': notif.type === 'ALERT' || notif.type === 'WARNING',
-                                 'bg-danger': notif.type === 'ERROR' || notif.type === 'REJECTION',
-                                 'bg-success': notif.type === 'APPROVED' || notif.type === 'MATCH',
-                                 'bg-secondary': !notif.type || (notif.type !== 'APPLICATION' && notif.type !== 'SYSTEM' && notif.type !== 'ALERT' && notif.type !== 'ERROR' && notif.type !== 'SUCCESS' && notif.type !== 'INFO' && notif.type !== 'WARNING' && notif.type !== 'REJECTION' && notif.type !== 'APPROVED' && notif.type !== 'MATCH')
-                             }">
-
-                            <i class="fs-4 bi" [ngClass]="{
-                                 'bi-person-check-fill': notif.type === 'APPLICATION',
-                                 'bi-info-circle-fill': notif.type === 'SYSTEM' || notif.type === 'INFO',
-                                 'bi-exclamation-triangle-fill': notif.type === 'ALERT' || notif.type === 'WARNING',
-                                 'bi-x-circle-fill': notif.type === 'ERROR' || notif.type === 'REJECTION',
-                                 'bi-check-circle-fill': notif.type === 'SUCCESS' || notif.type === 'APPROVED' || notif.type === 'MATCH',
-                                 'bi-bell-fill': !notif.type || (notif.type !== 'APPLICATION' && notif.type !== 'SYSTEM' && notif.type !== 'ALERT' && notif.type !== 'ERROR' && notif.type !== 'SUCCESS' && notif.type !== 'INFO' && notif.type !== 'WARNING' && notif.type !== 'REJECTION' && notif.type !== 'APPROVED' && notif.type !== 'MATCH')
-                             }"></i>
+                                <div class="d-flex justify-content-end gap-3 actions-row">
+                                    <button
+                                        class="btn btn-link text-decoration-none text-muted small fw-medium p-0 d-flex align-items-center gap-1 action-btn"
+                                        (click)="handleNotificationClick(notif)" *ngIf="!notif.isRead">
+                                        <i class="bi bi-check-circle"></i> Mark as Read
+                                    </button>
+                                    <button
+                                        class="btn btn-link text-decoration-none text-muted small fw-medium p-0 d-flex align-items-center gap-1 action-btn"
+                                        (click)="deleteNotification(notif.id, $event)">
+                                        <i class="bi bi-trash3"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Main Data -->
-                    <div class="flex-grow-1 pe-md-4">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <h5 class="fw-bold mb-1" [ngClass]="notif.isRead ? 'text-dark opacity-75' : 'text-dark'">{{
-                                notif.title }}</h5>
-                            <span class="badge bg-primary rounded-pill small fst-italic shadow-sm d-md-none"
-                                *ngIf="!notif.isRead">New</span>
-                        </div>
-                        <p class="mb-2 pe-md-3" [ngClass]="notif.isRead ? 'text-muted' : 'text-dark fw-medium'">{{
-                            notif.message }}</p>
-                        <div class="small fw-bold text-muted d-flex align-items-center gap-2">
-                            <i class="bi bi-clock"></i> {{ notif.createdAt | date:'MMM d, yyyy, h:mm a' }}
-                            <span *ngIf="notif.referenceId" class="badge bg-light text-secondary border ms-2">Ref #{{
-                                notif.referenceId }}</span>
-                        </div>
-                    </div>
-
-                    <!-- Delete Button -->
-                    <div class="position-absolute top-0 end-0 mt-3 me-3">
+                <!-- Footer Pagination -->
+                <div class="d-flex justify-content-center mt-4">
+                    <div class="d-flex align-items-center gap-2">
                         <button
-                            class="btn btn-sm btn-outline-secondary border-0 btn-close-custom d-flex align-items-center justify-content-center rounded-circle transition-hover"
-                            style="width: 32px; height: 32px;" (click)="deleteNotification(notif.id, $event)"
-                            [disabled]="isProcessing[notif.id]" title="Delete Notification">
-                            <!-- @ts-ignore -->
-                            <div *ngIf="isProcessing[notif.id]" class="spinner-border spinner-border-sm text-secondary"
-                                role="status"></div>
-                            <!-- @ts-ignore -->
-                            <i *ngIf="!isProcessing[notif.id]" class="bi bi-x-lg"></i>
+                            class="btn btn-sm btn-light border p-1 rounded-2 d-flex align-items-center justify-content-center"
+                            style="width: 28px; height: 28px;" disabled>
+                            <i class="bi bi-chevron-left text-muted"></i>
+                        </button>
+                        <span class="small fw-medium text-dark px-2">1 of 3</span>
+                        <button
+                            class="btn btn-sm btn-light border p-1 rounded-2 d-flex align-items-center justify-content-center"
+                            style="width: 28px; height: 28px;">
+                            <i class="bi bi-chevron-right text-dark"></i>
                         </button>
                     </div>
                 </div>
 
             </div>
         </div>
-
     </div>
 </div>
 

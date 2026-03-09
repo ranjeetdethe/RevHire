@@ -115,6 +115,10 @@ export class ApplicantsComponent implements OnInit {
     });
   }
 
+  countByStatus(status: string): number {
+    return this.applications.filter(app => app.status === status).length;
+  }
+
   updateStatus(app: Application, newStatus: string) {
     if (app.status === newStatus || this.isUpdatingStatus[app.id]) return;
 

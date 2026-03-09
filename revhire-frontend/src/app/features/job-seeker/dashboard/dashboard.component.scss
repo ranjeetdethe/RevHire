@@ -1,48 +1,72 @@
+.dashboard-wrapper {
+    background-color: #f8fafc;
+}
+
 .stat-card {
-    transition: all var(--transition-normal);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-top-width: 5px !important;
 
     &:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-lg);
-
-        .icon-box {
-            transform: scale(1.1);
-            transition: transform 0.3s ease;
-        }
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
     }
 }
 
-.transition-hover {
-    transition: all 0.2s ease-in-out;
-    border: 1px solid transparent;
+.job-list-item {
+    transition: background-color 0.2s;
+
+    &:last-child {
+        border-bottom: none !important;
+    }
 
     &:hover {
-        background-color: #f8fafc !important;
-        border-color: rgba(37, 99, 235, 0.2) !important;
-        transform: translateX(4px);
+        background-color: #f8fafc;
     }
 }
 
-.timeline {
+.btn-primary-custom {
+    background-color: #2563EB;
+    color: white;
+    border: none;
+
+    &:hover {
+        background-color: shade(#2563EB, 10%);
+    }
+}
+
+/* Timeline specific styles to match design */
+.timeline-container {
     border-left: 2px solid #e2e8f0;
-    margin-left: 10px;
-    padding-top: 10px;
 
     .timeline-item {
-        position: relative;
-
         &:last-child {
-            padding-bottom: 0 !important;
+            border-left-color: transparent;
 
-            &::before {
-                content: '';
-                position: absolute;
-                left: -2px;
-                top: 20px;
-                bottom: 0;
-                width: 2px;
-                background: #fff;
+            .timeline-dot {
+                // Ensure the last dot still positions correctly
             }
+        }
+    }
+
+    .timeline-dot {
+        width: 14px;
+        height: 14px;
+        left: -8px; // - (width/2) - (border-left/2)
+        top: 2px;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2); // subtle glow effect
+        background-color: #2563EB !important;
+    }
+
+    // hide border for the very last child's padding
+    .border-0 {
+        &::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 20px;
+            bottom: 0;
+            width: 2px;
+            background-color: white; // masks the line
         }
     }
 }

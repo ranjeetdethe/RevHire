@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { JobService } from '../../core/services/job.service';
+import { Job } from '../../models/job.model';
 
 @Component({
   selector: 'app-home',
@@ -11,18 +13,34 @@ import { RouterModule } from '@angular/router';
 })
 export class HomeComponent {
   jobCategories = [
-    { name: 'Software Engineering', icon: 'bi-laptop', count: '1,245 Jobs' },
-    { name: 'Data Science', icon: 'bi-bar-chart-steps', count: '850 Jobs' },
-    { name: 'Product Management', icon: 'bi-briefcase', count: '430 Jobs' },
-    { name: 'Marketing', icon: 'bi-megaphone', count: '620 Jobs' },
-    { name: 'Sales', icon: 'bi-currency-dollar', count: '940 Jobs' },
-    { name: 'Design', icon: 'bi-palette', count: '510 Jobs' }
+    { name: 'Tech', icon: 'bi-code-slash', count: '1.2K Jobs', colorClass: 'cat-tech' },
+    { name: 'Healthcare', icon: 'bi-heart-pulse-fill', count: '890 Jobs', colorClass: 'cat-health' },
+    { name: 'Sales & Marketing', icon: 'bi-bar-chart-fill', count: '950 Jobs', colorClass: 'cat-sales' },
+    { name: 'Finance', icon: 'bi-currency-dollar', count: '610 Jobs', colorClass: 'cat-finance' },
+    { name: 'Customer Service', icon: 'bi-headset', count: '770 Jobs', colorClass: 'cat-service' },
+    { name: 'HR', icon: 'bi-people-fill', count: '430 Jobs', colorClass: 'cat-hr' },
+    { name: 'Engineering', icon: 'bi-gear-wide-connected', count: '520 Jobs', colorClass: 'cat-engineering' },
+    { name: 'Design', icon: 'bi-palette-fill', count: '380 Jobs', colorClass: 'cat-design' }
   ];
 
-  howItWorks = [
-    { title: 'Create an Account', description: 'Sign up for free and complete your professional profile.', icon: 'bi-person-plus' },
-    { title: 'Search for Jobs', description: 'Find roles that match your skills, experience, and career goals.', icon: 'bi-search' },
-    { title: 'Apply with One Click', description: 'Instantly send your profile and resume to top employers.', icon: 'bi-send-check' },
-    { title: 'Get Hired', description: 'Connect with recruiters, interview, and land your dream job.', icon: 'bi-award' }
-  ];
+  featuredJobs: Job[] = [];
+
+  topCompanies = ['amazon', 'tata', 'google', 'ibm', 'nike', 'samsung', 'man', 'sharson'];
+
+  constructor(private jobService: JobService, private router: Router) { }
+
+  ngOnInit() {
+    this.jobService.searchJobs({ size: 4, sort: 'createdAt,desc' }).subscribe({
+      next: (res) => {
+        this.featuredJobs = res.content || [];
+      },
+      error: () => {
+        this.featuredJobs = [];
+      }
+    });
+  }
+
+  navigateToJob(jobId: number) {
+    this.router.navigate(['/job-seeker/search-jobs', jobId]);
+  }
 }

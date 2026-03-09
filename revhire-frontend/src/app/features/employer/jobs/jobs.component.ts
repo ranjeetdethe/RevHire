@@ -7,13 +7,12 @@ import { ApplicationService } from '../../../core/services/application.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Job } from '../../../models/job.model';
 import { User } from '../../../models/user.model';
-import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ToastComponent } from '../../../shared/components/toast/toast.component';
 
 @Component({
   selector: 'app-employer-jobs',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, StatusBadgeComponent, ToastComponent],
+  imports: [CommonModule, RouterModule, FormsModule, ToastComponent],
   templateUrl: './jobs.component.html',
   styleUrl: './jobs.component.scss'
 })
@@ -21,6 +20,10 @@ export class JobsComponent implements OnInit {
   user: User | null = null;
   myJobs: Job[] = [];
   filteredJobs: Job[] = [];
+
+  totalJobs = 0;
+  openJobsCount = 0;
+  closedJobsCount = 0;
 
   isLoading = true;
   isDeleting: { [key: number]: boolean } = {};
@@ -88,6 +91,10 @@ export class JobsComponent implements OnInit {
   }
 
   applyFilters() {
+    this.totalJobs = this.myJobs.length;
+    this.openJobsCount = this.myJobs.filter(j => j.status === 'OPEN').length;
+    this.closedJobsCount = this.myJobs.filter(j => j.status === 'CLOSED').length;
+
     this.filteredJobs = this.myJobs.filter(job => {
       const titleMatch = job.title?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         job.location?.toLowerCase().includes(this.searchTerm.toLowerCase());

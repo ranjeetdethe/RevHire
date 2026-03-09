@@ -1,47 +1,411 @@
-.glass-card {
-    transition: all var(--transition-normal);
+// Variables
+$primary: #2563EB;
+$teal: #14B8A6;
+$bg-light: #F8FAFC;
+$text-dark: #0F172A;
+$text-muted: #64748B;
+$border-color: #E2E8F0;
+
+:host {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    background-color: transparent;
+    min-height: 100%;
 }
 
-.transition-hover {
-    transition: all 0.2s ease-in-out;
-    border: 1px solid transparent;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Inter', sans-serif;
+    color: $text-dark;
+}
+
+// Stats Cards Layout
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+// Base Card
+.stat-card {
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: none;
+    cursor: pointer;
 
     &:hover {
-        background-color: #f8fafc !important;
         transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1) !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
-}
 
-.custom-link-hover {
-    transition: color 0.15s ease;
-
-    &:hover {
-        color: var(--primary-color) !important;
-        text-decoration: underline !important;
+    .title {
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
     }
-}
 
-.transition-hover-row {
-    transition: background-color 0.2s ease;
-
-    &:hover {
-        background-color: rgba(37, 99, 235, 0.02) !important;
+    .value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
     }
-}
 
-.custom-table {
-    --bs-table-bg: transparent;
-
-    th {
+    .trend {
         font-size: 0.75rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
     }
 
-    tbody tr td {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    .icon-box {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
     }
 
-    tbody tr:last-child td {
-        border-bottom: none;
+    .top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+}
+
+// Specific Card Styles
+.card-blue {
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    color: white;
+
+    .title,
+    .value {
+        color: white;
+    }
+
+    .icon-box {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .trend {
+        color: #86EFAC;
+    }
+
+    // Light green
+}
+
+.card-teal {
+    background: linear-gradient(135deg, #81E6D9 0%, #2DD4BF 100%);
+    color: $text-dark;
+
+    .icon-box {
+        background: rgba(255, 255, 255, 0.5);
+        color: #0F766E;
+    }
+
+    .trend {
+        color: #065F46;
+    }
+
+    // Dark green
+}
+
+.card-light-cyan {
+    background: #E0F2FE;
+    color: $text-dark;
+
+    .icon-box {
+        background: rgba(255, 255, 255, 0.8);
+        color: #0369A1;
+    }
+
+    .trend {
+        color: $text-muted;
+    }
+}
+
+.card-light-blue {
+    background: #DBEAFE;
+    color: $text-dark;
+
+    .icon-box {
+        background: rgba(255, 255, 255, 0.8);
+        color: #1D4ED8;
+    }
+}
+
+// Charts Section
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+
+    @media (max-width: 992px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid $border-color;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+
+        h5 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .toggle-btn {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid $border-color;
+            border-radius: 4px;
+            background: white;
+            color: $text-muted;
+            cursor: pointer;
+        }
+    }
+}
+
+// CSS-Only specific charts
+.trend-chart-ph {
+    height: 200px;
+    background: linear-gradient(to top, rgba(59, 130, 246, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+    border-bottom: 2px solid $primary;
+    position: relative;
+    border-radius: 0 0 8px 8px;
+
+    // Y-axis 
+    .y-axis {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: $text-muted;
+        font-size: 0.65rem;
+
+        span {
+            display: block;
+            transform: translateY(-50%);
+        }
+    }
+
+    .x-axis {
+        position: absolute;
+        bottom: -20px;
+        left: 30px;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        color: $text-muted;
+        font-size: 0.65rem;
+    }
+
+    .svg-curve {
+        position: absolute;
+        bottom: 0;
+        left: 30px;
+        right: 0;
+        height: 100%;
+        width: calc(100% - 30px);
+    }
+}
+
+.bars-chart-ph {
+    height: 200px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding-bottom: 20px;
+    position: relative;
+    padding-left: 20px;
+
+    .y-axis {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: $text-muted;
+        font-size: 0.65rem;
+
+        span {
+            transform: translateY(-50%);
+        }
+    }
+
+    .bar-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        width: 30px;
+
+        .bar-fill {
+            width: 100%;
+            background: linear-gradient(to top, #38BDF8, #2563EB);
+            border-radius: 4px 4px 0 0;
+            transition: height 1s ease;
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -5px;
+            font-size: 0.6rem;
+            color: $text-muted;
+            text-align: center;
+            width: 50px;
+            line-height: 1.1;
+        }
+    }
+}
+
+// Table
+.recent-table-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid $border-color;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.25rem;
+
+        h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.875rem;
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: $text-muted;
+            font-weight: 500;
+            border-bottom: 1px solid $border-color;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #F1F5F9;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background-color: #F8FAFC;
+        }
+
+        .candidate-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            img {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            span {
+                font-weight: 500;
+                color: $text-dark;
+            }
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+
+            &.pending {
+                background: #FEF3C7;
+                color: #D97706;
+            }
+
+            &.under-review {
+                background: #FEF08A;
+                color: #CA8A04;
+            }
+
+            &.shortlisted {
+                background: #D1FAE5;
+                color: #059669;
+            }
+
+            &.rejected {
+                background: #FEE2E2;
+                color: #DC2626;
+            }
+
+            &.new {
+                background: #E0F2FE;
+                color: #0284C7;
+            }
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+
+            button {
+                background: white;
+                border: 1px solid $border-color;
+                border-radius: 4px;
+                width: 28px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: $text-muted;
+                transition: all 0.2s;
+
+                &:hover {
+                    color: $primary;
+                    border-color: $primary;
+                }
+            }
+        }
     }
 }

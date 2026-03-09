@@ -1,90 +1,172 @@
-<div class="home-container" style="font-family: var(--font-body);">
+<div class="home-container" style="font-family: 'Inter', sans-serif;">
     <!-- Hero Section -->
-    <header class="hero-section text-center position-relative py-5">
-        <div class="container position-relative z-1">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 animate__animated animate__fadeInUp">
-                    <h1 class="display-4 fw-bold mb-4 font-heading text-dark">
-                        Find Your <span class="text-primary">Dream Job</span> Today
+    <header class="hero-section position-relative">
+        <div class="container position-relative z-1 h-100 pb-5">
+            <div class="row h-100 align-items-center pb-5">
+                <div class="col-lg-6 animate__animated animate__fadeInLeft pb-5">
+                    <h1 class="display-4 fw-bold mb-3 font-heading text-dark hero-title">
+                        Find Your Dream Career<br>on <span class="text-primary">RevHire</span>
                     </h1>
-                    <p class="lead text-muted mb-5">
-                        Connect with top employers, discover endless career opportunities, and take the next step
-                        towards your professional goals.
+                    <p class="text-muted mb-5 hero-subtitle">
+                        Discover thousands of jobs, connect with top companies, and boost your professional journey.
                     </p>
-
-                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-                        <a routerLink="/auth/register"
-                            class="btn btn-primary-custom btn-lg font-heading rounded-pill px-5 shadow-lg">Get
-                            Started</a>
-                        <a routerLink="/auth/login"
-                            class="btn btn-outline-dark btn-lg font-heading rounded-pill px-5">Login</a>
+                </div>
+                <div class="col-lg-6 position-relative d-none d-lg-block animate__animated animate__fadeInRight">
+                    <div class="hero-image-wrapper">
+                        <!-- Mocking the woman image using a generic professional image from unsplash -->
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800"
+                            alt="Professional Woman" class="img-fluid rounded-4 shadow-lg hero-img">
+                        <!-- Floating Card -->
+                        <div class="floating-card glass-card shadow-sm p-3 rounded-4 d-flex align-items-center gap-3">
+                            <div class="avatar bg-light border border-secondary border-opacity-25 rounded-circle d-flex align-items-center justify-content-center fw-bold text-dark fs-5"
+                                style="width:50px; height:50px;">
+                                SJ
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold text-dark">Sarah J.</h6>
+                                <p class="mb-0 text-muted small">Marketer</p>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="mt-5 d-flex justify-content-center gap-4 text-muted small fw-medium">
-                        <span><i class="bi bi-check-circle-fill text-success me-1"></i> Over 50k+ Jobs</span>
-                        <span><i class="bi bi-check-circle-fill text-success me-1"></i> 10k+ Employers</span>
-                        <span><i class="bi bi-check-circle-fill text-success me-1"></i> 100% Free for Seekers</span>
+            <!-- Search Bar Overlay -->
+            <div class="row justify-content-center mt-n5 position-relative z-2 hero-search-row">
+                <div class="col-lg-10">
+                    <div
+                        class="search-bar-container bg-white shadow-lg rounded-pill p-2 d-flex flex-column flex-md-row align-items-center gap-2">
+                        <div class="search-input flex-grow-1 border-end d-flex align-items-center px-3 py-2 w-100">
+                            <i class="bi bi-search text-muted me-2"></i>
+                            <input type="text" class="form-control border-0 shadow-none px-1"
+                                placeholder="Job title, keywords, or company...">
+                        </div>
+                        <div class="search-input flex-grow-1 border-end d-flex align-items-center px-3 py-2 w-100">
+                            <i class="bi bi-geo-alt text-muted me-2"></i>
+                            <input type="text" class="form-control border-0 shadow-none px-1"
+                                placeholder="E.g., Mumbai, India">
+                        </div>
+                        <div class="search-input flex-grow-1 d-flex align-items-center px-3 py-2 w-100">
+                            <select class="form-select border-0 shadow-none text-muted px-1" style="cursor: pointer;">
+                                <option>Experience: 2+ Yrs</option>
+                                <option>Experience: 0-2 Yrs</option>
+                                <option>Experience: 5+ Yrs</option>
+                            </select>
+                        </div>
+                        <button
+                            class="btn btn-primary-custom rounded-pill fw-bold px-4 py-3 mx-1 w-100 w-md-auto whitespace-nowrap"
+                            style="white-space: nowrap;" routerLink="/job-seeker/search-jobs">
+                            SEARCH JOBS
+                        </button>
+                    </div>
+                    <div class="mt-3 text-center text-muted small fw-medium">
+                        <span class="text-dark fw-bold me-2">Popular Searches:</span> Software Engineer, Sales Manager,
+                        Data Analyst, HR
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Background Decorative Element -->
-        <div class="hero-bg-blob"></div>
+
+        <!-- Background Assets -->
+        <div class="hero-gradient-overlay"></div>
     </header>
 
-    <!-- Popular Categories -->
+    <!-- Explore Job Categories -->
     <section class="py-5 bg-white">
-        <div class="container pb-4">
-            <h2 class="text-center fw-bold mb-5 font-heading">Popular Job Categories</h2>
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6" *ngFor="let cat of jobCategories">
-                    <div
-                        class="glass-card p-4 text-center h-100 flex-column d-flex align-items-center justify-content-center cat-card">
-                        <div class="icon-circle bg-primary bg-opacity-10 text-primary mb-3 mx-auto">
+        <div class="container py-4">
+            <h3 class="fw-bold mb-4 font-heading text-dark">Explore Job Categories</h3>
+            <div class="row g-3">
+                <div class="col-6 col-md-4 col-lg-3 col-xl" *ngFor="let cat of jobCategories">
+                    <div class="category-card rounded-4 p-4 text-center h-100 d-flex flex-column align-items-center justify-content-center transition-all shadow-sm"
+                        [ngClass]="cat.colorClass">
+                        <div class="icon-wrapper mb-3 d-flex align-items-center justify-content-center rounded-3">
                             <i class="bi {{cat.icon}} fs-3"></i>
                         </div>
-                        <h5 class="fw-bold mb-1">{{cat.name}}</h5>
-                        <span class="badge bg-light text-dark rounded-pill">{{cat.count}}</span>
+                        <h6 class="fw-bold mb-1 text-dark">{{cat.name}}</h6>
+                        <span class="text-muted small fw-medium">{{cat.count}}</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- How it Works Section -->
-    <section class="py-5 bg-light">
-        <div class="container py-4">
-            <h2 class="text-center fw-bold mb-5 font-heading">How RevHire Works</h2>
-            <div class="row g-4 position-relative">
-                <div class="col-lg-3 col-md-6 text-center" *ngFor="let step of howItWorks; let i = index">
-                    <div class="step-card h-100 p-4 position-relative z-1">
-                        <div
-                            class="step-number bg-primary text-white fw-bold rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center shadow-sm">
-                            {{i+1}}
+    <!-- Featured Job Listings -->
+    <section class="py-5 bg-light-subtle">
+        <div class="container py-2">
+            <h3 class="fw-bold mb-4 font-heading text-dark">Featured Job Listings</h3>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" *ngFor="let job of featuredJobs">
+                    <div class="job-listing-card bg-white rounded-4 p-4 shadow-sm h-100 border transition-all position-relative"
+                        (click)="navigateToJob(job.id)" style="cursor: pointer;">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="company-logo bg-dark text-white rounded d-flex justify-content-center align-items-center fw-bold"
+                                style="width:40px; height:40px; font-size:1.5rem;">
+                                {{ job.companyName ? job.companyName.charAt(0).toUpperCase() : 'C' }}
+                            </div>
+                            <i class="bi bi-bookmark text-muted opacity-50"></i>
                         </div>
-                        <h4 class="fw-semibold mb-3">{{step.title}}</h4>
-                        <p class="text-muted">{{step.description}}</p>
+                        <h5 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2 text-truncate"
+                            [title]="job.companyName || 'Company'">
+                            {{ job.companyName || 'Company' }}
+                        </h5>
+                        <p class="text-muted small mb-3 text-truncate" [title]="job.title"><i
+                                class="bi bi-briefcase me-1"></i> {{ job.title }}</p>
+
+                        <div class="d-flex flex-column gap-1 small text-muted fw-medium mt-auto">
+                            <span class="text-truncate"><strong>Location:</strong> {{ job.location || 'Remote' }}</span>
+                            <span class="text-truncate"><strong>Salary:</strong>
+                                <span *ngIf="job.salaryMin">${{ (job.salaryMin/1000).toFixed(1) }}k<ng-container
+                                        *ngIf="job.salaryMax"> - ${{ (job.salaryMax/1000).toFixed(1) }}k</ng-container>
+                                    PA</span>
+                                <span *ngIf="!job.salaryMin">Competitive</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="col-12 text-center py-4" *ngIf="featuredJobs.length === 0">
+                    <p class="text-muted fw-medium m-0">No featured jobs available at the moment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Companies & Resources -->
+    <section class="py-5 bg-white">
+        <div class="container py-2">
+            <div class="row">
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <h3 class="fw-bold mb-4 font-heading text-dark">Top Companies Hiring Now</h3>
+                    <div class="row g-3">
+                        <div class="col-6 col-md-3" *ngFor="let comp of topCompanies">
+                            <div
+                                class="company-logo-card bg-white border shadow-sm rounded-3 d-flex align-items-center justify-content-center p-3 h-100 transition-all">
+                                <!-- Mock logos with text -->
+                                <span
+                                    class="fw-bold text-dark fs-5 text-uppercase align-middle tracking-wider opacity-75 d-flex align-items-center gap-2">
+                                    <i class="bi bi-buildings text-primary"></i> {{comp}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <h3 class="fw-bold mb-4 font-heading text-primary text-end">Candidate Resources</h3>
+                    <div class="resources-col text-end d-flex flex-column gap-3">
+                        <a routerLink="/resources/resume-guide"
+                            class="text-decoration-none text-dark fw-medium border-bottom pb-2 custom-link-hover">Resume
+                            Building Guide <i class="bi bi-arrow-right ms-2 text-primary"></i></a>
+                        <a routerLink="/resources/interview-tips"
+                            class="text-decoration-none text-dark fw-medium border-bottom pb-2 custom-link-hover">Interview
+                            Preparation Tips <i class="bi bi-arrow-right ms-2 text-primary"></i></a>
+                        <a routerLink="/resources/salary-negotiation"
+                            class="text-decoration-none text-dark fw-medium border-bottom pb-2 custom-link-hover">Salary
+                            Negotiation 101 <i class="bi bi-arrow-right ms-2 text-primary"></i></a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Call to Action -->
-    <section class="cta-section py-5 text-center text-white position-relative overflow-hidden">
-        <div class="container position-relative z-1 py-4">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 animate__animated animate__zoomIn">
-                    <h2 class="fw-bold mb-3 font-heading display-5">Ready to hire top talent?</h2>
-                    <p class="lead mb-4 opacity-75">Join thousands of companies using RevHire to find their next
-                        superstar employees quickly and efficiently.</p>
-                    <a routerLink="/auth/register"
-                        class="btn btn-light btn-lg text-primary fw-bold rounded-pill px-5 shadow-sm">Post a Job For
-                        Free</a>
-                </div>
-            </div>
-        </div>
-        <div class="cta-overlay position-absolute top-0 start-0 w-100 h-100 bg-primary opacity-75"></div>
-        <div class="cta-bg-pattern position-absolute top-0 start-0 w-100 h-100"></div>
-    </section>
 </div>

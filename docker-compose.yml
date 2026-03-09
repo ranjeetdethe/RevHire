@@ -23,5 +23,14 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
+  frontend:
+    build:
+      context: ./revhire-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+
 volumes:
   db_data:
