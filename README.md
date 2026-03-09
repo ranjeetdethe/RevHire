@@ -1,4 +1,4 @@
-# RevHire (AuraJobs Edition)
+# RevHire
 
 RevHire (AuraJobs Edition) is a premium full-stack SaaS job portal (Naukri.com-inspired) built with **Angular 17** (frontend) and **Spring Boot 3 / Spring Security + JWT** (backend).
 
